@@ -2,11 +2,11 @@
 
 //Mesh constructor
 Mesh::Mesh(){                       
-    //Using a sample mesh
+    //A sample mesh 
     upVec = vec3(0,0,1);
 
     vector<vec3> vertices;
-    vector<int> indices;
+    vector<unsigned int> indices;
 
     for(int i = 0;i < 50;i++){
         for(int j = 0;j < 50;j++){
@@ -25,6 +25,11 @@ Mesh::Mesh(){
         }
     }
 
+    this->mesh = new HalfEdge(vertices, indices);
+}
+
+Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
+    //A mesh specified using Assimp 
     this->mesh = new HalfEdge(vertices, indices);
 }
 
@@ -64,8 +69,6 @@ void Mesh::setupPath(){
     inputPts2.push_back(vec3(20.34, 5.77, 0));
     inputPts2.push_back(vec3(23.237, 13.823, 0));
     currentPath->addCurve(inputPts2);
-
-    
 
     //Setting up the intersection points
     vec3 startPoint = this->currentPath->lastPoint;
@@ -155,11 +158,7 @@ void Mesh::renderMesh(){
         vec3 v1 = mesh->vertex_list[f->indices[0]]->position;
         vec3 v2 = mesh->vertex_list[f->indices[1]]->position;
         vec3 v3 = mesh->vertex_list[f->indices[2]]->position;
-        if(f->reMeshed && changeColor){
-            setColor(vec3(0.0f, 1.0f, 0.0f));
-        }else{
-            setColor(vec3(1.0f,0.0f,0.0f));
-        }
+        setColor(vec3(1.0f, 0.0f, 0.0f));
         drawTri(v1,v2,v3);
         setColor(vec3(0,0,0));
         setLineWidth(1);

@@ -91,7 +91,7 @@ class HalfEdge {
     
         //Constructor 
         HalfEdge();
-        HalfEdge(vector<vec3> Vertices, vector<int> Indices);
+        HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices);
 
         //Obtaining the intersection points of the edges
         //Each element is a tuple with the following elements

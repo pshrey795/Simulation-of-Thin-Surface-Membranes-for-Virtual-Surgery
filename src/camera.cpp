@@ -1,4 +1,3 @@
-
 #include "../include/camera.hpp" 
 
 Camera::Camera() :

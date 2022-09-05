@@ -16,6 +16,7 @@ public:
     void lookAt(vec3 eye, vec3 target);
     void processInput(Window &window);
     void apply(Window &window);
+    
 protected:
     vec3 getForwardVector();
     vec3 getRightVector();

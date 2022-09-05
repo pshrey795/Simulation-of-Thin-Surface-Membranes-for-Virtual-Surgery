@@ -1,7 +1,7 @@
 #include "../include/half_edge.hpp"
 
 //Constructor of Half Edge data structure from a list of vertices and faces
-HalfEdge::HalfEdge(vector<vec3> Vertices, vector<int> Indices){
+HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
     int n = Vertices.size();
 
     for(int i=0;i<n;i++){
@@ -133,7 +133,6 @@ vector<int> HalfEdge::IntersectingEdges(){
     }
     return intersectingEdges;
 }
-
 vector<tuple<vec3,int,int>> HalfEdge::IntersectingVertices(vector<int> edges){
     vector<tuple<vec3,int,int>> intersectingVertices;
     for(int i=0;i<vertex_list.size();i++){
@@ -152,7 +151,6 @@ vector<tuple<vec3,int,int>> HalfEdge::IntersectingVertices(vector<int> edges){
     }
     return intersectingVertices;
 }
-
 double HalfEdge::triArea(vec3 a, vec3 b, vec3 c){
     vec3 x = b - a;
     vec3 y = c - a;

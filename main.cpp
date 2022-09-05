@@ -11,7 +11,7 @@ using namespace std;
 Window window;
 Camera camera;
 Lighting lighting;
-Mesh mesh;
+Mesh model;
 
 float dt = 1/60.0;
 float t = 0;
@@ -22,7 +22,7 @@ void drawWorld() {
     lighting.apply();
     clear(vec3(0.5,0.7,0.9));
     setColor(vec3(0.7,0.7,0.7));
-    mesh.renderMesh();
+    model.renderMesh();
     setColor(vec3(0,0,0));
 }
 
@@ -41,16 +41,12 @@ int main(int argc, char **argv) {
     camera.lookAt(vec3(12.5,12.5,50), vec3(12.5,12.5,0));
     lighting.createDefault();
 
-    if(argc>=2 && atoi(argv[1]) == 1){
-        mesh.changeColor = true;
-    }
-
     while (!window.shouldClose()) {
         camera.processInput(window);
-        mesh.processInput(window);
+        model.processInput(window);
         if (!paused){
             update(dt);
-            mesh.update(dt);
+            model.update(dt);
         }
         window.prepareDisplay();
         drawWorld();

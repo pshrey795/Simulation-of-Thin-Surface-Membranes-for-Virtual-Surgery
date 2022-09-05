@@ -11,21 +11,37 @@
 using namespace std;
 using namespace Eigen;
 
+struct Material {
+    //To be filled depending on the properties to be captured 
+};
+
 class Mesh {
     private:
-        bool isPlaying = false;
-        int count = 0;
-        double t = 0;
+
+        //Animation Parameters
+        bool isPlaying = false;     
+        int count = 0;                  //Frame counter to control speed of animation 
+        double t = 0;                   //Time counter 
+
+        //Mesh Parameters
         HalfEdge *mesh;
-        Path* currentPath = NULL;
-        void setupMesh(vector<vec3> Vertices, vector<int> Indices);
         void setupPath();
+        Material mat;
+
+        //Path Parameters
+        Path* currentPath = NULL;
         int currIntersectIdx;
-        vec3 upVec;
+        vec3 upVec;                     //Vertical vector, to be decided from the instrument
+
+        //Storing intersection points of the path with the mesh 
         vector<tuple<vec3, int, int>> intersectPts;
         vector<vec3> normals;
+
+        //For processing the intersection points 
         void removeDuplicates(vector<tuple<vec3,int,int>> &vertices);
         vector<tuple<vec3, int, int>> filterAndSort(vector<tuple<vec3, int, int>> intersections, vec3 startPoint, vec3 endPoint, bool first);
+        
+        //Temporary pointers for book-keeping during remeshing
         Vertex* vertexLast;
         Edge* crossEdgeLeft;
         Edge* crossEdgeRight;
@@ -34,7 +50,7 @@ class Mesh {
 
     public:
         Mesh();
-        bool changeColor = false; 
+        Mesh(vector<vec3> Vertices, vector<unsigned int> Indices);
         void update(float dt);
         void processInput(Window &window);
         void renderMesh(); 
