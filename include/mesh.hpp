@@ -25,13 +25,13 @@ class Mesh {
 
         //Mesh Parameters
         HalfEdge *mesh;
-        void setupPath();
         Material mat;
 
         //Path Parameters
         Path* currentPath = NULL;
         int currIntersectIdx;
         vec3 upVec;                     //Vertical vector, to be decided from the instrument
+        void setupPath();
 
         //Storing intersection points of the path with the mesh 
         vector<tuple<vec3, int, int>> intersectPts;
@@ -42,7 +42,7 @@ class Mesh {
         vector<tuple<vec3, int, int>> filterAndSort(vector<tuple<vec3, int, int>> intersections, vec3 startPoint, vec3 endPoint, bool first);
         
         //Temporary pointers for book-keeping during remeshing
-        Vertex* vertexLast;
+        Particle* vertexLast;
         Edge* crossEdgeLeft;
         Edge* crossEdgeRight;
         Edge* sideEdgeLeft;

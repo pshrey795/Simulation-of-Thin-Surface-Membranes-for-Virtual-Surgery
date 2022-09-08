@@ -126,9 +126,9 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
     vec3 direction = endPoint - startPoint;
     double lowerBound = direction.dot(startPoint - startPoint);
     double upperBound = direction.dot(endPoint - startPoint);
-    int currentSize = this->mesh->vertex_list.size();
+    int currentSize = this->mesh->particle_list.size();
     if(first){
-        this->mesh->vertex_list.push_back(new Vertex(startPoint));
+        this->mesh->particle_list.push_back(new Particle(startPoint));
         filteredIntersections.push_back(make_tuple(startPoint,2,currentSize++));
     }
     for(auto x : intersections){
@@ -145,7 +145,7 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
         return x <= y;  
     };
     sort(filteredIntersections.begin(),filteredIntersections.end(),directionSort);
-    this->mesh->vertex_list.push_back(new Vertex(endPoint));
+    this->mesh->particle_list.push_back(new Particle(endPoint));
     filteredIntersections.push_back(make_tuple(endPoint,2,currentSize++));
     return filteredIntersections;
 }
@@ -155,9 +155,9 @@ void Mesh::renderMesh(){
     int n = mesh->face_list.size();
     for(int i = 0; i < n; i++){
         Face* f = mesh->face_list[i];
-        vec3 v1 = mesh->vertex_list[f->indices[0]]->position;
-        vec3 v2 = mesh->vertex_list[f->indices[1]]->position;
-        vec3 v3 = mesh->vertex_list[f->indices[2]]->position;
+        vec3 v1 = mesh->particle_list[f->indices[0]]->position;
+        vec3 v2 = mesh->particle_list[f->indices[1]]->position;
+        vec3 v3 = mesh->particle_list[f->indices[2]]->position;
         setColor(vec3(1.0f, 0.0f, 0.0f));
         drawTri(v1,v2,v3);
         setColor(vec3(0,0,0));

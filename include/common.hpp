@@ -14,7 +14,7 @@
 
 typedef Eigen::Vector2f vec2;
 typedef Eigen::Vector3f vec3;
-typedef Eigen::Matrix<float, 3, 3> mat3;
+typedef Eigen::Matrix<double, 3, 3> mat3;
 
 using namespace Eigen;
 
