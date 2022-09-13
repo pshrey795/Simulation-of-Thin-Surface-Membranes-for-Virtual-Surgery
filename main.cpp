@@ -2,7 +2,7 @@
 #include "include/draw.hpp"
 #include "include/gui.hpp"
 #include "include/lighting.hpp"
-#include "include/mesh.hpp"
+#include "include/model.hpp"
 
 #include <bits/stdc++.h>
 
@@ -11,9 +11,9 @@ using namespace std;
 Window window;
 Camera camera;
 Lighting lighting;
-Mesh model;
+Model model;
 
-float dt = 1/60.0;
+float dt = 1/100.0f;
 float t = 0;
 bool paused = false;
 
@@ -22,7 +22,7 @@ void drawWorld() {
     lighting.apply();
     clear(vec3(0.5,0.7,0.9));
     setColor(vec3(0.7,0.7,0.7));
-    model.renderMesh();
+    model.renderModel();
     setColor(vec3(0,0,0));
 }
 
@@ -38,7 +38,7 @@ void keyPressed(int key) {
 int main(int argc, char **argv) {
     window.create("Test Window", 1920, 1080);
     window.onKeyPress(keyPressed);
-    camera.lookAt(vec3(12.5,12.5,50), vec3(12.5,12.5,0));
+    camera.lookAt(vec3(0.0,0.0,30), vec3(4.0,4.0,0));
     lighting.createDefault();
 
     while (!window.shouldClose()) {

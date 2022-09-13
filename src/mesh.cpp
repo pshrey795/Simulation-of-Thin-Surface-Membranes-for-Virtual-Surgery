@@ -2,34 +2,64 @@
 
 //Mesh constructor
 Mesh::Mesh(){                       
-    //A sample mesh 
     upVec = vec3(0,0,1);
 
     vector<vec3> vertices;
     vector<unsigned int> indices;
+    vector<bool> clamp;
+ 
+    // //Sample Mesh 1: M * N rectangular grid 
+    // for(int i = 0;i < 5;i++){
+    //     for(int j = 0;j < 5;j++){
+    //         vertices.push_back(vec3(2 * i,2 * j,0));
+    //         if((i==0 && j==4) || (i==4 && j==4)){
+    //             clamp.push_back(true);
+    //         }else{
+    //             clamp.push_back(false);
+    //         }
+    //     }
+    // }
 
-    for(int i = 0;i < 50;i++){
-        for(int j = 0;j < 50;j++){
-            vertices.push_back(vec3(i*0.5,j*0.5,0));
-        }
-    }
+    // for(int i = 0;i < 4;i++){
+    //     for(int j = 0;j < 4;j++){
+    //         indices.push_back(i*5+j);
+    //         indices.push_back((i+1)*5 + j);
+    //         indices.push_back((i+1)*5 + j+1);
+    //         indices.push_back(i*5+j);
+    //         indices.push_back((i+1)*5 + j+1);
+    //         indices.push_back(i*5 + j + 1);
+    //     }
+    // }
 
-    for(int i = 0;i < 49;i++){
-        for(int j = 0;j < 49;j++){
-            indices.push_back(i*50+j);
-            indices.push_back((i+1)*50 + j);
-            indices.push_back((i+1)*50 + j+1);
-            indices.push_back(i*50+j);
-            indices.push_back((i+1)*50 + j+1);
-            indices.push_back(i*50 + j + 1);
-        }
-    }
+    // Sample Mesh 2: A single grid cell
+    vertices.push_back(vec3(1,1,0));
+    vertices.push_back(vec3(2,1,0));
+    vertices.push_back(vec3(1,2,0));
+    vertices.push_back(vec3(2,2,0));
 
-    this->mesh = new HalfEdge(vertices, indices);
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+    indices.push_back(1);
+    indices.push_back(3);
+    indices.push_back(2);
+
+    // Symmetric shear strings(Seg Fault)
+    // indices.push_back(0);
+    // indices.push_back(1);
+    // indices.push_back(3);
+
+    clamp.push_back(true);
+    clamp.push_back(true);
+    clamp.push_back(false);
+    clamp.push_back(false);
+
+    this->mesh = new HalfEdge(vertices, indices, clamp);
 }
 
 Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
     //A mesh specified using Assimp 
+    
     this->mesh = new HalfEdge(vertices, indices);
 }
 
@@ -50,6 +80,11 @@ void Mesh::update(float dt){
         }else{
             isPlaying = false;
         }
+    }
+
+    //Update every individual particle
+    for(int i=0;i<this->mesh->particle_list.size();i++){
+        this->mesh->particle_list[i]->update(dt);
     }
 }
 

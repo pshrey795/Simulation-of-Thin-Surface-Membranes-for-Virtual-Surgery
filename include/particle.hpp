@@ -3,7 +3,10 @@
 
 #include "common.hpp"
 #define DEFAULT_MASS 1.0f
-#define GRAVITY vec3(0.0f, -9.8f, 0.0f)
+#define DEFAULT_REST_LENGTH 0.5f
+#define DEFAULT_STIFFNESS 10.0f
+#define DEFAULT_DAMPING 5.0f
+#define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
 using namespace std;
 
@@ -12,14 +15,19 @@ struct Spring {
     double ks;              //Stiffness constant
     double kd;              //Damping constant
     Spring(){
-        restLength = 0;
-        ks = 0;
-        kd = 0;
+        restLength = DEFAULT_REST_LENGTH;
+        ks = DEFAULT_STIFFNESS;
+        kd = DEFAULT_DAMPING;
     }
     Spring(double l0, double ks, double kd){
         this->restLength = l0;
         this->ks = ks;
         this->kd = kd;
+    }
+    Spring(double l0){
+        this->restLength = l0;
+        this->ks = DEFAULT_STIFFNESS;
+        this->kd = DEFAULT_DAMPING;
     }
 };
 
@@ -30,12 +38,21 @@ struct Edge{
     struct Edge *twin;
     struct Face *face;
     struct Spring spring;
+    Edge(Particle *startParticle, Face *face, double l0){
+        this->startParticle = startParticle;
+        this->next = NULL;
+        this->prev = NULL;
+        this->twin = NULL;
+        this->face = face;
+        this->spring = Spring(l0);
+    }
     Edge(Particle *startParticle, Face *face){
         this->startParticle = startParticle;
         this->next = NULL;
         this->prev = NULL;
         this->twin = NULL;
         this->face = face;
+        this->spring = Spring();
     }
     Edge(){
         this->startParticle = NULL;
@@ -43,6 +60,7 @@ struct Edge{
         this->prev = NULL;
         this->twin = NULL;
         this->face = NULL;
+        this->spring = Spring();
     }
 };
 
@@ -79,16 +97,17 @@ class Particle {
         double invM;            //Inverse of mass of the particle to avoid repetitive divisions 
         vec3 netForce;
         vec3 velocity;          
-        bool isFixed;           //Flag to check if the particle is fixed or not
 
         //Updating force 
         vec3 calculateExternalForce();
         vec3 calculateInternalForce();
+        vec3 calculateSpringForce(Spring s, Particle* p0, Particle* p1);
         void calculateForce();
 
     public:
         vec3 position;
         Edge* edge;
+        bool isFixed;           //Flag to check if the particle is fixed or not
         Particle(vec3 pos, double mass = DEFAULT_MASS);
         Particle(vec3 pos, Edge* e, double mass = DEFAULT_MASS);
 
@@ -97,8 +116,6 @@ class Particle {
 
         //For intersection purposes 
         double offset = 0.0f;
-        
-        void fixParticle();
 
 };
 
