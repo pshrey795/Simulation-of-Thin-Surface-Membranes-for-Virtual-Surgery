@@ -93,6 +93,17 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
             }
         }
     }
+
+    //Constructing springs from the mesh
+    for(int a=0;a<n;a++){
+        for(int b=a+1;b<n;b++){
+            if(adjList[a][b] != -1){
+                double l0 = (particle_list[a]->position - particle_list[b]->position).norm(); 
+                Spring newSpring = Spring(a, b, l0);
+                this->springs.push_back(newSpring);
+            }
+        }
+    }
 }
 
 //Constructor of Half Edge data structure from a list of vertices and faces
@@ -121,15 +132,12 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
         a = Indices[i];
         b = Indices[i+1];
         c = Indices[i+2];
-        double lenAB = (particle_list[a]->position - particle_list[b]->position).norm();
-        double lenBC = (particle_list[b]->position - particle_list[c]->position).norm();
-        double lenCA = (particle_list[c]->position - particle_list[a]->position).norm();
 
         //Create Face and Half Edges
         struct Face* f = new Face(a,b,c,false);
-        struct Edge* e1 = new Edge(particle_list[a],f,lenAB);
-        struct Edge* e2 = new Edge(particle_list[b],f,lenBC);
-        struct Edge* e3 = new Edge(particle_list[c],f,lenCA);
+        struct Edge* e1 = new Edge(particle_list[a],f);
+        struct Edge* e2 = new Edge(particle_list[b],f);
+        struct Edge* e3 = new Edge(particle_list[c],f);
 
         //Linking edges to vertices if not done already 
         if(particle_list[a]->edge == NULL){
@@ -180,8 +188,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
                 if(adjList[b][a] != -1){
                     auto v = this->edge_list[adjList[b][a]]->next->startParticle;
                     auto u = this->edge_list[adjList[b][a]]->startParticle;
-                    double dist = (v->position - u->position).norm();
-                    struct Edge* newEdge = new Edge(v,NULL,dist);
+                    struct Edge* newEdge = new Edge(v,NULL);
                     newEdge->twin = this->edge_list[adjList[b][a]];
                     this->edge_list[adjList[b][a]]->twin = newEdge;
                     this->edge_list.push_back(newEdge);
@@ -191,6 +198,17 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
                 if(adjList[b][a] != -1){
                     edge_list[adjList[a][b]]->twin = edge_list[adjList[b][a]];
                 }
+            }
+        }
+    }
+
+    //Constructing springs from the mesh
+    for(int a=0;a<n;a++){
+        for(int b=a+1;b<n;b++){
+            if(adjList[a][b] != -1){
+                double l0 = (particle_list[a]->position - particle_list[b]->position).norm(); 
+                Spring newSpring = Spring(a, b, l0);
+                this->springs.push_back(newSpring);
             }
         }
     }
@@ -3681,4 +3699,52 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
     rightCrossEdge = newCrossEdgeRight;
     leftSideEdge = newSideEdgeLeft;
     rightSideEdge = newSideEdgeRight;
+}
+
+vec3 HalfEdge::calculateSpringForce(Spring s){
+    Particle* p0 = this->particle_list[s.p0];
+    Particle* p1 = this->particle_list[s.p1];
+
+    vec3 diff = p1->position - p0->position;
+    vec3 velDiff = p1->velocity - p0->velocity;
+    double length = diff.norm();
+
+    //Spring force
+    double springForce = s.ks * ((length / s.restLength) - 1);
+
+    //Damping force
+    double dampForce = s.kd * ((velDiff.dot(diff.normalized())) / (s.restLength));
+
+    return (springForce + dampForce) * diff.normalized();
+}
+
+void HalfEdge::store(){
+    // for(int i=0;i<particle_list.size();i++){
+    //     positions[i] = particle_list[i]->position;
+    //     velocities[i] = particle_list[i]->velocity;
+    // }
+}
+
+void HalfEdge::resetForce(){
+    for(int i=0;i<particle_list.size();i++){
+        particle_list[i]->netForce = vec3(0,0,0);
+    }
+}
+
+void HalfEdge::updateMesh(float dt){
+    //Update spring forces
+    this->resetForce();
+    for(int i=0;i<springs.size();i++){
+        vec3 springForce = calculateSpringForce(springs[i]);
+        particle_list[springs[i].p0]->netForce += springForce;
+        particle_list[springs[i].p1]->netForce -= springForce;
+    }
+
+    //Update particle parameters
+    for(int i=0;i<particle_list.size();i++){
+        particle_list[i]->update(dt);
+    }
+
+    //Store the updated particle parameters
+    this->store();
 }

@@ -28,6 +28,9 @@ class HalfEdge {
         vector<Face*> face_list;
         vector<vector<int>> adjList;
     
+        //Dynamic information of the particles
+        vector<Spring> springs;
+
         //Constructor 
         HalfEdge();
         HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices);
@@ -58,6 +61,10 @@ class HalfEdge {
         //Side Edge: Split edges on the edge of the current intersection point
         void reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> nextIntPt, Particle* &lastVertex, Edge* &leftCrossEdge, Edge* &rightCrossEdge, Edge* &leftSideEdge, Edge* &rightSideEdge, vec3 normal);
 
+        //Updating the mesh
+        vec3 calculateSpringForce(Spring s); 
+        void updateMesh(float dt);
+
     private:
         //Helper functions for checking intersection
         double triArea(vec3 a, vec3 b, vec3 c);
@@ -65,6 +72,10 @@ class HalfEdge {
         void ParticleOffsets(Plane plane);
         vector<int> IntersectingEdges();
         vector<tuple<vec3,int,int>> IntersectingVertices(vector<int> edges);
+
+        //Book-keeping
+        void resetForce();
+        void store();
 
 };
 

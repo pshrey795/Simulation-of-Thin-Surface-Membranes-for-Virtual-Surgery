@@ -13,7 +13,7 @@ Camera camera;
 Lighting lighting;
 Model model;
 
-float dt = 1/100.0f;
+float dt = 1/80.0f;
 float t = 0;
 bool paused = false;
 
