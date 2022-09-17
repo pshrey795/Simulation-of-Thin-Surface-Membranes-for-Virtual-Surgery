@@ -25,119 +25,15 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
         a = Indices[i];
         b = Indices[i+1];
         c = Indices[i+2];
+        double lenAB = (particle_list[a]->position - particle_list[b]->position).norm();
+        double lenBC = (particle_list[b]->position - particle_list[c]->position).norm();
+        double lenCA = (particle_list[c]->position - particle_list[a]->position).norm();
 
         //Create Face and Half Edges
         struct Face* f = new Face(a,b,c,false);
-        struct Edge* e1 = new Edge(particle_list[a],f);
-        struct Edge* e2 = new Edge(particle_list[b],f);
-        struct Edge* e3 = new Edge(particle_list[c],f);
-
-        //Linking edges to vertices if not done already 
-        if(particle_list[a]->edge == NULL){
-            particle_list[a]->edge = e1;
-        }
-        if(particle_list[b]->edge == NULL){
-            particle_list[b]->edge = e2;
-        }
-        if(particle_list[c]->edge == NULL){
-            particle_list[c]->edge = e3;
-        }
-
-        //Log twin edge values for later linking
-        adjList[a][b] = i;
-        adjList[b][c] = i+1;
-        adjList[c][a] = i+2;
-
-        //VERY IMPORTANT
-        //Need to make sure that the indices are given in anti clockwise order
-        //This condition is required for rendering as well as remeshing algorithms
-
-        //Linking next and prev entries
-        e1->next = e2;
-        e2->next = e3;
-        e3->next = e1;
-        e1->prev = e3;
-        e2->prev = e1;
-        e3->prev = e2;
-
-        //Linking face to one of the half edges
-        f->edge = e1;
-        this->face_list.push_back(f);
-
-        //Adding half edges
-        this->edge_list.push_back(e1);
-        this->edge_list.push_back(e2);
-        this->edge_list.push_back(e3);
-
-        //Next iteration
-        i+=3;
-    }
-    int currentSize = this->edge_list.size();
-
-    //Linking twin edges
-    for(int a=0;a<n;a++){
-        for(int b=0;b<n;b++){
-            if(adjList[a][b] == -1){
-                if(adjList[b][a] != -1){
-                    auto v = this->edge_list[adjList[b][a]]->next->startParticle;
-                    struct Edge* newEdge = new Edge(v,NULL);
-                    newEdge->twin = this->edge_list[adjList[b][a]];
-                    this->edge_list[adjList[b][a]]->twin = newEdge;
-                    this->edge_list.push_back(newEdge);
-                    adjList[a][b] = currentSize++;
-                }
-            }else{
-                if(adjList[b][a] != -1){
-                    edge_list[adjList[a][b]]->twin = edge_list[adjList[b][a]];
-                }
-            }
-        }
-    }
-
-    //Constructing springs from the mesh
-    for(int a=0;a<n;a++){
-        for(int b=a+1;b<n;b++){
-            if(adjList[a][b] != -1){
-                double l0 = (particle_list[a]->position - particle_list[b]->position).norm(); 
-                Spring newSpring = Spring(a, b, l0);
-                this->springs.push_back(newSpring);
-            }
-        }
-    }
-}
-
-//Constructor of Half Edge data structure from a list of vertices and faces
-HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<bool> clamp){
-    int n = Vertices.size();
-
-    for(int i=0;i<n;i++){
-        vector<int> adj;
-        for(int j=0;j<n;j++){
-            adj.push_back(-1);
-        }
-        this->adjList.push_back(adj); 
-    }
-
-    //Adding vertices
-    for(int i=0;i<Vertices.size();i++){
-        this->particle_list.push_back(new Particle(Vertices[i]));
-        this->particle_list[i]->isFixed = clamp[i];
-    }
-
-    int i=0;
-    while(i < Indices.size()){
-        int a,b,c;
-
-        //Particle Indices
-        a = Indices[i];
-        b = Indices[i+1];
-        c = Indices[i+2];
-
-        //Create Face and Half Edges
-        struct Face* f = new Face(a,b,c,false);
-        struct Edge* e1 = new Edge(particle_list[a],f);
-        struct Edge* e2 = new Edge(particle_list[b],f);
-        struct Edge* e3 = new Edge(particle_list[c],f);
+        struct Edge* e1 = new Edge(particle_list[a],f,lenAB);
+        struct Edge* e2 = new Edge(particle_list[b],f,lenBC);
+        struct Edge* e3 = new Edge(particle_list[c],f,lenCA);
 
         //Linking edges to vertices if not done already 
         if(particle_list[a]->edge == NULL){
@@ -188,7 +84,8 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
                 if(adjList[b][a] != -1){
                     auto v = this->edge_list[adjList[b][a]]->next->startParticle;
                     auto u = this->edge_list[adjList[b][a]]->startParticle;
-                    struct Edge* newEdge = new Edge(v,NULL);
+                    double dist = (v->position - u->position).norm();
+                    struct Edge* newEdge = new Edge(v,NULL,dist);
                     newEdge->twin = this->edge_list[adjList[b][a]];
                     this->edge_list[adjList[b][a]]->twin = newEdge;
                     this->edge_list.push_back(newEdge);
@@ -201,14 +98,104 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
             }
         }
     }
+}
 
-    //Constructing springs from the mesh
+//Constructor of Half Edge data structure from a list of vertices and faces
+HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<bool> clamp){
+    int n = Vertices.size();
+
+    for(int i=0;i<n;i++){
+        vector<int> adj;
+        for(int j=0;j<n;j++){
+            adj.push_back(-1);
+        }
+        this->adjList.push_back(adj); 
+    }
+
+    //Adding vertices
+    for(int i=0;i<Vertices.size();i++){
+        this->particle_list.push_back(new Particle(Vertices[i]));
+        this->particle_list[i]->isFixed = clamp[i];
+    }
+
+    int i=0;
+    while(i < Indices.size()){
+        int a,b,c;
+
+        //Particle Indices
+        a = Indices[i];
+        b = Indices[i+1];
+        c = Indices[i+2];
+        double lenAB = (particle_list[a]->position - particle_list[b]->position).norm();
+        double lenBC = (particle_list[b]->position - particle_list[c]->position).norm();
+        double lenCA = (particle_list[c]->position - particle_list[a]->position).norm();
+
+        //Create Face and Half Edges
+        struct Face* f = new Face(a,b,c,false);
+        struct Edge* e1 = new Edge(particle_list[a],f,lenAB);
+        struct Edge* e2 = new Edge(particle_list[b],f,lenBC);
+        struct Edge* e3 = new Edge(particle_list[c],f,lenCA);
+
+        //Linking edges to vertices if not done already 
+        if(particle_list[a]->edge == NULL){
+            particle_list[a]->edge = e1;
+        }
+        if(particle_list[b]->edge == NULL){
+            particle_list[b]->edge = e2;
+        }
+        if(particle_list[c]->edge == NULL){
+            particle_list[c]->edge = e3;
+        }
+
+        //Log twin edge values for later linking
+        adjList[a][b] = i;
+        adjList[b][c] = i+1;
+        adjList[c][a] = i+2;
+
+        //VERY IMPORTANT
+        //Need to make sure that the indices are given in anti clockwise order
+        //This condition is required for rendering as well as remeshing algorithms
+
+        //Linking next and prev entries
+        e1->next = e2;
+        e2->next = e3;
+        e3->next = e1;
+        e1->prev = e3;
+        e2->prev = e1;
+        e3->prev = e2;
+
+        //Linking face to one of the half edges
+        f->edge = e1;
+        this->face_list.push_back(f);
+
+        //Adding half edges
+        this->edge_list.push_back(e1);
+        this->edge_list.push_back(e2);
+        this->edge_list.push_back(e3);
+
+        //Next iteration
+        i+=3;
+    }
+    int currentSize = this->edge_list.size();
+
+    //Linking twin edges
     for(int a=0;a<n;a++){
-        for(int b=a+1;b<n;b++){
-            if(adjList[a][b] != -1){
-                double l0 = (particle_list[a]->position - particle_list[b]->position).norm(); 
-                Spring newSpring = Spring(a, b, l0);
-                this->springs.push_back(newSpring);
+        for(int b=0;b<n;b++){
+            if(adjList[a][b] == -1){
+                if(adjList[b][a] != -1){
+                    auto v = this->edge_list[adjList[b][a]]->next->startParticle;
+                    auto u = this->edge_list[adjList[b][a]]->startParticle;
+                    double dist = (v->position - u->position).norm();
+                    struct Edge* newEdge = new Edge(v,NULL,dist);
+                    newEdge->twin = this->edge_list[adjList[b][a]];
+                    this->edge_list[adjList[b][a]]->twin = newEdge;
+                    this->edge_list.push_back(newEdge);
+                    adjList[a][b] = currentSize++;
+                }
+            }else{
+                if(adjList[b][a] != -1){
+                    edge_list[adjList[a][b]]->twin = edge_list[adjList[b][a]];
+                }
             }
         }
     }
@@ -3718,6 +3705,20 @@ vec3 HalfEdge::calculateSpringForce(Spring s){
     return (springForce + dampForce) * diff.normalized();
 }
 
+vec3 HalfEdge::calculateSpringForce(Spring s, Particle* p0, Particle* p1){
+    vec3 diff = p1->position - p0->position;
+    vec3 velDiff = p1->velocity - p0->velocity;
+    double length = diff.norm();
+
+    //Spring force
+    double springForce = s.ks * ((length / s.restLength) - 1);
+
+    //Damping force
+    double dampForce = s.kd * ((velDiff.dot(diff.normalized())) / (s.restLength));
+
+    return (springForce + dampForce) * diff.normalized();
+}
+
 void HalfEdge::store(){
     // for(int i=0;i<particle_list.size();i++){
     //     positions[i] = particle_list[i]->position;
@@ -3732,12 +3733,21 @@ void HalfEdge::resetForce(){
 }
 
 void HalfEdge::updateMesh(float dt){
-    //Update spring forces
+    //Update forces due to extra springs i.e. springs which don't align with the edges 
+    //of the mesh
     this->resetForce();
     for(int i=0;i<springs.size();i++){
         vec3 springForce = calculateSpringForce(springs[i]);
         particle_list[springs[i].p0]->netForce += springForce;
         particle_list[springs[i].p1]->netForce -= springForce;
+    }
+    for(int i=0;i<edge_list.size();i++){
+        Edge* e = edge_list[i];
+        Particle* p1 = e->startParticle;
+        Particle* p2 = e->twin->startParticle;
+        vec3 springForce = calculateSpringForce(e->spring, p1, p2);
+        p1->netForce += springForce/2;
+        p2->netForce -= springForce/2;
     }
 
     //Update particle parameters

@@ -4,8 +4,8 @@
 #include "common.hpp"
 #define DEFAULT_MASS 1.0f
 #define DEFAULT_REST_LENGTH 0.5f
-#define DEFAULT_STIFFNESS 10.0f
-#define DEFAULT_DAMPING 5.0f
+#define DEFAULT_STIFFNESS 15.0f
+#define DEFAULT_DAMPING 10.0f
 #define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
 using namespace std;
@@ -15,6 +15,13 @@ struct Spring {
     double ks;              //Stiffness constant
     double kd;              //Damping constant
     int p0, p1;             //Indices of the particles
+    Spring(){
+        this->p0 = -1;
+        this->p1 = -1;
+        restLength = DEFAULT_REST_LENGTH;
+        ks = DEFAULT_STIFFNESS;
+        kd = DEFAULT_DAMPING;
+    }
     Spring(int p0, int p1){
         this->p0 = p0;
         this->p1 = p1;
@@ -36,6 +43,13 @@ struct Spring {
         this->ks = DEFAULT_STIFFNESS;
         this->kd = DEFAULT_DAMPING;
     }
+    Spring(double l0){
+        this->p0 = -1;
+        this->p1 = -1;
+        this->restLength = l0;
+        this->ks = DEFAULT_STIFFNESS;
+        this->kd = DEFAULT_DAMPING;
+    }
 };
 
 struct Edge{
@@ -44,12 +58,22 @@ struct Edge{
     struct Edge *prev;
     struct Edge *twin;
     struct Face *face;
+    struct Spring spring;
+    Edge(Particle *startParticle, Face *face, double l0){
+        this->startParticle = startParticle;
+        this->next = NULL;
+        this->prev = NULL;
+        this->twin = NULL;
+        this->face = face;
+        this->spring = Spring(l0);
+    }
     Edge(Particle *startParticle, Face *face){
         this->startParticle = startParticle;
         this->next = NULL;
         this->prev = NULL;
         this->twin = NULL;
         this->face = face;
+        this->spring = Spring();
     }
     Edge(){
         this->startParticle = NULL;
@@ -57,6 +81,7 @@ struct Edge{
         this->prev = NULL;
         this->twin = NULL;
         this->face = NULL;
+        this->spring = Spring();
     }
 };
 

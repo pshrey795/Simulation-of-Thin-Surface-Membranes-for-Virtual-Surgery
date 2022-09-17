@@ -63,6 +63,7 @@ class HalfEdge {
 
         //Updating the mesh
         vec3 calculateSpringForce(Spring s); 
+        vec3 calculateSpringForce(Spring s, Particle* p0, Particle* p1);
         void updateMesh(float dt);
 
     private:

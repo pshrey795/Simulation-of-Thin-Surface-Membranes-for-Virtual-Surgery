@@ -11,8 +11,8 @@ Mesh::Mesh(){
     //Sample Mesh 1: M * N rectangular grid 
     for(int i = 0;i < 5;i++){
         for(int j = 0;j < 5;j++){
-            vertices.push_back(vec3(2 * i,2 * j,0));
-            if((i==0 && j==4) || (i==4 && j==4)){
+            vertices.push_back(vec3(2 * i - 4,2 * j,0));
+            if((i==0 && j==0) || (i==4 && j==0)){
                 clamp.push_back(true);
             }else{
                 clamp.push_back(false);
@@ -43,11 +43,6 @@ Mesh::Mesh(){
     // indices.push_back(1);
     // indices.push_back(3);
     // indices.push_back(2);
-
-    // // Symmetric shear strings(Seg Fault)
-    // // indices.push_back(0);
-    // // indices.push_back(1);
-    // // indices.push_back(3);
 
     // clamp.push_back(true);
     // clamp.push_back(true);

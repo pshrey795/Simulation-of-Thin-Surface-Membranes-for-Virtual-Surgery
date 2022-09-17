@@ -13,14 +13,23 @@ Camera camera;
 Lighting lighting;
 Model model;
 
-float dt = 1/80.0f;
+float dt = 1/60.0f;
 float t = 0;
 bool paused = false;
+
+void drawEnv(){
+    setColor(vec3(0.0f, 0.0f, 0.0f));
+    drawArrow(vec3(-16.0f,0.0f,-25.0f), vec3(12.0f, 0.0f, 25.0f), 0.3f);
+    drawArrow(vec3(16.0f,0.0f,-25.0f), vec3(-12.0f, 0.0f, 25.0f), 0.3f);
+    setColor(vec3(0.3f, 0.5f, 0.7f));
+    drawQuad(vec3(-25.0f,-25.0f,-25.0f), vec3(25.0f, -25.0f, -25.0f), vec3(25.0f, 25.0f, -25.0f), vec3(-25.0f, 25.0f, -25.0f));
+}
 
 void drawWorld() {
     camera.apply(window);
     lighting.apply();
     clear(vec3(0.5,0.7,0.9));
+    drawEnv();
     setColor(vec3(0.7,0.7,0.7));
     model.renderModel();
     setColor(vec3(0,0,0));
@@ -36,9 +45,9 @@ void keyPressed(int key) {
 }
 
 int main(int argc, char **argv) {
-    window.create("Test Window", 1920, 1080);
+    window.create("Test Window", 1920, 2580);
     window.onKeyPress(keyPressed);
-    camera.lookAt(vec3(0.0,0.0,30), vec3(4.0,4.0,0));
+    camera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
     lighting.createDefault();
 
     while (!window.shouldClose()) {
