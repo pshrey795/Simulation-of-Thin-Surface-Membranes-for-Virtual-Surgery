@@ -11,8 +11,8 @@ Mesh::Mesh(){
     //Sample Mesh 1: M * N rectangular grid 
     for(int i = 0;i < 5;i++){
         for(int j = 0;j < 5;j++){
-            vertices.push_back(vec3(2 * i - 4,2 * j,0));
-            if((i==0 && j==0) || (i==4 && j==0)){
+            vertices.push_back(vec3(2 * i - 4,2 * j - 4,0));
+            if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
                 clamp.push_back(true);
             }else{
                 clamp.push_back(false);
@@ -50,23 +50,10 @@ Mesh::Mesh(){
     // clamp.push_back(false);
 
     this->mesh = new HalfEdge(vertices, indices, clamp);
-
-    //Extra springs for mesh 1
-    for(int i = 0; i < 4; i++){
-        for(int j = 1; j < 5; j++){
-            double length = (mesh->particle_list[i*5+j]->position - mesh->particle_list[(i+1)*5+j-1]->position).norm();
-            mesh->springs.push_back(Spring(i*5+j,(i+1)*5+j-1,length));
-        }
-    }
-
-    //Extra springs for mesh 2
-    // double length = (mesh->particle_list[0]->position - mesh->particle_list[3]->position).norm();
-    // mesh->springs.push_back(Spring(0,3,length));
 }
 
 Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
     //A mesh specified using Assimp 
-    
     this->mesh = new HalfEdge(vertices, indices);
 }
 
@@ -88,7 +75,6 @@ void Mesh::update(float dt){
             isPlaying = false;
         }
     }
-
     this->mesh->updateMesh(dt);
 }
 

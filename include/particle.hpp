@@ -3,53 +3,24 @@
 
 #include "common.hpp"
 #define DEFAULT_MASS 1.0f
-#define DEFAULT_REST_LENGTH 0.5f
-#define DEFAULT_STIFFNESS 15.0f
-#define DEFAULT_DAMPING 10.0f
+#define DEFAULT_STIFFNESS 10.0f
+#define DEFAULT_DAMPING 5.0f
 #define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
-using namespace std;
+using namespace std; 
+
+class Particle;
 
 struct Spring {
-    double restLength;
     double ks;              //Stiffness constant
     double kd;              //Damping constant
-    int p0, p1;             //Indices of the particles
-    Spring(){
-        this->p0 = -1;
-        this->p1 = -1;
-        restLength = DEFAULT_REST_LENGTH;
-        ks = DEFAULT_STIFFNESS;
-        kd = DEFAULT_DAMPING;
-    }
-    Spring(int p0, int p1){
-        this->p0 = p0;
-        this->p1 = p1;
-        restLength = DEFAULT_REST_LENGTH;
-        ks = DEFAULT_STIFFNESS;
-        kd = DEFAULT_DAMPING;
-    }
-    Spring(int p0, int p1, double l0, double ks, double kd){
-        this->p0 = p0;
-        this->p1 = p1;
-        this->restLength = l0;
-        this->ks = ks;
-        this->kd = kd;
-    }
-    Spring(int p0, int p1, double l0){
-        this->p0 = p0;
-        this->p1 = p1;
-        this->restLength = l0;
-        this->ks = DEFAULT_STIFFNESS;
-        this->kd = DEFAULT_DAMPING;
-    }
-    Spring(double l0){
-        this->p0 = -1;
-        this->p1 = -1;
-        this->restLength = l0;
-        this->ks = DEFAULT_STIFFNESS;
-        this->kd = DEFAULT_DAMPING;
-    }
+    Particle* p1;
+    Particle* p2;
+    Spring();
+    Spring(double ks, double kd);
+    Spring(Particle* p1, Particle* p2);
+    Spring(Particle* p1, Particle* p2, double ks, double kd);
+    void addForce();
 };
 
 struct Edge{
@@ -59,30 +30,9 @@ struct Edge{
     struct Edge *twin;
     struct Face *face;
     struct Spring spring;
-    Edge(Particle *startParticle, Face *face, double l0){
-        this->startParticle = startParticle;
-        this->next = NULL;
-        this->prev = NULL;
-        this->twin = NULL;
-        this->face = face;
-        this->spring = Spring(l0);
-    }
-    Edge(Particle *startParticle, Face *face){
-        this->startParticle = startParticle;
-        this->next = NULL;
-        this->prev = NULL;
-        this->twin = NULL;
-        this->face = face;
-        this->spring = Spring();
-    }
-    Edge(){
-        this->startParticle = NULL;
-        this->next = NULL;
-        this->prev = NULL;
-        this->twin = NULL;
-        this->face = NULL;
-        this->spring = Spring();
-    }
+    Edge(Particle *startParticle, Face *face);
+    Edge();
+    void addForce();
 };
 
 //Face stores;
@@ -93,22 +43,9 @@ struct Face{
     struct Edge *edge;
     int indices[3];
     bool reMeshed = false;
-    Face(int a, int b, int c, bool isRemeshed = true){
-        indices[0] = a;
-        indices[1] = b;
-        indices[2] = c;
-        reMeshed = isRemeshed;
-        edge = NULL;
-    }
-    void setFace(int a, int b, int c){
-        indices[0] = a;
-        indices[1] = b;
-        indices[2] = c;
-        reMeshed = true;
-    }
-    Face(){
-        edge = NULL;
-    }
+    Face(int a, int b, int c, bool isRemeshed = true);
+    void setFace(int a, int b, int c);
+    Face();
 };
 
 class Particle {
@@ -127,7 +64,13 @@ class Particle {
         Edge* edge;
         bool isFixed;           //Flag to check if the particle is fixed or not
         Particle(vec3 pos, double mass = DEFAULT_MASS);
+        Particle(vec3 pos, vec3 initPos, double mass = DEFAULT_MASS);
         Particle(vec3 pos, Edge* e, double mass = DEFAULT_MASS);
+
+        vector<Particle*> getNeighbors();
+
+        //Storing the initial position of the particle 
+        vec3 initPos; 
 
         //Updating the particle
         void update(double dt);
@@ -136,5 +79,10 @@ class Particle {
         double offset = 0.0f;
 
 };
+
+//Static helper functions 
+vec3 getInitPosAtPoint(Particle* p);
+vec3 getInitPosAtEdge(Edge* e, vec3 pos);
+vec3 getInitPosAtFace(Face* f, vec3 pos);
 
 #endif

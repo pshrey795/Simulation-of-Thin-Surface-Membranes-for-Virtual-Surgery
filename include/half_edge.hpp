@@ -29,7 +29,7 @@ class HalfEdge {
         vector<vector<int>> adjList;
     
         //Dynamic information of the particles
-        vector<Spring> springs;
+        vector<Spring> ghostSprings;
 
         //Constructor 
         HalfEdge();
@@ -62,9 +62,8 @@ class HalfEdge {
         void reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> nextIntPt, Particle* &lastVertex, Edge* &leftCrossEdge, Edge* &rightCrossEdge, Edge* &leftSideEdge, Edge* &rightSideEdge, vec3 normal);
 
         //Updating the mesh
-        vec3 calculateSpringForce(Spring s); 
-        vec3 calculateSpringForce(Spring s, Particle* p0, Particle* p1);
         void updateMesh(float dt);
+        void updateGhostSprings();
 
     private:
         //Helper functions for checking intersection
@@ -76,7 +75,6 @@ class HalfEdge {
 
         //Book-keeping
         void resetForce();
-        void store();
 
 };
 
