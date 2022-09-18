@@ -5,6 +5,10 @@ bool double_eq(double a, double b){
     return (abs(a-b) <= 0.01f);
 }
 
+bool double_gt(double a, double b){
+    return (a-b > 0.01f);
+}
+
 long long factorial(int n){
     long long res = 1;
     for(int i=1;i<=n;i++){

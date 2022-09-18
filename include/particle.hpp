@@ -81,8 +81,7 @@ class Particle {
 };
 
 //Static helper functions 
-vec3 getInitPosAtPoint(Particle* p);
-vec3 getInitPosAtEdge(Edge* e, vec3 pos);
-vec3 getInitPosAtFace(Face* f, vec3 pos);
+
+
 
 #endif

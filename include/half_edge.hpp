@@ -73,6 +73,11 @@ class HalfEdge {
         vector<int> IntersectingEdges();
         vector<tuple<vec3,int,int>> IntersectingVertices(vector<int> edges);
 
+        //Helper functions for interpolation
+        vec3 getInitPosAtPoint(Particle* p);
+        vec3 getInitPosAtEdge(Edge* e, vec3 pos);
+        vec3 getInitPosAtFace(Face* f, vec3 pos);
+
         //Book-keeping
         void resetForce();
 

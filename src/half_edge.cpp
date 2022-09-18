@@ -286,28 +286,32 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
     Edge* newSideEdgeLeft;
     Edge* newSideEdgeRight;
     
+    cout << lastType << " " << currentType << " " << nextType << endl;
+
     //Creating new vertices and edges or using an existing Particle depending on the type of intersection point
     if(currentType == 0){
         //Intersection point is already a Particle of the mesh
         newParticleLeft = this->particle_list[get<2>(intPt)];
         vec3 oldPos = newParticleLeft->position;
         vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
-        newParticleRight = new Particle(oldPos, newInitPos);
+        newParticleLeft->position = oldPos - normal * EPSILON;
+        newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
         this->particle_list.push_back(newParticleRight);
     }else if(currentType == 1){
         //Intersection point is on an edge of the mesh
         if(first){
             vec3 oldPos = get<0>(intPt);
             vec3 newInitPos = getInitPosAtEdge(this->edge_list[get<2>(intPt)], oldPos);
-            newParticleLeft = new Particle(oldPos, newInitPos);
-            newParticleRight = new Particle(oldPos, newInitPos);
+            newParticleLeft = new Particle(oldPos - normal * EPSILON, newInitPos);
+            newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
             this->particle_list.push_back(newParticleLeft);
         }else{
             newParticleLeft = lastParticle;
             vec3 oldPos = lastParticle->position;
             newParticleLeft->position = oldPos;
             vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
-            newParticleRight = new Particle(oldPos, newInitPos);
+            newParticleLeft->position = oldPos - normal * EPSILON;
+            newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
         }
         this->particle_list.push_back(newParticleRight);
     }else{
@@ -321,7 +325,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
             vec3 oldPos = lastParticle->position;
             newParticleLeft->position = oldPos;
             vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
-            newParticleRight = new Particle(oldPos, newInitPos);
+            newParticleLeft->position = oldPos - normal * EPSILON;
+            newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
         }
         this->particle_list.push_back(newParticleRight);
     }
@@ -516,7 +521,6 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
             }else{
 
             }
-
         }else if(currentType == 1){
             Edge* intersectingEdge = this->edge_list[get<2>(intPt)];
             if(intersectingEdge->face == NULL){
@@ -801,14 +805,18 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                 }
 
                 //Finding the face which contains the current intersection point
+                Face* currentFace;
                 while(true){
-                    Face* currentFace = currentEdge->face;
+                    currentFace = currentEdge->face;
                     if(isInside(currentFace, get<0>(intPt))){
                         break;
                     }else{
                         currentEdge = currentEdge->prev->twin;
                     }
                 }
+
+                vec3 nextInitPos = getInitPosAtFace(currentFace, get<0>(intPt));
+                newParticleLeft->initPos = nextInitPos;
 
                 //Edge to edge relations
                 newCrossEdgeLeft = new Edge();
@@ -916,10 +924,14 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                 if(!isInside(currentEdge->face, get<0>(intPt))){
                     currentEdge = currentEdge->twin;
                 }
+                Face* currentFace = currentEdge->face;
+                vec3 newInitPos = getInitPosAtFace(currentFace, get<0>(intPt));
+                newParticleLeft->initPos = newInitPos;
+
                 //Adding a new Particle on the opposite edge
                 vec3 newPos = get<0>(nextIntPt);
                 Edge* nextEdge = this->edge_list[get<2>(nextIntPt)];
-                vec3 newInitPos = getInitPosAtEdge(nextEdge, newPos);
+                newInitPos = getInitPosAtEdge(nextEdge, newPos);
                 newParticle = new Particle(newPos, newInitPos);
                 int newIndex = this->particle_list.size();
                 this->particle_list.push_back(newParticle);
@@ -1273,14 +1285,17 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                     }
 
                     //Finding the face which contains the next intersection point
+                    Face* currentFace;
                     while(true){
-                        Face* currentFace = currentEdge->face;
+                        currentFace = currentEdge->face;
                         if(isInside(currentFace, get<0>(nextIntPt))){
                             break;
                         }else{
                             currentEdge = currentEdge->prev->twin;
                         }
                     }
+                    vec3 newInitPos = getInitPosAtFace(currentFace, get<0>(nextIntPt));
+                    newParticle->initPos = newInitPos;
 
                     //Resigning pointers of the last re-meshing operation for data structure consistency
                     Edge* currentCrossEdge = rightCrossEdge;
@@ -1690,6 +1705,9 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
 
                     rightCrossEdge->startParticle = newParticleRight;
                     rightSideEdge->twin->startParticle = newParticleRight;
+
+                    vec3 newInitPos = getInitPosAtFace(intersectingFace, get<0>(nextIntPt));
+                    newParticle->initPos = newInitPos;
 
                     //Edge to edge relations
                     newCrossEdgeLeft = new Edge();
@@ -2213,14 +2231,17 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                     }
 
                     //Finding the face which contains the next intersection point
+                    Face* currentFace;
                     while(true){
-                        Face* currentFace = currentEdge->face;
+                        currentFace = currentEdge->face;
                         if(isInside(currentFace, get<0>(nextIntPt))){
                             break;
                         }else{
                             currentEdge = currentEdge->prev->twin;
                         }
                     }
+                    vec3 newInitPos = getInitPosAtFace(currentFace, get<0>(nextIntPt));
+                    newParticle->initPos = newInitPos;
 
                     //Resigning pointers of the last re-meshing operation for data structure consistency
                     Edge* currentCrossEdge = rightCrossEdge;
@@ -2628,6 +2649,9 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                     //Last: Edge, Current: Edge, Next: Face
                     newParticle = this->particle_list[get<2>(nextIntPt)];
                     int newIndex = get<2>(nextIntPt);
+
+                    vec3 newInitPos = getInitPosAtFace(intersectingFace, get<0>(nextIntPt));
+                    newParticle->initPos = newInitPos;
 
                     rightCrossEdge->startParticle = newParticleRight;
                     rightSideEdge->twin->startParticle = newParticleRight;
@@ -3168,14 +3192,17 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                     }
 
                     //Finding the face which contains the next intersection point
+                    Face* currentFace;
                     while(true){
-                        Face* currentFace = currentEdge->face;
+                        currentFace = currentEdge->face;
                         if(isInside(currentFace, get<0>(nextIntPt))){
                             break;
                         }else{
                             currentEdge = currentEdge->prev->twin;
                         }
                     }
+                    vec3 newInitPos = getInitPosAtFace(currentFace,get<0>(nextIntPt));
+                    newParticle->initPos = newInitPos;
 
                     //Resigning pointers of the last re-meshing operation for data structure consistency
                     Edge* currentCrossEdge = rightCrossEdge;
@@ -3580,6 +3607,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                     //Last: Face, Current: Edge, Next: Face
                     newParticle = this->particle_list[get<2>(nextIntPt)];
                     int newIndex = get<2>(nextIntPt);
+                    vec3 newInitPos = getInitPosAtFace(intersectingFace, get<0>(nextIntPt));
+                    newParticle->initPos = newInitPos;
 
                     rightCrossEdge->startParticle = newParticleRight;
                     rightSideEdge->twin->startParticle = newParticleRight;
@@ -3716,6 +3745,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
     rightCrossEdge = newCrossEdgeRight;
     leftSideEdge = newSideEdgeLeft;
     rightSideEdge = newSideEdgeRight;
+
+    updateGhostSprings();
 }
 
 void HalfEdge::resetForce(){
@@ -3754,4 +3785,42 @@ void HalfEdge::updateGhostSprings(){
             ghostSprings.push_back(Spring(p1, p2));
         }
     }
+}
+
+vec3 HalfEdge::getInitPosAtPoint(Particle* p){
+    return p->initPos;
+}
+
+vec3 HalfEdge::getInitPosAtEdge(Edge* e, vec3 pos){
+    vec3 ip1 = e->startParticle->initPos;
+    vec3 ip2 = e->twin->startParticle->initPos;
+    vec3 p1 = e->startParticle->position;
+    vec3 p2 = e->twin->startParticle->position;
+
+    //Linear interpolation in the rest grid
+    double t = (pos - p1).norm() / (p2 - p1).norm(); 
+    return (1 - t) * ip1 + t * ip2;
+}
+
+vec3 HalfEdge::getInitPosAtFace(Face* f, vec3 pos){
+    Particle* a = particle_list[f->indices[0]];
+    Particle* b = particle_list[f->indices[1]];
+    Particle* c = particle_list[f->indices[2]];
+    vec3 ip1 = a->initPos;
+    vec3 ip2 = b->initPos;
+    vec3 ip3 = c->initPos;
+    vec3 p1 = a->position;
+    vec3 p2 = b->position;
+    vec3 p3 = c->position;
+
+    //Barycentric interpolation in the rest grid
+    double A = triArea(p1, p2, p3);
+    double Au = triArea(pos, p2, p3);
+    double Av = triArea(p1, pos, p3);
+    double Aw = triArea(p1, p2, pos);
+    double u = Au / A;
+    double v = Av / A;
+    double w = Aw / A;
+
+    return u * ip1 + v * ip2 + w * ip3;
 }

@@ -20,6 +20,7 @@ using namespace Eigen;
 
 //Common Auxiliary Functions
 bool double_eq(double a, double b);
+bool double_gt(double a, double b);
 long long factorial(int n);
 double C(int n, int r);
 double power(double x, int n);

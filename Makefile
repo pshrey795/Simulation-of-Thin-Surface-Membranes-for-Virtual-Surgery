@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS =-g -O3 -std=c++17 -lGL -lGLU -lglfw -lassimp
+CFLAGS = -g -O3 -std=c++17 -lGL -lGLU -lglfw -lassimp
 MODE = 0
 
 run: simulation

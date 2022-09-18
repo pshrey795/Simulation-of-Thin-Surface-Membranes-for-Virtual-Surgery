@@ -185,17 +185,3 @@ Face::Face(int a, int b, int c, bool isRemeshed){
     reMeshed = isRemeshed;
     edge = NULL;
 }
-
-//Static helper functions 
-vec3 getInitPosAtPoint(Particle* p){
-    return p->initPos;
-}
-
-vec3 getInitPosAtEdge(Edge* e, vec3 pos){
-    vec3 ip1 = e->startParticle->initPos;
-    vec3 ip2 = e->twin->startParticle->initPos;
-    vec3 p1 = e->startParticle->position;
-    vec3 p2 = e->twin->startParticle->position;
-    double t = (pos - p1).norm() / (p2 - p1).norm(); 
-    return (1 - t) * ip1 + t * ip2;
-}

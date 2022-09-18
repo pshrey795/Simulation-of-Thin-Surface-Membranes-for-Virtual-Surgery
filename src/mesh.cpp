@@ -2,16 +2,16 @@
 
 //Mesh constructor
 Mesh::Mesh(){                       
+    //Using a sample mesh
     upVec = vec3(0,0,1);
 
     vector<vec3> vertices;
     vector<unsigned int> indices;
-    vector<bool> clamp;
- 
-    //Sample Mesh 1: M * N rectangular grid 
+    vector<bool> clamp; 
+
     for(int i = 0;i < 5;i++){
         for(int j = 0;j < 5;j++){
-            vertices.push_back(vec3(2 * i - 4,2 * j - 4,0));
+            vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
             if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
                 clamp.push_back(true);
             }else{
@@ -31,24 +31,6 @@ Mesh::Mesh(){
         }
     }
 
-    // Sample Mesh 2: A single grid cell
-    // vertices.push_back(vec3(2,2,0));
-    // vertices.push_back(vec3(6,2,0));
-    // vertices.push_back(vec3(2,6,0));
-    // vertices.push_back(vec3(6,6,0));
-
-    // indices.push_back(0);
-    // indices.push_back(1);
-    // indices.push_back(2);
-    // indices.push_back(1);
-    // indices.push_back(3);
-    // indices.push_back(2);
-
-    // clamp.push_back(true);
-    // clamp.push_back(true);
-    // clamp.push_back(false);
-    // clamp.push_back(false);
-
     this->mesh = new HalfEdge(vertices, indices, clamp);
 }
 
@@ -61,21 +43,24 @@ Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
 void Mesh::update(float dt){
     //Update the mesh
     count = (count + 1) % 2;
-    if(isPlaying && count == 0){
-        if(currIntersectIdx < intersectPts.size()){
-            if(currIntersectIdx == 0){
-                this->mesh->reMesh(intersectPts[currIntersectIdx], make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1), intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
-            }else if(currIntersectIdx == intersectPts.size()-1){
-                this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1), vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+    if(isPlaying){
+        if(count == 0){
+            if(currIntersectIdx < intersectPts.size()){
+                if(currIntersectIdx == 0){
+                    this->mesh->reMesh(intersectPts[currIntersectIdx], make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1), intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                }else if(currIntersectIdx == intersectPts.size()-1){
+                    this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1), vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                }else{
+                    this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                }
+                currIntersectIdx++;
             }else{
-                this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                isPlaying = false;
             }
-            currIntersectIdx++;
-        }else{
-            isPlaying = false;
         }
+    }else{
+        this->mesh->updateMesh(dt);
     }
-    this->mesh->updateMesh(dt);
 }
 
 //Setting up the path for cut/tear
@@ -83,17 +68,11 @@ void Mesh::setupPath(){
     //Custom path
     currentPath = new Path();
     vector<vec3> inputPts;
-    vector<vec3> inputPts2;
-    inputPts.push_back(vec3(3.234, 13.725, 0));
-    inputPts.push_back(vec3(7.345, 21.345, 0));
-    inputPts.push_back(vec3(10.237, 21.123, 0));
-    inputPts.push_back(vec3(14.334, 13.721, 0));
+    inputPts.push_back(vec3(-3.226, -1.226, 0));
+    inputPts.push_back(vec3(-1.47, 3.435, 0));
+    inputPts.push_back(vec3(1.47, 3.435, 0));
+    inputPts.push_back(vec3(3.226, -1.226, 0));
     currentPath->addCurve(inputPts);
-    inputPts2.push_back(vec3(14.334, 13.721, 0));
-    inputPts2.push_back(vec3(18.234, 6.43, 0));
-    inputPts2.push_back(vec3(20.34, 5.77, 0));
-    inputPts2.push_back(vec3(23.237, 13.823, 0));
-    currentPath->addCurve(inputPts2);
 
     //Setting up the intersection points
     vec3 startPoint = this->currentPath->lastPoint;
@@ -117,6 +96,8 @@ void Mesh::setupPath(){
         isFirst = false;
     }
     removeDuplicates(this->intersectPts);
+
+    currIntersectIdx = 0;
 }
 
 //Mesh Process Input
