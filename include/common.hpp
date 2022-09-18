@@ -12,6 +12,14 @@
 #include <GL/glu.h>
 #endif
 
+#define DEFAULT_MASS 1.0f
+#define DEFAULT_DENISTY 0.35f
+#define DEFAULT_STIFFNESS 7.0f
+#define DEFAULT_DAMPING 3.0f
+#define EPSILON 0.04
+#define DELTA 0.01
+#define GRAVITY vec3(0.0f, 0.0f, -9.8f)
+
 typedef Eigen::Vector2f vec2;
 typedef Eigen::Vector3f vec3;
 typedef Eigen::Matrix<double, 3, 3> mat3;

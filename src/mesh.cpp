@@ -58,7 +58,9 @@ void Mesh::update(float dt){
                 isPlaying = false;
             }
         }
-    }else{
+    }
+    
+    if(activatePhysics){
         this->mesh->updateMesh(dt);
     }
 }
@@ -68,6 +70,12 @@ void Mesh::setupPath(){
     //Custom path
     currentPath = new Path();
     vector<vec3> inputPts;
+    // //Straight Cut
+    // inputPts.push_back(vec3(-3.5, -3, 0));
+    // inputPts.push_back(vec3(-1.5, -1, 0));
+    // inputPts.push_back(vec3(1.5, 1, 0));
+    // inputPts.push_back(vec3(2.5, 3, 0));
+    //Curved Cut
     inputPts.push_back(vec3(-3.226, -1.226, 0));
     inputPts.push_back(vec3(-1.47, 3.435, 0));
     inputPts.push_back(vec3(1.47, 3.435, 0));
@@ -107,6 +115,10 @@ void Mesh::processInput(Window &window){
         if(!isPlaying){
             isPlaying = true;
             setupPath();
+        }
+    }else if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
+        if(!activatePhysics){
+            activatePhysics = true;
         }
     }
 }

@@ -15,6 +15,7 @@ void Path::addCurve(vector<vec3> inputPts){
 }
 void Path::updatePath(){
     if(currentCurve < size){
+        // this->currParamVal += 1.5f;
         this->currParamVal += 0.20f;
         if(double_gt(this->currParamVal,1.0f)){
             this->lastPoint = this->curves[currentCurve]->getPoint(1.0f);

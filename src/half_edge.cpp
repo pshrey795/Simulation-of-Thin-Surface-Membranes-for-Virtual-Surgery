@@ -95,6 +95,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
     }
 
     updateGhostSprings();
+    redistributeMass();
 }
 
 //Constructor of Half Edge data structure from a list of vertices and faces
@@ -193,6 +194,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
     }
 
     updateGhostSprings();
+    redistributeMass();
 }
 
 //Intersection with a plane
@@ -3747,6 +3749,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
     rightSideEdge = newSideEdgeRight;
 
     updateGhostSprings();
+    redistributeMass();
 }
 
 void HalfEdge::resetForce(){
@@ -3787,6 +3790,23 @@ void HalfEdge::updateGhostSprings(){
     }
 }
 
+void HalfEdge::redistributeMass(){
+    for(int i=0;i<particle_list.size();i++){
+        particle_list[i]->m = 0.0f;
+    }
+    for(int i=0;i<face_list.size();i++){
+        Face* f = face_list[i];
+        Particle* p1 = particle_list[f->indices[0]];
+        Particle* p2 = particle_list[f->indices[1]];
+        Particle* p3 = particle_list[f->indices[2]];
+        double newMass = (DEFAULT_DENISTY * triArea(p1->initPos, p2->initPos, p3->initPos))/3.0f;
+        p1->m += newMass;
+        p2->m += newMass;
+        p3->m += newMass;
+    }
+}
+
+//Pos to InitPos
 vec3 HalfEdge::getInitPosAtPoint(Particle* p){
     return p->initPos;
 }
@@ -3823,4 +3843,43 @@ vec3 HalfEdge::getInitPosAtFace(Face* f, vec3 pos){
     double w = Aw / A;
 
     return u * ip1 + v * ip2 + w * ip3;
+}
+
+//InitPos to Pos
+vec3 HalfEdge::getPosAtPoint(Particle* p){
+    return p->position;
+}
+
+vec3 HalfEdge::getPosAtEdge(Edge* e, vec3 pos){
+    vec3 ip1 = e->startParticle->initPos;
+    vec3 ip2 = e->twin->startParticle->initPos;
+    vec3 p1 = e->startParticle->position;
+    vec3 p2 = e->twin->startParticle->position;
+
+    //Linear interpolation in the rest grid
+    double t = (pos - ip1).norm() / (ip2 - ip1).norm(); 
+    return (1 - t) * p1 + t * p2;
+}
+
+vec3 HalfEdge::getPosAtFace(Face* f, vec3 pos){
+    Particle* a = particle_list[f->indices[0]];
+    Particle* b = particle_list[f->indices[1]];
+    Particle* c = particle_list[f->indices[2]];
+    vec3 ip1 = a->initPos;
+    vec3 ip2 = b->initPos;
+    vec3 ip3 = c->initPos;
+    vec3 p1 = a->position;
+    vec3 p2 = b->position;
+    vec3 p3 = c->position;
+
+    //Barycentric interpolation in the rest grid
+    double A = triArea(ip1, ip2, ip3);
+    double Au = triArea(pos, ip2, ip3);
+    double Av = triArea(ip1, pos, ip3);
+    double Aw = triArea(ip1, ip2, pos);
+    double u = Au / A;
+    double v = Av / A;
+    double w = Aw / A;
+
+    return u * p1 + v * p2 + w * p3;
 }

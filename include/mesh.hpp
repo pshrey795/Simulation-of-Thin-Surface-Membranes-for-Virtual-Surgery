@@ -20,6 +20,7 @@ class Mesh {
 
         //Animation Parameters
         bool isPlaying = false;     
+        bool activatePhysics = false;
         int count = 0;                  //Frame counter to control speed of animation 
         double t = 0;                   //Time counter 
 

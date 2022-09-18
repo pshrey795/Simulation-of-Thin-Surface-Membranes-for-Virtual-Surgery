@@ -126,10 +126,10 @@ void Spring::addForce(){
 
     //Spring force
     double restLength = (p1->initPos - p2->initPos).norm();
-    double springForce = ks * ((length / restLength) - 1);
+    double springForce = ks * (((length + DELTA) / (restLength + DELTA)) - 1);
 
     //Damping force
-    double dampForce = kd * ((velDiff.dot(diff.normalized())) / (restLength));
+    double dampForce = kd * ((velDiff.dot(diff.normalized()) + DELTA) / (restLength + DELTA));
 
     //Net force
     vec3 netForce = (springForce + dampForce) * diff.normalized();

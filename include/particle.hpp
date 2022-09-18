@@ -2,10 +2,6 @@
 #define PARTICLE_HPP
 
 #include "common.hpp"
-#define DEFAULT_MASS 1.0f
-#define DEFAULT_STIFFNESS 10.0f
-#define DEFAULT_DAMPING 5.0f
-#define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
 using namespace std; 
 
@@ -51,13 +47,13 @@ struct Face{
 class Particle {
 
     private:
-        double m;               //Mass of the particle
         double invM;            //Inverse of mass of the particle to avoid repetitive divisions          
 
         //Updating force 
         vec3 calculateExternalForce();
 
     public:
+        double m;               //Mass of the particle
         vec3 position;
         vec3 velocity; 
         vec3 netForce;

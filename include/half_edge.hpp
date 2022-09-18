@@ -7,9 +7,6 @@
 using namespace std;
 using namespace Eigen;
 
-#define EPSILON 0.04
-#define DELTA 0.01
-
 struct Plane{
     vec3 origin;
     vec3 normal;
@@ -63,7 +60,6 @@ class HalfEdge {
 
         //Updating the mesh
         void updateMesh(float dt);
-        void updateGhostSprings();
 
     private:
         //Helper functions for checking intersection
@@ -77,9 +73,14 @@ class HalfEdge {
         vec3 getInitPosAtPoint(Particle* p);
         vec3 getInitPosAtEdge(Edge* e, vec3 pos);
         vec3 getInitPosAtFace(Face* f, vec3 pos);
+        vec3 getPosAtPoint(Particle* p);
+        vec3 getPosAtEdge(Edge* e, vec3 pos);
+        vec3 getPosAtFace(Face* f, vec3 pos);
 
-        //Book-keeping
+        //Internal updates of the mesh after every re triangulation operation 
         void resetForce();
+        void updateGhostSprings();
+        void redistributeMass();
 
 };
 
