@@ -33,6 +33,7 @@ class Mesh {
         int currIntersectIdx;
         vec3 upVec;                     //Vertical vector, to be decided from the instrument
         void setupPath();
+        void setupCut();
 
         //Storing intersection points of the path with the mesh 
         vector<tuple<vec3, int, int>> intersectPts;
@@ -40,8 +41,10 @@ class Mesh {
 
         //For processing the intersection points 
         void removeDuplicates(vector<tuple<vec3,int,int>> &vertices);
+        void removeFacePts(vector<tuple<vec3,int,int>> &vertices);
         vector<tuple<vec3, int, int>> filterAndSort(vector<tuple<vec3, int, int>> intersections, vec3 startPoint, vec3 endPoint, bool first);
-        
+        vector<tuple<vec3, int, int>> dirSort(vector<tuple<vec3, int, int>> intersections, Plane p);
+
         //Temporary pointers for book-keeping during remeshing
         Particle* vertexLast;
         Edge* crossEdgeLeft;

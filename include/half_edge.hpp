@@ -40,6 +40,7 @@ class HalfEdge {
         //3) int : index of the relevant data structure which stores the locality info
         // of the intersection point
         vector<tuple<vec3, int, int>> Intersect(Plane plane);
+        vector<tuple<vec3, int, int>> updateIntersectionPts(vector<tuple<vec3, int, int>> intersections);
 
         //Re Mesh
         //Intersection Record (point, type, edge of intersection) (Type 0: Vertex, Type 1: Edge, Type 2: Face)
@@ -61,13 +62,9 @@ class HalfEdge {
         //Updating the mesh
         void updateMesh(float dt);
 
-    private:
-        //Helper functions for checking intersection
+        //Helper functions for computations with triangles
         double triArea(vec3 a, vec3 b, vec3 c);
         bool isInside(Face* face, vec3 point);
-        void ParticleOffsets(Plane plane);
-        vector<int> IntersectingEdges();
-        vector<tuple<vec3,int,int>> IntersectingVertices(vector<int> edges);
 
         //Helper functions for interpolation
         vec3 getInitPosAtPoint(Particle* p);
@@ -76,6 +73,12 @@ class HalfEdge {
         vec3 getPosAtPoint(Particle* p);
         vec3 getPosAtEdge(Edge* e, vec3 pos);
         vec3 getPosAtFace(Face* f, vec3 pos);
+
+    private:
+        //Helper functions for checking intersection
+        void ParticleOffsets(Plane plane);
+        vector<int> IntersectingEdges();
+        vector<tuple<vec3,int,int>> IntersectingVertices(vector<int> edges);
 
         //Internal updates of the mesh after every re triangulation operation 
         void resetForce();

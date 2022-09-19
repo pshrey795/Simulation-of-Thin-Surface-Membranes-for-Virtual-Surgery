@@ -59,8 +59,7 @@ void Mesh::update(float dt){
             }
         }
     }
-    
-    if(activatePhysics){
+    if(activatePhysics && !isPlaying){
         this->mesh->updateMesh(dt);
     }
 }
@@ -104,6 +103,21 @@ void Mesh::setupPath(){
         isFirst = false;
     }
     removeDuplicates(this->intersectPts);
+    removeFacePts(this->intersectPts);
+    currIntersectIdx = 0;
+}
+
+void Mesh::setupCut(){
+    //Define a sample plane
+    Plane p(vec3(-5.0f, 7.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
+
+    //Get the intersection points
+    this->intersectPts = dirSort(this->mesh->Intersect(p), p);
+    removeDuplicates(this->intersectPts);
+
+    for(int i=0;i<intersectPts.size();i++){
+        normals.push_back(p.normal);
+    }
 
     currIntersectIdx = 0;
 }
@@ -115,6 +129,7 @@ void Mesh::processInput(Window &window){
         if(!isPlaying){
             isPlaying = true;
             setupPath();
+            // setupCut();
         }
     }else if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
         if(!activatePhysics){
@@ -138,6 +153,17 @@ void Mesh::removeDuplicates(vector<tuple<vec3,int,int>> &vertices){
     }
 }
 
+void Mesh::removeFacePts(vector<tuple<vec3, int, int>> &vertices){
+    int i = 1;
+    while(i < vertices.size() - 1){
+        if(get<1>(vertices[i]) == 2){
+            vertices.erase(vertices.begin()+i);
+        }else{
+            i++;
+        }
+    }
+}
+
 //Filter intersection points
 vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> intersections, vec3 startPoint, vec3 endPoint,bool first){
     vector<tuple<vec3,int,int>> filteredIntersections;
@@ -147,7 +173,15 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
     int currentSize = this->mesh->particle_list.size();
     if(first){
         this->mesh->particle_list.push_back(new Particle(startPoint));
-        filteredIntersections.push_back(make_tuple(startPoint,2,currentSize++));
+        int faceIndex;
+        for(int i=0;i<mesh->face_list.size();i++){
+            if(mesh->isInside(mesh->face_list[i],startPoint)){
+                faceIndex = i;
+                break;
+            }
+        }
+        vec3 newStartPoint = mesh->getPosAtFace(mesh->face_list[faceIndex],startPoint);
+        filteredIntersections.push_back(make_tuple(newStartPoint,2,currentSize++));
     }
     for(auto x : intersections){
         vec3 point = get<0>(x);
@@ -164,8 +198,29 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
     };
     sort(filteredIntersections.begin(),filteredIntersections.end(),directionSort);
     this->mesh->particle_list.push_back(new Particle(endPoint));
-    filteredIntersections.push_back(make_tuple(endPoint,2,currentSize++));
+    int faceIndex;
+        for(int i=0;i<mesh->face_list.size();i++){
+        if(mesh->isInside(mesh->face_list[i],endPoint)){
+            faceIndex = i;
+            break;
+        }
+    }
+    vec3 newEndPoint = mesh->getPosAtFace(mesh->face_list[faceIndex],endPoint);
+    filteredIntersections.push_back(make_tuple(newEndPoint,2,currentSize++));
+    // filteredIntersections = mesh->updateIntersectionPts(filteredIntersections);
     return filteredIntersections;
+}
+
+vector<tuple<vec3, int, int>> Mesh::dirSort(vector<tuple<vec3, int, int>> intersections, Plane p){
+    vec3 direction = get<0>(intersections[0]) - p.origin;
+    auto directionSort = [direction, p] (tuple<vec3, int, int> a, tuple<vec3, int, int> b) -> bool
+    {
+        double x = (get<0>(a) - p.origin).dot(direction);
+        double y = (get<0>(b) - p.origin).dot(direction);
+        return x <= y;  
+    };
+    sort(intersections.begin(), intersections.end(), directionSort);
+    return intersections;
 }
 
 //Rendering the mesh

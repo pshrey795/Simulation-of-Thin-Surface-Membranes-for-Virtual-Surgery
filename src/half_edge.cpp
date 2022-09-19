@@ -204,10 +204,27 @@ vector<tuple<vec3,int,int>> HalfEdge::Intersect(Plane plane){
     return IntersectingVertices(intersectingEdges);
 }
 
+vector<tuple<vec3, int, int>> HalfEdge::updateIntersectionPts(vector<tuple<vec3, int, int>> intersectionPts){
+    vector<tuple<vec3, int, int>> newIntersectionPts;
+    for(auto i : intersectionPts){
+        int iCode = get<1>(i);
+        if(iCode == 0){
+            vec3 newPt = getPosAtPoint(particle_list[get<2>(i)]);
+            newIntersectionPts.push_back(make_tuple(newPt, iCode, get<2>(i)));
+        }else if(iCode == 1){
+            vec3 newPt = getPosAtEdge(edge_list[get<2>(i)], get<0>(i));
+            newIntersectionPts.push_back(make_tuple(newPt, iCode, get<2>(i)));
+        }else{
+            newIntersectionPts.push_back(i);
+        }
+    }
+    return newIntersectionPts;
+}
+
 //Calculating offsets for each Particle from the plane
 void HalfEdge::ParticleOffsets(Plane plane){
     for(int i=0;i<particle_list.size();i++){
-        double newOffset = plane.normal.dot(particle_list[i]->position - plane.origin);
+        double newOffset = plane.normal.dot(particle_list[i]->initPos - plane.origin);
         particle_list[i]->offset = newOffset;
     }
 }
@@ -239,7 +256,7 @@ vector<tuple<vec3,int,int>> HalfEdge::IntersectingVertices(vector<int> edges){
     vector<tuple<vec3,int,int>> intersectingVertices;
     for(int i=0;i<particle_list.size();i++){
         if(abs(particle_list[i]->offset) < DELTA){
-            intersectingVertices.push_back(make_tuple(particle_list[i]->position,0,i));
+            intersectingVertices.push_back(make_tuple(particle_list[i]->initPos,0,i));
         }
     }
     for(auto idx : edges){
@@ -259,9 +276,9 @@ double HalfEdge::triArea(vec3 a, vec3 b, vec3 c){
     return abs(0.5 * (x.cross(y)).norm());
 }
 bool HalfEdge::isInside(Face* face, vec3 point){
-    vec3 a = this->particle_list[face->indices[0]]->position;
-    vec3 b = this->particle_list[face->indices[1]]->position;
-    vec3 c = this->particle_list[face->indices[2]]->position;
+    vec3 a = this->particle_list[face->indices[0]]->initPos;
+    vec3 b = this->particle_list[face->indices[1]]->initPos;
+    vec3 c = this->particle_list[face->indices[2]]->initPos;
     double A = this->triArea(a,b,c);
     double A1 = this->triArea(point,b,c);
     double A2 = this->triArea(point,a,c);
@@ -288,7 +305,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
     Edge* newSideEdgeLeft;
     Edge* newSideEdgeRight;
     
-    cout << lastType << " " << currentType << " " << nextType << endl;
+    cout << "(" << get<0>(intPt)[0] << "," << get<0>(intPt)[1] << "," << get<0>(intPt)[2] << ")" << " " << lastType << " " << currentType << " " << nextType << endl;
 
     //Creating new vertices and edges or using an existing Particle depending on the type of intersection point
     if(currentType == 0){
@@ -2855,6 +2872,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                     this->edge_list.push_back(newCrossEdgeRight);
                 }else if(nextType == 1){
                     //Last:Edge, Current: Face, Next: Edge
+
                     vec3 newPos = get<0>(nextIntPt);
                     Edge* nextEdge = this->edge_list[get<2>(nextIntPt)];
                     vec3 newInitPos = getInitPosAtEdge(nextEdge, newPos);
@@ -2970,6 +2988,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastInt
                     newEdge2->face = newFace;
                     newEdge3->face = newFace;
                     newEdge3->next->face = newFace;
+
+                    cout << "here5\n";
 
                     //Adding the edges/faces
                     this->edge_list.push_back(newEdge1);
