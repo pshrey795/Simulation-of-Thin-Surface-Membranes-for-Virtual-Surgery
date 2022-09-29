@@ -47,9 +47,11 @@ void Mesh::update(float dt){
         if(count == 0){
             if(currIntersectIdx < intersectPts.size()){
                 if(currIntersectIdx == 0){
-                    this->mesh->reMesh(intersectPts[currIntersectIdx], make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1), intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                    this->mesh->reMesh(intersectPts[currIntersectIdx], newIntPt, intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
                 }else if(currIntersectIdx == intersectPts.size()-1){
-                    this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1), vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                    this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], newIntPt, vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
                 }else{
                     this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
                 }

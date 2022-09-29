@@ -3824,6 +3824,9 @@ void HalfEdge::redistributeMass(){
         p2->m += newMass;
         p3->m += newMass;
     }
+    for(int i=0;i<particle_list.size();i++){
+        particle_list[i]->updateInvM();
+    }
 }
 
 //Pos to InitPos

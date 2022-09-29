@@ -41,9 +41,13 @@ void Particle::update(double dt){
     if(!this->isFixed){
         //Forward Euler(unstable)
         this->netForce += this->calculateExternalForce();
-        this->velocity += this->netForce * this->invM * dt;
+        this->velocity += this->netForce * dt * invM;
         this->position += this->velocity * dt;
     }
+}
+
+void Particle::updateInvM(){
+    this->invM = 1 / this->m;
 }
 
 vector<Particle*> Particle::getNeighbors(){

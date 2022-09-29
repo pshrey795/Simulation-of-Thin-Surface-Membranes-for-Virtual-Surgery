@@ -46,14 +46,13 @@ struct Face{
 
 class Particle {
 
-    private:
-        double invM;            //Inverse of mass of the particle to avoid repetitive divisions          
-
+    private:        
         //Updating force 
         vec3 calculateExternalForce();
 
     public:
         double m;               //Mass of the particle
+        double invM;            //Inverse mass of the particle
         vec3 position;
         vec3 velocity; 
         vec3 netForce;
@@ -70,6 +69,7 @@ class Particle {
 
         //Updating the particle
         void update(double dt);
+        void updateInvM();
 
         //For intersection purposes 
         double offset = 0.0f;
