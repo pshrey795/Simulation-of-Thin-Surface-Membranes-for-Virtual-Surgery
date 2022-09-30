@@ -133,8 +133,8 @@ void Mesh::processInput(Window &window){
     if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
         if(!isPlaying){
             isPlaying = true;
-            setupPath();
-            // setupCut();
+            // setupPath();
+            setupCut();
         }
     }else if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
         if(!activatePhysics){
@@ -248,6 +248,7 @@ void Mesh::renderMesh(){
 
 //Checking sanity of the half-edge data structure after every update
 bool Mesh::checkSanity(){
+    cout << "Checking sanity...\n";
     auto particles = this->mesh->particle_list;
     auto faces = this->mesh->face_list;
     auto edges = this->mesh->edge_list;
@@ -276,6 +277,8 @@ bool Mesh::checkSanity(){
         }
     }
 
+    cout << "Edge-Edge checks passed\n";
+
     //Edge-Face checks
     for(int i=0;i<faces.size();i++){
         Face* face = faces[i];
@@ -288,6 +291,8 @@ bool Mesh::checkSanity(){
         }
     }
 
+    cout << "Edge-Face checks passed\n";
+
     //Vertex-Edge checks
     for(int i=0;i<edges.size();i++){
         Edge* edge = edges[i];
@@ -298,21 +303,39 @@ bool Mesh::checkSanity(){
         if(currentEdge == edge){
             found = true;
         }else{
-            Edge* nextRightEdge = currentEdge->prev->twin;
-            if(nextRightEdge != NULL){
-                while(nextRightEdge != currentEdge){
-                    if(nextRightEdge == edge){
-                        found = true;
-                        break;
-                    }else{
-                        if(nextRightEdge->prev != NULL){
-                            nextRightEdge = nextRightEdge->prev->twin;
-                        }else{
+            if(currentEdge->prev != NULL){
+                Edge* nextRightEdge = currentEdge->prev->twin;
+                if(nextRightEdge != NULL){
+                    while(nextRightEdge != currentEdge){
+                        if(nextRightEdge == edge){
+                            found = true;
                             break;
+                        }else{
+                            if(nextRightEdge->prev != NULL){
+                                nextRightEdge = nextRightEdge->prev->twin;
+                            }else{
+                                break;
+                            }
+                        }   
+                    }
+                    if(!found && nextRightEdge != currentEdge){
+                        Edge* nextLeftEdge = currentEdge->twin->next;
+                        if(nextLeftEdge != NULL){
+                            while(nextLeftEdge != currentEdge){
+                                if(nextLeftEdge == edge){
+                                    found = true;
+                                    break;
+                                }else{
+                                    if(nextLeftEdge != NULL){
+                                        nextLeftEdge = nextLeftEdge->twin->next;
+                                    }else{
+                                        break;
+                                    }
+                                }   
+                            }
                         }
-                    }   
-                }
-                if(!found && nextRightEdge != currentEdge){
+                    }
+                }else{
                     Edge* nextLeftEdge = currentEdge->twin->next;
                     if(nextLeftEdge != NULL){
                         while(nextLeftEdge != currentEdge){
@@ -353,6 +376,8 @@ bool Mesh::checkSanity(){
         }
     }
 
+    cout << "Vertex-Edge checks passed\n";
+
     //Vertex-Face checks
     for(int i=0;i<faces.size();i++){
         Particle* p1 = particles[faces[i]->indices[0]];
@@ -365,6 +390,8 @@ bool Mesh::checkSanity(){
         }
 
     }
+
+    cout << "Vertex-Face checks passed\n";
 
     cout << "The mesh is correct!" << endl; 
     return true;
