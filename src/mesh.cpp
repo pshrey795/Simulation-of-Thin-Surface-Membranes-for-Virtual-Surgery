@@ -32,11 +32,13 @@ Mesh::Mesh(){
     }
 
     this->mesh = new HalfEdge(vertices, indices, clamp);
+    checkSanity();
 }
 
 Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
     //A mesh specified using Assimp 
     this->mesh = new HalfEdge(vertices, indices);
+    checkSanity();
 }
 
 //Mesh Update
@@ -55,6 +57,7 @@ void Mesh::update(float dt){
                 }else{
                     this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
                 }
+                checkSanity();
                 currIntersectIdx++;
             }else{
                 isPlaying = false;
@@ -241,4 +244,128 @@ void Mesh::renderMesh(){
         drawLine(v2,v3);
         drawLine(v3,v1);
     }
+}
+
+//Checking sanity of the half-edge data structure after every update
+bool Mesh::checkSanity(){
+    auto particles = this->mesh->particle_list;
+    auto faces = this->mesh->face_list;
+    auto edges = this->mesh->edge_list;
+    
+    //Edge-Edge checks
+    for(int i=0;i<edges.size();i++){
+        Edge* edge = edges[i];
+        Edge* twinEdge = edge->twin;
+        if(twinEdge->twin != edge){
+            cout << "Twin edge not set properly" << endl;
+            return false;
+        }
+        Edge* nextEdge = edge->next;
+        if(nextEdge != NULL){
+            if(nextEdge->prev != edge){
+                cout << "Next edge not set properly" << endl;
+                return false;
+            }
+        }
+        Edge* prevEdge = edge->prev;
+        if(prevEdge != NULL){
+            if(prevEdge->next != edge){
+                cout << "Prev edge not set properly" << endl;
+                return false;
+            }
+        }
+    }
+
+    //Edge-Face checks
+    for(int i=0;i<faces.size();i++){
+        Face* face = faces[i];
+        Edge* edge = face->edge;
+        Edge* nextEdge = edge->next;
+        Edge* prevEdge = edge->prev;
+        if(nextEdge->face != face || prevEdge->face != face || edge->face != face){
+            cout << "Face edge not set properly" << endl;
+            return false;
+        }
+    }
+
+    //Vertex-Edge checks
+    for(int i=0;i<edges.size();i++){
+        Edge* edge = edges[i];
+        bool found = false;
+        Particle* particle = edge->startParticle;
+        Edge* currentEdge = particle->edge;
+
+        if(currentEdge == edge){
+            found = true;
+        }else{
+            Edge* nextRightEdge = currentEdge->prev->twin;
+            if(nextRightEdge != NULL){
+                while(nextRightEdge != currentEdge){
+                    if(nextRightEdge == edge){
+                        found = true;
+                        break;
+                    }else{
+                        if(nextRightEdge->prev != NULL){
+                            nextRightEdge = nextRightEdge->prev->twin;
+                        }else{
+                            break;
+                        }
+                    }   
+                }
+                if(!found && nextRightEdge != currentEdge){
+                    Edge* nextLeftEdge = currentEdge->twin->next;
+                    if(nextLeftEdge != NULL){
+                        while(nextLeftEdge != currentEdge){
+                            if(nextLeftEdge == edge){
+                                found = true;
+                                break;
+                            }else{
+                                if(nextLeftEdge != NULL){
+                                    nextLeftEdge = nextLeftEdge->twin->next;
+                                }else{
+                                    break;
+                                }
+                            }   
+                        }
+                    }
+                }
+            }else{
+                Edge* nextLeftEdge = currentEdge->twin->next;
+                if(nextLeftEdge != NULL){
+                    while(nextLeftEdge != currentEdge){
+                        if(nextLeftEdge == edge){
+                            found = true;
+                            break;
+                        }else{
+                            if(nextLeftEdge != NULL){
+                                nextLeftEdge = nextLeftEdge->twin->next;
+                            }else{
+                                break;
+                            }
+                        }   
+                    }
+                }
+            }
+        }
+        if(!found){
+            cout << "Vertex edge not set properly" << endl;
+            return false;
+        }
+    }
+
+    //Vertex-Face checks
+    for(int i=0;i<faces.size();i++){
+        Particle* p1 = particles[faces[i]->indices[0]];
+        Particle* p2 = particles[faces[i]->indices[1]];
+        Particle* p3 = particles[faces[i]->indices[2]];
+        Edge* edge = faces[i]->edge;
+        if(edge->startParticle != p1 && edge->next->startParticle != p2 && edge->prev->startParticle != p3){
+            cout << "Face edge not set properly" << endl;
+            return false;
+        }
+
+    }
+
+    cout << "The mesh is correct!" << endl; 
+    return true;
 }

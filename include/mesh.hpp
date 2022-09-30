@@ -52,6 +52,9 @@ class Mesh {
         Edge* sideEdgeLeft;
         Edge* sideEdgeRight;
 
+        //To check sanity of the half edge data structure representing this mesh
+        bool checkSanity();
+
     public:
         Mesh();
         Mesh(vector<vec3> Vertices, vector<unsigned int> Indices);
