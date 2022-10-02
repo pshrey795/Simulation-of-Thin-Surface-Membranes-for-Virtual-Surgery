@@ -50,47 +50,40 @@ void Particle::updateInvM(){
     this->invM = 1 / this->m;
 }
 
-vector<Particle*> Particle::getNeighbors(){
-    vector<Particle*> res;
+vector<Edge*> Particle::getEdges(){
+    vector<Edge*> res;
     Edge* currentEdge = this->edge;
-    res.push_back(currentEdge->twin->startParticle);
-
-    //Traversing towards the right(counter clockwise)
+    res.push_back(currentEdge);
     if(currentEdge->prev != NULL){
-        Edge* rightEdge = currentEdge->prev->twin;
-        while(rightEdge != currentEdge){
-            res.push_back(rightEdge->twin->startParticle);
-            if(rightEdge->prev != NULL){
-                rightEdge = rightEdge->prev->twin;
+        Edge* nextRightEdge = currentEdge->prev->twin;
+        while(nextRightEdge != currentEdge){
+            res.push_back(nextRightEdge);
+            if(nextRightEdge->prev != NULL){
+                nextRightEdge = nextRightEdge->prev->twin;
             }else{
                 break;
             }
         }
-        if(rightEdge != currentEdge){
-            //Traversing towards the left(clockwise)
-            Edge* leftEdge = currentEdge->next->twin;
-            while(leftEdge != currentEdge){
-                if(leftEdge != NULL){
-                    res.push_back(leftEdge->twin->startParticle);
-                    leftEdge = leftEdge->twin->next;
+        if(nextRightEdge != currentEdge){
+            Edge* nextLeftEdge = currentEdge->twin->next;
+            while(nextLeftEdge != NULL){
+                res.push_back(nextLeftEdge);
+                nextLeftEdge = nextLeftEdge->twin->next;
+            }
+        }
+    }else{
+        Edge* nextLeftEdge = currentEdge->twin->next;
+        if(nextLeftEdge != NULL){
+            while(nextLeftEdge != currentEdge){
+                if(nextLeftEdge != NULL){
+                    res.push_back(nextLeftEdge);
+                    nextLeftEdge = nextLeftEdge->twin->next;
                 }else{
                     break;
                 }
             }
         }
-    }else{
-        //Traversing towards the left(clockwise)
-        Edge* leftEdge = currentEdge->next->twin;
-        while(leftEdge != currentEdge){
-            if(leftEdge != NULL){
-                res.push_back(leftEdge->twin->startParticle);
-                leftEdge = leftEdge->twin->next;
-            }else{
-                break;
-            }
-        }
     }
-
     return res; 
 }
 

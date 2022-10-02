@@ -62,7 +62,8 @@ class Particle {
         Particle(vec3 pos, vec3 initPos, double mass = DEFAULT_MASS);
         Particle(vec3 pos, Edge* e, double mass = DEFAULT_MASS);
 
-        vector<Particle*> getNeighbors();
+        //Getting all outgoing edges from the current particle
+        vector<Edge*> getEdges();
 
         //Storing the initial position of the particle 
         vec3 initPos; 

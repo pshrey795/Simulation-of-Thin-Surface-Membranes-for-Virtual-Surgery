@@ -9,36 +9,68 @@ Mesh::Mesh(){
     vector<unsigned int> indices;
     vector<bool> clamp; 
 
-    for(int i = 0;i < 5;i++){
-        for(int j = 0;j < 5;j++){
-            vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
-            if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
-                clamp.push_back(true);
-            }else{
-                clamp.push_back(false);
-            }
-        }
-    }
+    // // Sample mesh 1
+    // for(int i = 0;i < 5;i++){
+    //     for(int j = 0;j < 5;j++){
+    //         vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
+    //         if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
+    //             clamp.push_back(true);
+    //         }else{
+    //             clamp.push_back(false);
+    //         }
+    //     }
+    // }
 
-    for(int i = 0;i < 4;i++){
-        for(int j = 0;j < 4;j++){
-            indices.push_back(i*5+j);
-            indices.push_back((i+1)*5 + j);
-            indices.push_back((i+1)*5 + j+1);
-            indices.push_back(i*5+j);
-            indices.push_back((i+1)*5 + j+1);
-            indices.push_back(i*5 + j + 1);
-        }
-    }
+    // for(int i = 0;i < 4;i++){
+    //     for(int j = 0;j < 4;j++){
+    //         indices.push_back(i*5+j);
+    //         indices.push_back((i+1)*5 + j);
+    //         indices.push_back((i+1)*5 + j+1);
+    //         indices.push_back(i*5+j);
+    //         indices.push_back((i+1)*5 + j+1);
+    //         indices.push_back(i*5 + j + 1);
+    //     }
+    // }
 
-    this->mesh = new HalfEdge(vertices, indices, clamp);
+    //Sample mesh 2
+    vertices.push_back(vec3(-4,4,0));
+    vertices.push_back(vec3(0,4,0));
+    vertices.push_back(vec3(0,0,0));
+    vertices.push_back(vec3(0,-4,0));
+    vertices.push_back(vec3(4,-4,0));
+    vertices.push_back(vec3(4,0,0));
+    vertices.push_back(vec3(-4,0,0));
+
+    indices.push_back(0);
+    indices.push_back(2);
+    indices.push_back(1);
+    indices.push_back(0);
+    indices.push_back(6);
+    indices.push_back(2);
+    indices.push_back(2);
+    indices.push_back(3);
+    indices.push_back(4);
+    indices.push_back(2);
+    indices.push_back(4);
+    indices.push_back(5);
+    indices.push_back(2);
+    indices.push_back(6);
+    indices.push_back(3);
+    indices.push_back(2);
+    indices.push_back(5);
+    indices.push_back(1);
+
+    this->mesh = new HalfEdge(vertices, indices);  
+
     checkSanity();
+    cout << "\n\n\n";
 }
 
 Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
     //A mesh specified using Assimp 
     this->mesh = new HalfEdge(vertices, indices);
     checkSanity();
+    cout << "\n\n\n";
 }
 
 //Mesh Update
@@ -50,14 +82,18 @@ void Mesh::update(float dt){
             if(currIntersectIdx < intersectPts.size()){
                 if(currIntersectIdx == 0){
                     auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    this->mesh->reMesh(intersectPts[currIntersectIdx], newIntPt, intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    // this->mesh->reMesh(intersectPts[currIntersectIdx], newIntPt, intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    this->mesh->reMesh2(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
                 }else if(currIntersectIdx == intersectPts.size()-1){
                     auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], newIntPt, vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    // this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], newIntPt, vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    this->mesh->reMesh2(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
                 }else{
-                    this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    // this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
+                    this->mesh->reMesh2(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
                 }
                 checkSanity();
+                cout << "\n\n\n";
                 currIntersectIdx++;
             }else{
                 isPlaying = false;
@@ -75,15 +111,15 @@ void Mesh::setupPath(){
     currentPath = new Path();
     vector<vec3> inputPts;
     // //Straight Cut
-    // inputPts.push_back(vec3(-3.5, -3, 0));
-    // inputPts.push_back(vec3(-1.5, -1, 0));
-    // inputPts.push_back(vec3(1.5, 1, 0));
-    // inputPts.push_back(vec3(2.5, 3, 0));
+    inputPts.push_back(vec3(-3.5, -3, 0));
+    inputPts.push_back(vec3(-1.5, -1, 0));
+    inputPts.push_back(vec3(1.5, 1, 0));
+    inputPts.push_back(vec3(2.5, 3, 0));
     //Curved Cut
-    inputPts.push_back(vec3(-3.226, -1.226, 0));
-    inputPts.push_back(vec3(-1.47, 3.435, 0));
-    inputPts.push_back(vec3(1.47, 3.435, 0));
-    inputPts.push_back(vec3(3.226, -1.226, 0));
+    // inputPts.push_back(vec3(-3.226, -1.226, 0));
+    // inputPts.push_back(vec3(-1.47, 3.435, 0));
+    // inputPts.push_back(vec3(1.47, 3.435, 0));
+    // inputPts.push_back(vec3(3.226, -1.226, 0));
     currentPath->addCurve(inputPts);
 
     //Setting up the intersection points
@@ -114,7 +150,7 @@ void Mesh::setupPath(){
 
 void Mesh::setupCut(){
     //Define a sample plane
-    Plane p(vec3(-5.0f, 7.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
+    Plane p(vec3(-5.0f, 5.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
 
     //Get the intersection points
     this->intersectPts = dirSort(this->mesh->Intersect(p), p);
@@ -177,7 +213,6 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
     double upperBound = direction.dot(endPoint - startPoint);
     int currentSize = this->mesh->particle_list.size();
     if(first){
-        this->mesh->particle_list.push_back(new Particle(startPoint));
         int faceIndex;
         for(int i=0;i<mesh->face_list.size();i++){
             if(mesh->isInside(mesh->face_list[i],startPoint)){
@@ -186,6 +221,8 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
             }
         }
         vec3 newStartPoint = mesh->getPosAtFace(mesh->face_list[faceIndex],startPoint);
+        Particle* newParticle = new Particle(newStartPoint, startPoint); 
+        this->mesh->particle_list.push_back(newParticle);
         filteredIntersections.push_back(make_tuple(newStartPoint,2,currentSize++));
     }
     for(auto x : intersections){
@@ -293,90 +330,42 @@ bool Mesh::checkSanity(){
 
     cout << "Edge-Face checks passed\n";
 
-    //Vertex-Edge checks
-    for(int i=0;i<edges.size();i++){
-        Edge* edge = edges[i];
-        bool found = false;
-        Particle* particle = edge->startParticle;
-        Edge* currentEdge = particle->edge;
+    // //Vertex-Edge checks
+    // for(int i=0;i<edges.size();i++){
+    //     Edge* edge = edges[i];
+    //     bool found = false;
+    //     Particle* particle = edge->startParticle;
+    //     Edge* currentEdge = particle->edge;
+    //     auto edgeList = particle->getEdges();
+    //     for(int i=0;i<edgeList.size();i++){
+    //         if(edgeList[i] == edge){
+    //             found = true;
+    //             break;
+    //         }
+    //     }
+    //     if(!found){
+    //         cout << "Vertex edge not set properly: " << particle->position[0] << " " << particle->position[1] << endl;
+    //         return false;
+    //     }
+    // }
 
-        if(currentEdge == edge){
-            found = true;
-        }else{
-            if(currentEdge->prev != NULL){
-                Edge* nextRightEdge = currentEdge->prev->twin;
-                if(nextRightEdge != NULL){
-                    while(nextRightEdge != currentEdge){
-                        if(nextRightEdge == edge){
-                            found = true;
-                            break;
-                        }else{
-                            if(nextRightEdge->prev != NULL){
-                                nextRightEdge = nextRightEdge->prev->twin;
-                            }else{
-                                break;
-                            }
-                        }   
-                    }
-                    if(!found && nextRightEdge != currentEdge){
-                        Edge* nextLeftEdge = currentEdge->twin->next;
-                        if(nextLeftEdge != NULL){
-                            while(nextLeftEdge != currentEdge){
-                                if(nextLeftEdge == edge){
-                                    found = true;
-                                    break;
-                                }else{
-                                    if(nextLeftEdge != NULL){
-                                        nextLeftEdge = nextLeftEdge->twin->next;
-                                    }else{
-                                        break;
-                                    }
-                                }   
-                            }
-                        }
-                    }
-                }else{
-                    Edge* nextLeftEdge = currentEdge->twin->next;
-                    if(nextLeftEdge != NULL){
-                        while(nextLeftEdge != currentEdge){
-                            if(nextLeftEdge == edge){
-                                found = true;
-                                break;
-                            }else{
-                                if(nextLeftEdge != NULL){
-                                    nextLeftEdge = nextLeftEdge->twin->next;
-                                }else{
-                                    break;
-                                }
-                            }   
-                        }
-                    }
-                }
-            }else{
-                Edge* nextLeftEdge = currentEdge->twin->next;
-                if(nextLeftEdge != NULL){
-                    while(nextLeftEdge != currentEdge){
-                        if(nextLeftEdge == edge){
-                            found = true;
-                            break;
-                        }else{
-                            if(nextLeftEdge != NULL){
-                                nextLeftEdge = nextLeftEdge->twin->next;
-                            }else{
-                                break;
-                            }
-                        }   
-                    }
-                }
+    // cout << "Vertex-Edge checks passed\n";
+
+    //Edge-Vertex checks
+    for(int i=0;i<particles.size();i++){
+        Particle* particle = particles[i];
+        auto edgeList = particle->getEdges();
+        for(int j=0;j<edgeList.size();j++){
+            if(edgeList[j]->startParticle != particle){
+                cout << "Edge Vertex not set properly: " << endl;
+                cout << particle->position[0] << " " << particle->position[1] << endl;
+                cout << edgeList[j]->startParticle->position[0] << " " << edgeList[j]->startParticle->position[1] << endl;
+                return false;
             }
-        }
-        if(!found){
-            cout << "Vertex edge not set properly" << endl;
-            return false;
         }
     }
 
-    cout << "Vertex-Edge checks passed\n";
+    cout << "Edge-Vertex checks passed\n";
 
     //Vertex-Face checks
     for(int i=0;i<faces.size();i++){
