@@ -9,51 +9,45 @@ Mesh::Mesh(){
     vector<unsigned int> indices;
     vector<bool> clamp; 
 
-    // // Sample mesh 1
-    // for(int i = 0;i < 5;i++){
-    //     for(int j = 0;j < 5;j++){
-    //         vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
-    //         if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
-    //             clamp.push_back(true);
-    //         }else{
-    //             clamp.push_back(false);
-    //         }
-    //     }
-    // }
+    // Sample mesh 1
+    for(int i = 0;i < 5;i++){
+        for(int j = 0;j < 5;j++){
+            vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
+            if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
+                clamp.push_back(true);
+            }else{
+                clamp.push_back(false);
+            }
+        }
+    }
 
-    // for(int i = 0;i < 4;i++){
-    //     for(int j = 0;j < 4;j++){
-    //         indices.push_back(i*5+j);
-    //         indices.push_back((i+1)*5 + j);
-    //         indices.push_back((i+1)*5 + j+1);
-    //         indices.push_back(i*5+j);
-    //         indices.push_back((i+1)*5 + j+1);
-    //         indices.push_back(i*5 + j + 1);
-    //     }
-    // }
+    for(int i = 0;i < 4;i++){
+        for(int j = 0;j < 4;j++){
+            indices.push_back(i*5+j);
+            indices.push_back((i+1)*5 + j);
+            indices.push_back((i+1)*5 + j+1);
+            indices.push_back(i*5+j);
+            indices.push_back((i+1)*5 + j+1);
+            indices.push_back(i*5 + j + 1);
+        }
+    }
 
     //Sample mesh 2
-    vertices.push_back(vec3(-4,0,0));
-    vertices.push_back(vec3(0,4,0));
-    vertices.push_back(vec3(4,0,0));
-    vertices.push_back(vec3(0,-4,0));
-    vertices.push_back(vec3(0,0,0));
+    // vertices.push_back(vec3(-4,4,0));
+    // vertices.push_back(vec3(4,4,0));
+    // vertices.push_back(vec3(4,-4,0));
+    // vertices.push_back(vec3(-4,-4,0));
 
-    indices.push_back(0);
-    indices.push_back(4);
-    indices.push_back(1);
-    indices.push_back(4);
-    indices.push_back(2);
-    indices.push_back(1);
-    indices.push_back(0);
-    indices.push_back(3);
-    indices.push_back(4);
-    indices.push_back(3);
-    indices.push_back(2);
-    indices.push_back(4);
+    // indices.push_back(0);
+    // indices.push_back(3);
+    // indices.push_back(1);
+    // indices.push_back(3);
+    // indices.push_back(2);
+    // indices.push_back(1);
     
 
-    this->mesh = new HalfEdge(vertices, indices);  
+    this->mesh = new HalfEdge(vertices, indices, clamp);  
+    // this->mesh = new HalfEdge(vertices, indices);
 
     checkSanity();
     cout << "\n\n\n";
@@ -88,6 +82,8 @@ void Mesh::update(float dt){
                 checkSanity();
                 cout << "\n\n\n";
                 currIntersectIdx++;
+            }else{
+                isPlaying = false;
             }
         }
     }
@@ -141,7 +137,7 @@ void Mesh::setupPath(){
 
 void Mesh::setupCut(){
     //Define a sample plane
-    Plane p(vec3(-5.0f, 5.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
+    Plane p(vec3(-6.0f, 4.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
 
     //Get the intersection points
     this->intersectPts = dirSort(this->mesh->Intersect(p), p);
