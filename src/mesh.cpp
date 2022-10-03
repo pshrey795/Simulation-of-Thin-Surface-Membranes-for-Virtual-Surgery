@@ -34,31 +34,17 @@ Mesh::Mesh(){
 
     //Sample mesh 2
     vertices.push_back(vec3(-4,4,0));
-    vertices.push_back(vec3(0,4,0));
-    vertices.push_back(vec3(0,0,0));
-    vertices.push_back(vec3(0,-4,0));
-    vertices.push_back(vec3(4,-4,0));
-    vertices.push_back(vec3(4,0,0));
-    vertices.push_back(vec3(-4,0,0));
+    vertices.push_back(vec3(4,4,0));
+    vertices.push_back(vec3(2,-6,0));
+    vertices.push_back(vec3(-4,-4,0));
 
     indices.push_back(0);
-    indices.push_back(2);
-    indices.push_back(1);
-    indices.push_back(0);
-    indices.push_back(6);
-    indices.push_back(2);
-    indices.push_back(2);
     indices.push_back(3);
-    indices.push_back(4);
-    indices.push_back(2);
-    indices.push_back(4);
-    indices.push_back(5);
-    indices.push_back(2);
-    indices.push_back(6);
+    indices.push_back(1);
+    indices.push_back(1);
     indices.push_back(3);
     indices.push_back(2);
-    indices.push_back(5);
-    indices.push_back(1);
+    
 
     this->mesh = new HalfEdge(vertices, indices);  
 
@@ -157,6 +143,8 @@ void Mesh::setupCut(){
     removeDuplicates(this->intersectPts);
 
     for(int i=0;i<intersectPts.size();i++){
+        auto intPt = get<0>(intersectPts[i]);
+        // cout << intPt[0] << " " << intPt[1] << " " << intPt[2] << "\n";
         normals.push_back(p.normal);
     }
 
