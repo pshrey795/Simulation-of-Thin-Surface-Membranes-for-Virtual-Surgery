@@ -69,21 +69,18 @@ void Mesh::update(float dt){
             if(currIntersectIdx < intersectPts.size()){
                 if(currIntersectIdx == 0){
                     auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    // this->mesh->reMesh(intersectPts[currIntersectIdx], newIntPt, intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
-                    this->mesh->reMesh2(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
+                    this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
                 }else if(currIntersectIdx == intersectPts.size()-1){
                     auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    // this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], newIntPt, vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
-                    this->mesh->reMesh2(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
+                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
                 }else{
-                    // this->mesh->reMesh(intersectPts[currIntersectIdx], intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx+1], vertexLast, crossEdgeLeft, crossEdgeRight, sideEdgeLeft, sideEdgeRight, normals[currIntersectIdx]);
-                    this->mesh->reMesh2(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
+                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx]);
                 }
                 checkSanity();
                 cout << "\n\n\n";
                 currIntersectIdx++;
             }else{
-                isPlaying = false;
+                // isPlaying = false;
             }
         }
     }
@@ -97,7 +94,7 @@ void Mesh::setupPath(){
     //Custom path
     currentPath = new Path();
     vector<vec3> inputPts;
-    // //Straight Cut
+    //Straight Cut
     inputPts.push_back(vec3(-3.5, -3, 0));
     inputPts.push_back(vec3(-1.5, -1, 0));
     inputPts.push_back(vec3(1.5, 1, 0));
@@ -144,10 +141,16 @@ void Mesh::setupCut(){
     removeDuplicates(this->intersectPts);
 
     for(int i=0;i<intersectPts.size();i++){
-        auto intPt = get<0>(intersectPts[i]);
-        // cout << intPt[0] << " " << intPt[1] << " " << intPt[2] << "\n";
         normals.push_back(p.normal);
     }
+
+    // vec3 newVertex(3.5f, -1.0f, 0.0f);
+    // intersectPts.pop_back();
+    // intersectPts.push_back(make_tuple(newVertex, 2, 0));
+
+    // vec3 newVertex1(-3.5f, -1.0f, 0.0f);
+    // intersectPts.erase(intersectPts.begin());
+    // intersectPts.insert(intersectPts.begin(), make_tuple(newVertex1, 2, 0));
 
     currIntersectIdx = 0;
 }
@@ -164,6 +167,10 @@ void Mesh::processInput(Window &window){
     }else if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
         if(!activatePhysics){
             activatePhysics = true;
+        }
+    }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
+        if(isPlaying){
+            isPlaying = false;
         }
     }
 }
@@ -202,17 +209,7 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
     double upperBound = direction.dot(endPoint - startPoint);
     int currentSize = this->mesh->particle_list.size();
     if(first){
-        int faceIndex;
-        for(int i=0;i<mesh->face_list.size();i++){
-            if(mesh->isInside(mesh->face_list[i],startPoint)){
-                faceIndex = i;
-                break;
-            }
-        }
-        vec3 newStartPoint = mesh->getPosAtFace(mesh->face_list[faceIndex],startPoint);
-        Particle* newParticle = new Particle(newStartPoint, startPoint); 
-        this->mesh->particle_list.push_back(newParticle);
-        filteredIntersections.push_back(make_tuple(newStartPoint,2,currentSize++));
+        filteredIntersections.push_back(make_tuple(startPoint,2,currentSize++));
     }
     for(auto x : intersections){
         vec3 point = get<0>(x);
@@ -228,16 +225,7 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
         return x <= y;  
     };
     sort(filteredIntersections.begin(),filteredIntersections.end(),directionSort);
-    this->mesh->particle_list.push_back(new Particle(endPoint));
-    int faceIndex;
-        for(int i=0;i<mesh->face_list.size();i++){
-        if(mesh->isInside(mesh->face_list[i],endPoint)){
-            faceIndex = i;
-            break;
-        }
-    }
-    vec3 newEndPoint = mesh->getPosAtFace(mesh->face_list[faceIndex],endPoint);
-    filteredIntersections.push_back(make_tuple(newEndPoint,2,currentSize++));
+    filteredIntersections.push_back(make_tuple(endPoint,2,currentSize++));
     // filteredIntersections = mesh->updateIntersectionPts(filteredIntersections);
     return filteredIntersections;
 }
@@ -343,13 +331,15 @@ bool Mesh::checkSanity(){
     //Edge-Vertex checks
     for(int i=0;i<particles.size();i++){
         Particle* particle = particles[i];
-        auto edgeList = particle->getEdges();
-        for(int j=0;j<edgeList.size();j++){
-            if(edgeList[j]->startParticle != particle){
-                cout << "Edge Vertex not set properly: " << endl;
-                cout << particle->position[0] << " " << particle->position[1] << endl;
-                cout << edgeList[j]->startParticle->position[0] << " " << edgeList[j]->startParticle->position[1] << endl;
-                return false;
+        if(particle->edge != NULL){
+            auto edgeList = particle->getEdges();
+            for(int j=0;j<edgeList.size();j++){
+                if(edgeList[j]->startParticle != particle){
+                    cout << "Edge Vertex not set properly: " << endl;
+                    cout << particle->position[0] << " " << particle->position[1] << endl;
+                    cout << edgeList[j]->startParticle->position[0] << " " << edgeList[j]->startParticle->position[1] << endl;
+                    return false;
+                }
             }
         }
     }

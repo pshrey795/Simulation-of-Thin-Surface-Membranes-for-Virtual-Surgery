@@ -42,23 +42,6 @@ class HalfEdge {
         vector<tuple<vec3, int, int>> Intersect(Plane plane);
         vector<tuple<vec3, int, int>> updateIntersectionPts(vector<tuple<vec3, int, int>> intersections);
 
-        //Re Mesh
-        //Intersection Record (point, type, vertex/edge of intersection) (Type 0: Vertex, Type 1: Edge, Type 2: Face)
-        //Type -1 if last or first point
-
-        //1) Intersection Record of current point
-        //2) Intersection Record of last point
-        //3) Intersection Record of next point
-        //2) Vertex of the last intersection
-        //4) Left cross edge of the split of the last intersection point
-        //5) Right cross edge of the split of the last intersection point
-        //6) Left side edge of the split of the last intersection point
-        //7) Right side edge of the split of the last intersection point
-        //8) Direction of normal of plane for splitting
-        //Cross Edge: Edge between current intersection point and last intersection point
-        //Side Edge: Split edges on the edge of the current intersection point
-        void reMesh(tuple<vec3, int, int> intPt, tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> nextIntPt, Particle* &lastVertex, Edge* &leftCrossEdge, Edge* &rightCrossEdge, Edge* &leftSideEdge, Edge* &rightSideEdge, vec3 normal);
-
         //Alternate cutting algorithm 
         //Intersection Record (point, type, vertex/edge of intersection) (Type 0: Vertex, Type 1: Edge, Type 2: Face)
         //Type -1 if last or first point
@@ -67,7 +50,7 @@ class HalfEdge {
         //1) Intersection Record of the current point 
         //2) Intersection Record of the next point
         //3) Direction of normal of the plane of splitting
-        void reMesh2(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal);
+        void reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal);
 
         //Updating the mesh
         void updateMesh(float dt);

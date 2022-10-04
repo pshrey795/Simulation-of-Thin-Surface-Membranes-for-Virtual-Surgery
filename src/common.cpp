@@ -28,3 +28,14 @@ double power(double x, int n){
         return pow(x,n);
     }
 }
+
+//Overload << operator for vec2, vec3
+std::ostream& operator<<(std::ostream& os, const vec2& v){
+    os << "(" << v[0] << ", " << v[1] << ")";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const vec3& v){
+    os << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
+    return os;
+}

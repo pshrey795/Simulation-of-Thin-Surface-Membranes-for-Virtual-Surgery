@@ -33,4 +33,8 @@ long long factorial(int n);
 double C(int n, int r);
 double power(double x, int n);
 
+//Overload << operator for vec2, vec3
+std::ostream& operator<<(std::ostream& os, const vec2& v);
+std::ostream& operator<<(std::ostream& os, const vec3& v);
+
 #endif
