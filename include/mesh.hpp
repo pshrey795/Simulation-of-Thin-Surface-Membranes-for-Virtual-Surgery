@@ -53,6 +53,7 @@ class Mesh {
         Edge* sideEdgeRight;
 
         //To check sanity of the half edge data structure representing this mesh
+        bool debug;
         bool checkSanity();
 
     public:
@@ -60,6 +61,11 @@ class Mesh {
         Mesh(vector<vec3> Vertices, vector<unsigned int> Indices);
         void update(float dt);
         void processInput(Window &window);
+
+        //For rendering the mesh
+        bool drawRefMesh;
+        int drawMode;
+        int splitMode; 
         void renderMesh(); 
 
 };

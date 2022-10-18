@@ -296,7 +296,7 @@ bool HalfEdge::isInsidePos(Face* face, vec3 point){
     return (abs((A1 + A2 + A3) - A) < DELTA);
 }
 
-void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal){
+void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode){
     //Auxiliary variables
     int currentType = get<1>(intPt);
     int lastType = get<1>(lastIntPt);
@@ -312,21 +312,22 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
     int newIndexRight;
 
     //Creating new vertices and edges or using an existing Particle depending on the type of intersection point 
+    vec3 displacement = (1?(splitMode == 0):0) * EPSILON * normal;
     if(first){
         if(currentType == 0){
             newParticleLeft = this->particle_list[get<2>(intPt)];
             newIndexLeft = get<2>(intPt);
             vec3 oldPos = newParticleLeft->position;
             vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
-            newParticleLeft->position = oldPos - normal * EPSILON;
-            newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
+            newParticleLeft->position = oldPos - displacement;
+            newParticleRight = new Particle(oldPos + displacement, newInitPos);
             this->particle_list.push_back(newParticleRight);
             newIndexRight = n;
         }else if(currentType == 1){
             vec3 newInitPos = get<0>(intPt);
             vec3 oldPos = getPosAtEdge(this->edge_list[get<2>(intPt)], newInitPos);
-            newParticleLeft = new Particle(oldPos - normal * EPSILON, newInitPos);
-            newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
+            newParticleLeft = new Particle(oldPos - displacement, newInitPos);
+            newParticleRight = new Particle(oldPos + displacement, newInitPos);
             this->particle_list.push_back(newParticleLeft);
             this->particle_list.push_back(newParticleRight);
             newIndexLeft = n;
@@ -351,8 +352,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             newIndexLeft = get<2>(intPt);
             vec3 oldPos = newParticleLeft->position;
             vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
-            newParticleLeft->position = oldPos - normal * EPSILON;
-            newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
+            newParticleLeft->position = oldPos - displacement;
+            newParticleRight = new Particle(oldPos + displacement, newInitPos);
             this->particle_list.push_back(newParticleRight);
             newIndexRight = n;
         }
@@ -361,8 +362,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
         newIndexLeft = get<2>(intPt);
         vec3 oldPos = newParticleLeft->position;
         vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
-        newParticleLeft->position = oldPos - normal * EPSILON;
-        newParticleRight = new Particle(oldPos + normal * EPSILON, newInitPos);
+        newParticleLeft->position = oldPos - displacement;
+        newParticleRight = new Particle(oldPos + displacement, newInitPos);
         this->particle_list.push_back(newParticleRight);
         newIndexRight = n;
     }
@@ -1776,6 +1777,13 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             this->face_list.push_back(newFaceBot);
             this->face_list.push_back(newFaceTop);
         }
+    }
+
+    if(leftCrossEdge != NULL){
+        leftCrossEdge->isBoundary = true;
+    }
+    if(rightCrossEdge != NULL){
+        rightCrossEdge->isBoundary = true;
     }
 
     updateGhostSprings();

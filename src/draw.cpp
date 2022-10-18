@@ -8,7 +8,11 @@ void clear(vec3 c) {
 }
 
 void setColor(vec3 c) {
-    glColor3f(c[0], c[1], c[2]);
+    glColor4f(c[0], c[1], c[2], 1.0f);
+}
+
+void setColor(vec4 c){
+    glColor4f(c[0], c[1], c[2], c[3]);
 }
 
 void setPointSize(float s) {

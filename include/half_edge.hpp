@@ -50,7 +50,7 @@ class HalfEdge {
         //1) Intersection Record of the current point 
         //2) Intersection Record of the next point
         //3) Direction of normal of the plane of splitting
-        void reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal);
+        void reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode);
 
         //Updating the mesh
         void updateMesh(float dt);

@@ -15,7 +15,11 @@ class Model {
         Model();
         Model(string file_path);
         void update(float dt);
+        void setDrawMode(int drawMode);
+        void setSplitMode(int splitMode);
         void processInput(Window &window);
+        void activateRefMesh();
+        void deactivateRefMesh();
         void renderModel();
 
     private:

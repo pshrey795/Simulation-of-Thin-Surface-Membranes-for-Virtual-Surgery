@@ -26,6 +26,7 @@ struct Edge{
     struct Edge *twin;
     struct Face *face;
     struct Spring spring;
+    bool isBoundary;
     Edge(Particle *startParticle, Face *face);
     Edge();
     void addForce();

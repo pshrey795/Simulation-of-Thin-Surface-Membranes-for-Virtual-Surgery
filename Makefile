@@ -1,9 +1,11 @@
 CC = g++
 CFLAGS = -g -O3 -std=c++17 -lGL -lGLU -lglfw -lassimp
-MODE = 0
+M = 0
+DM = 0
+SM = 0
 
 run: simulation
-	./simulation $(MODE)
+	./simulation $(M) $(DM) $(SM)
 
 simulation: main.cpp src/*.cpp include/*.hpp
 	$(CC) -o simulation main.cpp src/*.cpp $(CFLAGS)

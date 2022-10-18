@@ -14,6 +14,30 @@ void Model::update(float dt){
     }
 }
 
+void Model::setDrawMode(int drawMode){
+    for(int i = 0;i < meshes.size();i++){
+        meshes[i]->drawMode = drawMode;
+    }
+}
+
+void Model::setSplitMode(int splitMode){
+    for(int i = 0;i < meshes.size();i++){
+        meshes[i]->splitMode = splitMode;
+    }
+}
+
+void Model::activateRefMesh(){
+    for(int i=0;i<meshes.size();i++){
+        meshes[i]->drawRefMesh = true;
+    }
+}
+
+void Model::deactivateRefMesh(){
+    for(int i=0;i<meshes.size();i++){
+        meshes[i]->drawRefMesh = false;
+    }
+}
+
 void Model::renderModel(){
     for(int i = 0;i < meshes.size();i++){
         meshes[i]->renderMesh();

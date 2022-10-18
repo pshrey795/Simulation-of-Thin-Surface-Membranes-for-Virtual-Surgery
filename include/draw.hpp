@@ -7,6 +7,7 @@
 
 void clear(vec3 c);
 void setColor(vec3 c);
+void setColor(vec4 c);
 void setPointSize(float s);
 void drawPoint(vec3 x);
 void setLineWidth(float w);

@@ -13,6 +13,11 @@ Camera camera;
 Lighting lighting;
 Model model;
 
+//Rendering Modes
+int mode = 0;
+int drawMode = 0;
+int splitMode = 0;
+
 float dt = 1/60.0f;
 float t = 0;
 bool paused = false;
@@ -46,11 +51,30 @@ void keyPressed(int key) {
         paused = !paused;
 }
 
+void processInput(int argc, char** argv){
+    if(argc > 1){
+        mode = atoi(argv[1]);
+    }
+    if(argc > 2){
+        drawMode = atoi(argv[2]);
+    }
+    if(argc > 3){
+        splitMode = atoi(argv[3]);
+    }
+    if(mode){
+        model.activateRefMesh();
+    }
+    model.setDrawMode(drawMode);
+    model.setSplitMode(splitMode);
+}
+
 int main(int argc, char **argv) {
     window.create("Test Window", 2560, 1440);
     window.onKeyPress(keyPressed);
     camera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
     lighting.createDefault();
+    
+    processInput(argc, argv);
 
     while (!window.shouldClose()) {
         camera.processInput(window);
