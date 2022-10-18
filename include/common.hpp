@@ -10,6 +10,8 @@
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glut.h>
+#include <GLFW/glfw3.h>
 #endif
 
 #define DEFAULT_MASS 1.0f
@@ -18,6 +20,7 @@
 #define DEFAULT_DAMPING 5.0f
 #define EPSILON 0.08
 #define DELTA 0.01
+#define MIN_DIFF 0.01
 #define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
 typedef Eigen::Vector2f vec2;

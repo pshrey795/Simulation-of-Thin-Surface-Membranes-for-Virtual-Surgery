@@ -2,7 +2,6 @@
 #define CURVE_CPP
 
 #include "common.hpp"
-#include<bits/stdc++.h>
 
 using namespace std;
 

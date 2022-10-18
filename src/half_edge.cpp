@@ -283,7 +283,7 @@ bool HalfEdge::isInside(Face* face, vec3 point){
     double A1 = this->triArea(point,b,c);
     double A2 = this->triArea(point,c,a);
     double A3 = this->triArea(point,a,b);
-    return (abs((A1 + A2 + A3) - A) < DELTA);
+    return (abs((A1 + A2 + A3) - A) < MIN_DIFF);
 }
 bool HalfEdge::isInsidePos(Face* face, vec3 point){
     vec3 a = this->particle_list[face->indices[0]]->position;
@@ -293,7 +293,7 @@ bool HalfEdge::isInsidePos(Face* face, vec3 point){
     double A1 = this->triArea(point,b,c);
     double A2 = this->triArea(point,c,a);
     double A3 = this->triArea(point,a,b);
-    return (abs((A1 + A2 + A3) - A) < DELTA);
+    return (abs((A1 + A2 + A3) - A) < MIN_DIFF);
 }
 
 void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode){

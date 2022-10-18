@@ -1,10 +1,7 @@
 #ifndef LIGHTING_HPP
 #define LIGHTING_HPP
 
-#include "common.hpp"
 #include "gui.hpp"
-
-#include <vector>
 
 class Lighting {
 public:

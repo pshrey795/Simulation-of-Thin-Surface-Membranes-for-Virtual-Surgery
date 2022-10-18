@@ -2,7 +2,6 @@
 #define TEXT_HPP
 
 #include "common.hpp"
-#include <string>
 
 class Text {
 public:

@@ -3,12 +3,6 @@
 
 #include "common.hpp"
 
-#include <chrono>
-#include <GLFW/glfw3.h>
-#include <iostream>
-#include <string>
-#include <thread>
-
 class Window {
 public:
     GLFWwindow *window;

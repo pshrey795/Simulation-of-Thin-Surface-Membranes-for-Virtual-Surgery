@@ -2,12 +2,11 @@
 #define MESH_HPP
 
 #include<bits/stdc++.h>
-#include "common.hpp"
 #include "draw.hpp"
 #include "camera.hpp"
-#include "gui.hpp"
 #include "path.hpp"
 #include "half_edge.hpp"
+#include "lighting.hpp"
 using namespace std;
 using namespace Eigen;
 

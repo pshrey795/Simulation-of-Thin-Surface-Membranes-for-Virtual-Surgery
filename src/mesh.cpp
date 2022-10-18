@@ -5,7 +5,7 @@ Mesh::Mesh(){
     //Using a sample mesh
     upVec = vec3(0,0,1);
     drawRefMesh = false;
-    debug = false;
+    debug = true;
 
     vector<vec3> vertices;
     vector<unsigned int> indices;
@@ -138,7 +138,7 @@ void Mesh::setupPath(){
 
 void Mesh::setupCut(){
     //Define a sample plane
-    Plane p(vec3(-6.0f, 4.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
+    Plane p(vec3(-6.0f, 1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 
     //Get the intersection points
     this->intersectPts = dirSort(this->mesh->Intersect(p), p);

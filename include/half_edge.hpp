@@ -2,7 +2,6 @@
 #define HALFEDGE_HPP
 
 #include "particle.hpp"
-#include<bits/stdc++.h>
 
 using namespace std;
 using namespace Eigen;

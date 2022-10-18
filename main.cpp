@@ -1,10 +1,4 @@
-#include "include/camera.hpp"
-#include "include/draw.hpp"
-#include "include/gui.hpp"
-#include "include/lighting.hpp"
 #include "include/model.hpp"
-
-#include <bits/stdc++.h>
 
 using namespace std;
 
