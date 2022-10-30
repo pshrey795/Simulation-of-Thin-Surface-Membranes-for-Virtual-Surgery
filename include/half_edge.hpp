@@ -66,6 +66,9 @@ class HalfEdge {
         vec3 getPosAtPoint(Particle* p);
         vec3 getPosAtEdge(Edge* e, vec3 pos);
         vec3 getPosAtFace(Face* f, vec3 pos);
+        vec3 getVelAtPos(Particle* p);
+        vec3 getVelAtEdge(Edge* e, vec3 pos);
+        vec3 getVelAtFace(Face* f, vec3 pos);
 
     private:
         //Helper functions for checking intersection

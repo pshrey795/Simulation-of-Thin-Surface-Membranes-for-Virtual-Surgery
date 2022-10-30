@@ -61,6 +61,7 @@ class Particle {
         bool isFixed;           //Flag to check if the particle is fixed or not
         Particle(vec3 pos, double mass = DEFAULT_MASS);
         Particle(vec3 pos, vec3 initPos, double mass = DEFAULT_MASS);
+        Particle(vec3 pos, vec3 initPos, vec3 initVel, double mass = DEFAULT_MASS);
         Particle(vec3 pos, Edge* e, double mass = DEFAULT_MASS);
 
         //Getting all outgoing edges from the current particle

@@ -29,7 +29,7 @@ class Mesh {
 
         //Path Parameters
         Path* currentPath = NULL;
-        int currIntersectIdx;
+        unsigned int currIntersectIdx;
         vec3 upVec;                     //Vertical vector, to be decided from the instrument
         void setupPath();
         void setupCut();

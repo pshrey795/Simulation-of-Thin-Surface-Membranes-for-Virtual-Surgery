@@ -138,7 +138,7 @@ void Mesh::setupPath(){
 
 void Mesh::setupCut(){
     //Define a sample plane
-    Plane p(vec3(-6.0f, 1.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    Plane p(vec3(-4.0f, 6.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
 
     //Get the intersection points
     this->intersectPts = dirSort(this->mesh->Intersect(p), p);
@@ -285,7 +285,7 @@ void Mesh::renderMesh(){
     //Drawing Edges
     for(int i = 0; i < m; i++){
         Edge* e = mesh->edge_list[i];
-        if(e->isBoundary){
+        if(true){
             setLineWidth(3.0f);
             setColor(vec3(0.0f, 0.0f, 0.0f));
 

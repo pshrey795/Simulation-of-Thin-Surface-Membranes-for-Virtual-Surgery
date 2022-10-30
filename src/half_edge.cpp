@@ -4,16 +4,16 @@
 HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
     int n = Vertices.size();
 
-    for(int i=0;i<n;i++){
+    for(unsigned int i=0;i<n;i++){
         vector<int> adj;
-        for(int j=0;j<n;j++){
+        for(unsigned int j=0;j<n;j++){
             adj.push_back(-1);
         }
         this->adjList.push_back(adj); 
     }
 
     //Adding vertices
-    for(int i=0;i<Vertices.size();i++){
+    for(unsigned int i=0;i<Vertices.size();i++){
         this->particle_list.push_back(new Particle(Vertices[i]));
     }
 
@@ -75,8 +75,8 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
     int currentSize = this->edge_list.size();
 
     //Linking twin edges
-    for(int a=0;a<n;a++){
-        for(int b=0;b<n;b++){
+    for(unsigned int a=0;a<n;a++){
+        for(unsigned int b=0;b<n;b++){
             if(adjList[a][b] == -1){
                 if(adjList[b][a] != -1){
                     auto v = this->edge_list[adjList[b][a]]->next->startParticle;
@@ -102,16 +102,16 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
 HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<bool> clamp){
     int n = Vertices.size();
 
-    for(int i=0;i<n;i++){
+    for(unsigned int i=0;i<n;i++){
         vector<int> adj;
-        for(int j=0;j<n;j++){
+        for(unsigned int j=0;j<n;j++){
             adj.push_back(-1);
         }
         this->adjList.push_back(adj); 
     }
 
     //Adding vertices
-    for(int i=0;i<Vertices.size();i++){
+    for(unsigned int i=0;i<Vertices.size();i++){
         this->particle_list.push_back(new Particle(Vertices[i]));
         this->particle_list[i]->isFixed = clamp[i];
     }
@@ -174,8 +174,8 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
     int currentSize = this->edge_list.size();
 
     //Linking twin edges
-    for(int a=0;a<n;a++){
-        for(int b=0;b<n;b++){
+    for(unsigned int a=0;a<n;a++){
+        for(unsigned int b=0;b<n;b++){
             if(adjList[a][b] == -1){
                 if(adjList[b][a] != -1){
                     auto v = this->edge_list[adjList[b][a]]->next->startParticle;
@@ -223,7 +223,7 @@ vector<tuple<vec3, int, int>> HalfEdge::updateIntersectionPts(vector<tuple<vec3,
 
 //Calculating offsets for each Particle from the plane
 void HalfEdge::ParticleOffsets(Plane plane){
-    for(int i=0;i<particle_list.size();i++){
+    for(unsigned int i=0;i<particle_list.size();i++){
         double newOffset = plane.normal.dot(particle_list[i]->initPos - plane.origin);
         particle_list[i]->offset = newOffset;
     }
@@ -233,10 +233,10 @@ void HalfEdge::ParticleOffsets(Plane plane){
 vector<int> HalfEdge::IntersectingEdges(){
     vector<int> intersectingEdges;
     vector<int> isEdgeIntersecting;
-    for(int i=0;i<this->edge_list.size();i++){
+    for(unsigned int i=0;i<this->edge_list.size();i++){
         isEdgeIntersecting.push_back(0);
     }
-    for(int i=0;i<edge_list.size();i++){
+    for(unsigned int i=0;i<edge_list.size();i++){
         if(isEdgeIntersecting[i] == 0){
             auto v1 = edge_list[i]->startParticle;
             auto v2 = edge_list[i]->twin->startParticle;
@@ -254,7 +254,7 @@ vector<int> HalfEdge::IntersectingEdges(){
 }
 vector<tuple<vec3,int,int>> HalfEdge::IntersectingVertices(vector<int> edges){
     vector<tuple<vec3,int,int>> intersectingVertices;
-    for(int i=0;i<particle_list.size();i++){
+    for(unsigned int i=0;i<particle_list.size();i++){
         if(abs(particle_list[i]->offset) < DELTA){
             intersectingVertices.push_back(make_tuple(particle_list[i]->initPos,0,i));
         }
@@ -319,15 +319,17 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             newIndexLeft = get<2>(intPt);
             vec3 oldPos = newParticleLeft->position;
             vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
+            vec3 newVelocity = getVelAtPos(newParticleLeft);
             newParticleLeft->position = oldPos - displacement;
-            newParticleRight = new Particle(oldPos + displacement, newInitPos);
+            newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
             this->particle_list.push_back(newParticleRight);
             newIndexRight = n;
         }else if(currentType == 1){
             vec3 newInitPos = get<0>(intPt);
             vec3 oldPos = getPosAtEdge(this->edge_list[get<2>(intPt)], newInitPos);
-            newParticleLeft = new Particle(oldPos - displacement, newInitPos);
-            newParticleRight = new Particle(oldPos + displacement, newInitPos);
+            vec3 newVelocity = getVelAtEdge(this->edge_list[get<2>(intPt)], oldPos);
+            newParticleLeft = new Particle(oldPos - displacement, newInitPos, newVelocity);
+            newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
             this->particle_list.push_back(newParticleLeft);
             this->particle_list.push_back(newParticleRight);
             newIndexLeft = n;
@@ -335,13 +337,15 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
         }else{
             vec3 newInitPos = get<0>(intPt);
             vec3 oldPos;
-            for(int i=0;i<face_list.size();i++){
+            vec3 newVelocity;
+            for(unsigned int i=0;i<face_list.size();i++){
                 if(isInside(face_list[i], newInitPos)){
                     oldPos = getPosAtFace(face_list[i], newInitPos);
+                    newVelocity = getVelAtFace(face_list[i], oldPos);
                     break;
                 }
             }
-            Particle* newParticle = new Particle(oldPos, newInitPos);
+            Particle* newParticle = new Particle(oldPos, newInitPos, newVelocity);
             newParticleLeft = newParticleRight = newParticle;
             this->particle_list.push_back(newParticle);
             newIndexLeft = newIndexRight = this->particle_list.size() - 1;
@@ -352,8 +356,9 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             newIndexLeft = get<2>(intPt);
             vec3 oldPos = newParticleLeft->position;
             vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
+            vec3 newVelocity = getVelAtPos(newParticleLeft);
             newParticleLeft->position = oldPos - displacement;
-            newParticleRight = new Particle(oldPos + displacement, newInitPos);
+            newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
             this->particle_list.push_back(newParticleRight);
             newIndexRight = n;
         }
@@ -362,8 +367,9 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
         newIndexLeft = get<2>(intPt);
         vec3 oldPos = newParticleLeft->position;
         vec3 newInitPos = getInitPosAtPoint(newParticleLeft);
+        vec3 newVelocity = getVelAtPos(newParticleLeft);
         newParticleLeft->position = oldPos - displacement;
-        newParticleRight = new Particle(oldPos + displacement, newInitPos);
+        newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
         this->particle_list.push_back(newParticleRight);
         newIndexRight = n;
     }
@@ -377,7 +383,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 int nextIndex = get<2>(nextIntPt);
                 auto edgeList = newParticleLeft->getEdges();
                 Edge* currentEdge;
-                for(int i=0;i<edgeList.size();i++){
+                for(unsigned int i=0;i<edgeList.size();i++){
                     if(edgeList[i]->twin->startParticle == nextParticle){
                         currentEdge = edgeList[i];
                         break;
@@ -403,7 +409,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 Face* rightFace = rightEdge->face;
                 while(rightFace != NULL){
                     rightEdge->startParticle = newParticleRight;
-                    for(int i=0;i<3;i++){
+                    for(unsigned int i=0;i<3;i++){
                         if(rightFace->indices[i] == newIndexLeft){
                             rightFace->indices[i] = newIndexRight;
                             break;
@@ -428,7 +434,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 vec3 newInitPos = get<0>(nextIntPt);
                 Edge* nextEdge = this->edge_list[get<2>(nextIntPt)];
                 vec3 newPos = getPosAtEdge(nextEdge, newInitPos);
-                Particle* nextParticle = new Particle(newPos, newInitPos);
+                vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
+                Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
                 this->particle_list.push_back(nextParticle);
                 int nextIndex = this->particle_list.size() - 1;
                 nextIntPt = make_tuple(newPos, 0, nextIndex);
@@ -552,7 +559,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 rightEdge = currentPrevEdge->twin;
                 Face* rightFace = rightEdge->face;
                 while(rightFace != NULL){
-                    for(int i=0;i<3;i++){
+                    for(unsigned int i=0;i<3;i++){
                         if(rightFace->indices[i] == newIndexLeft){
                             rightFace->indices[i] = newIndexRight;
                             break;
@@ -711,7 +718,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 vec3 newInitPos = get<0>(nextIntPt);
                 Edge* nextEdge = this->edge_list[get<2>(nextIntPt)];
                 vec3 newPos = getPosAtEdge(nextEdge, newInitPos);
-                Particle* nextParticle = new Particle(newPos, newInitPos);
+                vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
+                Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
                 this->particle_list.push_back(nextParticle);
                 int nextIndex = this->particle_list.size()-1;
                 nextIntPt = make_tuple(newPos, 0, nextIndex);
@@ -1048,7 +1056,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 int nextIndex = get<2>(nextIntPt);
                 auto edgeList = nextParticle->getEdges();
                 Edge* currentEdge;
-                for(int i=0;i<edgeList.size();i++){
+                for(unsigned int i=0;i<edgeList.size();i++){
                     if(isInside(edgeList[i]->face, newParticleLeft->initPos)){
                         currentEdge = edgeList[i];
                         break;
@@ -1152,7 +1160,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 vec3 newInitPos = get<0>(nextIntPt);
                 Edge* nextEdge = this->edge_list[get<2>(nextIntPt)];
                 vec3 newPos = getPosAtEdge(nextEdge, newInitPos);
-                Particle* nextParticle = new Particle(newPos, newInitPos);
+                vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
+                Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
                 this->particle_list.push_back(nextParticle);
                 int nextIndex = this->particle_list.size() - 1;
                 nextIntPt = make_tuple(newPos, 0, nextIndex);
@@ -1372,7 +1381,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             while(currentEdge != NULL){
                 currentEdge->startParticle = newParticleRight;
                 Face* rightFace = currentEdge->face;
-                for(int i=0;i<3;i++){
+                for(unsigned int i=0;i<3;i++){
                     if(rightFace->indices[i] == newIndexLeft){
                         rightFace->indices[i] = newIndexRight;
                         break;
@@ -1404,7 +1413,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             int nextIndex = get<2>(nextIntPt);
             auto edgeList = newParticleLeft->getEdges();
             Edge* currentEdge;
-            for(int i=0;i<edgeList.size();i++){
+            for(unsigned int i=0;i<edgeList.size();i++){
                 if(edgeList[i]->twin->startParticle == nextParticle){
                     currentEdge = edgeList[i];
                     break;
@@ -1430,7 +1439,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             Face* rightFace = rightEdge->face;
             while(rightEdge != rightCrossEdge){
                 rightEdge->startParticle = newParticleRight;
-                for(int i=0;i<3;i++){
+                for(unsigned int i=0;i<3;i++){
                     if(rightFace->indices[i] == newIndexLeft){
                         rightFace->indices[i] = newIndexRight;
                         break;
@@ -1455,7 +1464,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             vec3 newInitPos = get<0>(nextIntPt);
             Edge* nextEdge = this->edge_list[get<2>(nextIntPt)];
             vec3 newPos = getPosAtEdge(nextEdge, newInitPos);
-            Particle* nextParticle = new Particle(newPos, newInitPos);
+            vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
+            Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
             this->particle_list.push_back(nextParticle);
             int nextIndex = this->particle_list.size() - 1;
             nextIntPt = make_tuple(newPos, 0, nextIndex);
@@ -1579,7 +1589,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             rightEdge = currentPrevEdge->twin;
             Face* rightFace = rightEdge->face;
             while(rightEdge != rightCrossEdge){
-                for(int i=0;i<3;i++){
+                for(unsigned int i=0;i<3;i++){
                     if(rightFace->indices[i] == newIndexLeft){
                         rightFace->indices[i] = newIndexRight;
                         break;
@@ -1644,7 +1654,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             //Finding the intersecting face
             auto edgeList = newParticleLeft->getEdges();
             Edge* currentEdge;
-            for(int i=0;i<edgeList.size();i++){
+            for(unsigned int i=0;i<edgeList.size();i++){
                 if(edgeList[i]->face != NULL){
                     if(isInside(edgeList[i]->face, newInitPos)){
                         currentEdge = edgeList[i];
@@ -1653,7 +1663,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 }
             }
             vec3 newPos = getPosAtFace(currentEdge->face, newInitPos);
-            Particle* nextParticle = new Particle(newPos, newInitPos);
+            vec3 newVelocity = getVelAtFace(currentEdge->face, newPos);
+            Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
             this->particle_list.push_back(nextParticle);
             int nextIndex = this->particle_list.size()-1;
 
@@ -1743,7 +1754,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             rightEdge = currentPrevEdge->twin;
             Face* rightFace = rightEdge->face;
             while(rightEdge != rightCrossEdge){
-                for(int i=0;i<3;i++){
+                for(unsigned int i=0;i<3;i++){
                     if(rightFace->indices[i] == newIndexLeft){
                         rightFace->indices[i] = newIndexRight;
                         break;
@@ -1791,7 +1802,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
 }
 
 void HalfEdge::resetForce(){
-    for(int i=0;i<particle_list.size();i++){
+    for(unsigned int i=0;i<particle_list.size();i++){
         particle_list[i]->netForce = vec3(0,0,0);
     }
 }
@@ -1801,25 +1812,25 @@ void HalfEdge::updateMesh(float dt){
     //of the mesh
     this->resetForce();
     //Spring force from springs that dont align with the mesh
-    for(int i=0;i<ghostSprings.size();i++){
+    for(unsigned int i=0;i<ghostSprings.size();i++){
         ghostSprings[i].addForce();
 
     }
 
     //Spring force from springs aligned with the mesh
-    for(int i=0;i<edge_list.size();i++){
+    for(unsigned int i=0;i<edge_list.size();i++){
         edge_list[i]->addForce();
     }
 
     //Update particle parameters
-    for(int i=0;i<particle_list.size();i++){
+    for(unsigned int i=0;i<particle_list.size();i++){
         particle_list[i]->update(dt);
     }
 }
 
 void HalfEdge::updateGhostSprings(){
     ghostSprings.clear(); 
-    for(int i=0;i<edge_list.size();i++){
+    for(unsigned int i=0;i<edge_list.size();i++){
         Edge* currentEdge = edge_list[i];
         if(currentEdge->face != NULL && currentEdge->twin->face != NULL){
             Particle* p1 = currentEdge->prev->startParticle;
@@ -1830,10 +1841,10 @@ void HalfEdge::updateGhostSprings(){
 }
 
 void HalfEdge::redistributeMass(){
-    for(int i=0;i<particle_list.size();i++){
+    for(unsigned int i=0;i<particle_list.size();i++){
         particle_list[i]->m = 0.0f;
     }
-    for(int i=0;i<face_list.size();i++){
+    for(unsigned int i=0;i<face_list.size();i++){
         Face* f = face_list[i];
         Particle* p1 = particle_list[f->indices[0]];
         Particle* p2 = particle_list[f->indices[1]];
@@ -1843,7 +1854,7 @@ void HalfEdge::redistributeMass(){
         p2->m += newMass;
         p3->m += newMass;
     }
-    for(int i=0;i<particle_list.size();i++){
+    for(unsigned int i=0;i<particle_list.size();i++){
         particle_list[i]->updateInvM();
     }
 }
@@ -1859,7 +1870,7 @@ vec3 HalfEdge::getInitPosAtEdge(Edge* e, vec3 pos){
     vec3 p1 = e->startParticle->position;
     vec3 p2 = e->twin->startParticle->position;
 
-    //Linear interpolation in the rest grid
+    //Linear interpolation in the deformed grid
     double t = (pos - p1).norm() / (p2 - p1).norm(); 
     return (1 - t) * ip1 + t * ip2;
 }
@@ -1875,7 +1886,7 @@ vec3 HalfEdge::getInitPosAtFace(Face* f, vec3 pos){
     vec3 p2 = b->position;
     vec3 p3 = c->position;
 
-    //Barycentric interpolation in the rest grid
+    //Barycentric interpolation in the deformed grid
     double A = triArea(p1, p2, p3);
     double Au = triArea(pos, p2, p3);
     double Av = triArea(p1, pos, p3);
@@ -1925,3 +1936,43 @@ vec3 HalfEdge::getPosAtFace(Face* f, vec3 pos){
 
     return u * p1 + v * p2 + w * p3;
 }
+
+vec3 HalfEdge::getVelAtPos(Particle* p){
+    return p->velocity;
+}
+
+vec3 HalfEdge::getVelAtEdge(Edge* e, vec3 pos){
+    vec3 v1 = e->startParticle->velocity;
+    vec3 v2 = e->twin->startParticle->velocity;
+    vec3 p1 = e->startParticle->position;
+    vec3 p2 = e->twin->startParticle->position;
+
+    //Linear interpolation in the deformed grid
+    double t = (pos - p1).norm() / (p2 - p1).norm();
+    return (1 - t) * v1 + t * v2;
+}
+
+vec3 HalfEdge::getVelAtFace(Face* f, vec3 pos){
+    Particle* a = particle_list[f->indices[0]];
+    Particle* b = particle_list[f->indices[1]];
+    Particle* c = particle_list[f->indices[2]];
+    vec3 p1 = a->position;
+    vec3 p2 = b->position;
+    vec3 p3 = c->position;
+    vec3 v1 = a->velocity;
+    vec3 v2 = b->velocity;
+    vec3 v3 = c->velocity;
+
+    //Barycentric interpolation in the deformed grid
+    double A = triArea(p1, p2, p3);
+    double Au = triArea(pos, p2, p3);
+    double Av = triArea(p1, pos, p3);
+    double Aw = triArea(p1, p2, pos);
+    double u = Au / A;
+    double v = Av / A;
+    double w = Aw / A;
+
+    return u * v1 + v * v2 + w * v3;
+}
+
+

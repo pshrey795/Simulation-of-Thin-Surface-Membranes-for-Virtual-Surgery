@@ -18,8 +18,8 @@
 #define DEFAULT_DENISTY 0.35f
 #define DEFAULT_STIFFNESS 10.0f
 #define DEFAULT_DAMPING 5.0f
-#define EPSILON 0.08
-#define DELTA 0.01
+#define EPSILON 0.03
+#define DELTA 0.1
 #define MIN_DIFF 0.01
 #define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
