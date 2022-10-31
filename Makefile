@@ -18,7 +18,7 @@ run: $(OBJECTS) main.cpp include/*.hpp
 	$(CC) $(OBJECTS) main.cpp -o $(EXEC) $(LDFLAGS)
 	./$(EXEC) $(M) $(DM) $(SM)
 
-simulate: $(EXEC)
+show: $(EXEC)
 	./$(EXEC) $(M) $(DM) $(SM)
 
 clean:

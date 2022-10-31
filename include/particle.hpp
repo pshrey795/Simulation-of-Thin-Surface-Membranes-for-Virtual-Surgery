@@ -45,13 +45,17 @@ struct Face{
     Face();
 };
 
+enum TimeIntegrationType {
+    FWD_EULER,
+    BWD_EULER,
+};
+
 class Particle {
 
     private:        
-        //Updating force 
-        vec3 calculateExternalForce();
 
     public:
+        unsigned int particleID;
         double m;               //Mass of the particle
         double invM;            //Inverse mass of the particle
         vec3 position;
@@ -71,7 +75,8 @@ class Particle {
         vec3 initPos; 
 
         //Updating the particle
-        void update(double dt);
+        vec3 calculateExternalForce();
+        void updatePos(double dt);
         void updateInvM();
 
         //For intersection purposes 
@@ -79,8 +84,7 @@ class Particle {
 
 };
 
-//Static helper functions 
-
-
+//Helper functions 
+void calculateForce(Spring& s, vecX vel, vecX& f, matX& Jx, matX& Jv);
 
 #endif

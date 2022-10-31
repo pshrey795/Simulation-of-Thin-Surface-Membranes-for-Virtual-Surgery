@@ -52,7 +52,7 @@ class HalfEdge {
         void reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode);
 
         //Updating the mesh
-        void updateMesh(float dt);
+        void updateMesh(float dt, TimeIntegrationType integrationType = FWD_EULER);
 
         //Helper functions for computations with triangles
         double triArea(vec3 a, vec3 b, vec3 c);
@@ -80,6 +80,10 @@ class HalfEdge {
         void resetForce();
         void updateGhostSprings();
         void redistributeMass();
+
+        //Solver for the system of equations
+        void solveFwdEuler(float dt);
+        void solveBwdEuler(float dt);
 
 };
 

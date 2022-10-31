@@ -2,6 +2,7 @@
 #define COMMON_HPP
 
 #include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Sparse>
 #include <bits/stdc++.h>
 
 #if __APPLE__
@@ -23,12 +24,15 @@
 #define MIN_DIFF 0.01
 #define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
+using namespace std;
+using namespace Eigen;
+
 typedef Eigen::Vector2f vec2;
 typedef Eigen::Vector3f vec3;
 typedef Eigen::Vector4f vec4;
-typedef Eigen::Matrix<double, 3, 3> mat3;
-
-using namespace Eigen;
+typedef Eigen::Matrix<vec3, Dynamic, 1> vecX;
+typedef Eigen::Matrix<float, 3, 3> mat3;
+typedef Eigen::Matrix<mat3, Dynamic, Dynamic> matX;
 
 //Common Auxiliary Functions
 bool double_eq(double a, double b);
@@ -40,5 +44,9 @@ double power(double x, int n);
 //Overload << operator for vec2, vec3
 std::ostream& operator<<(std::ostream& os, const vec2& v);
 std::ostream& operator<<(std::ostream& os, const vec3& v);
+
+//Eigen related functions for matrices and vectors
+vecX matVecMult(const matX& A, const vecX& x);
+vecX scalarMult(const vecX& x, float s);
 
 #endif

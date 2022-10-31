@@ -12,7 +12,7 @@ int mode = 0;
 int drawMode = 0;
 int splitMode = 0;
 
-float dt = 1/6000.0f;
+float dt = 1/60.0f;
 float t = 0;
 bool paused = false;
 
@@ -82,4 +82,7 @@ int main(int argc, char **argv) {
         window.updateDisplay();
         window.waitForNextFrame(dt);
     }
+
+    //Post Simulation debugging 
+    // model.printMeshInfo();
 }

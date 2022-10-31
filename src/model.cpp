@@ -96,3 +96,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene){
 
     return new_mesh;
 }
+
+void Model::printMeshInfo(){
+    meshes[0]->printMeshInfo();
+}

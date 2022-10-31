@@ -16,6 +16,7 @@ struct Material {
 
 class Mesh {
     private:
+        TimeIntegrationType timeIntegrationType = BWD_EULER;
 
         //Animation Parameters
         bool isPlaying = false;     
@@ -66,6 +67,9 @@ class Mesh {
         int drawMode;
         int splitMode; 
         void renderMesh(); 
+
+        //Debugging
+        void printMeshInfo();
 
 };
 

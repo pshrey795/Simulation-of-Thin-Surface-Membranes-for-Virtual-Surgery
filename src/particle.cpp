@@ -48,13 +48,11 @@ vec3 Particle::calculateExternalForce(){
     return (this->m * GRAVITY);
 }
 
-void Particle::update(double dt){
-    if(!this->isFixed){
-        //Forward Euler(unstable)
-        this->netForce += this->calculateExternalForce();
-        this->velocity += this->netForce * dt * invM;
-        this->position += this->velocity * dt;
-    }
+void Particle::updatePos(double dt){
+    //Update position regardless of whether the particle is constrained or not
+    //Since constraints will be applied on velocity and forces not on positions
+    //Also, this equation will be followed regardless of method, explicit or implicit
+    this->position += this->velocity * dt;
 }
 
 void Particle::updateInvM(){
@@ -194,4 +192,9 @@ Face::Face(int a, int b, int c, bool isRemeshed){
     indices[2] = c;
     reMeshed = isRemeshed;
     edge = NULL;
+}
+
+//Calculating forces/Jacobians for implicit integration
+void calculateForce(Spring& s, vecX vel, vecX& f, matX& Jx, matX& Jv){
+    
 }

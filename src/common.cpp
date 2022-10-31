@@ -39,3 +39,24 @@ std::ostream& operator<<(std::ostream& os, const vec3& v){
     os << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
     return os;
 }
+
+//Eigen related functions for matrices and vectors
+vecX matVecMult(const matX& A, const vecX& x){
+    vecX res(A.rows());
+    for(int i = 0; i < A.rows(); i++){
+        for(int j = 0; j < A.cols(); j++){
+            mat3 matVal = A(i,j);
+            vec3 vecVal = x(j);
+            res(i) = matVal*vecVal;
+        }
+    }
+    return res;
+}
+
+vecX scalarMult(const vecX& x, float s){
+    vecX res(x.rows());
+    for(int i = 0; i < x.rows(); i++){
+        res(i) = x(i)*s;
+    }
+    return res;
+}

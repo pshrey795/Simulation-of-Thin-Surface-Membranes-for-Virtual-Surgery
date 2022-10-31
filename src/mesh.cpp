@@ -86,7 +86,7 @@ void Mesh::update(float dt){
         }
     }
     if(activatePhysics && !isPlaying){
-        this->mesh->updateMesh(dt);
+        this->mesh->updateMesh(dt, timeIntegrationType);
     }
 }
 
@@ -411,4 +411,11 @@ bool Mesh::checkSanity(){
         cout << "\n\n\n";
     }
     return true;
+}
+
+void Mesh::printMeshInfo(){
+    for(int i=0;i<this->mesh->particle_list.size();i++){
+        Particle* p = this->mesh->particle_list[i];
+        cout << p->particleID << endl;
+    }
 }

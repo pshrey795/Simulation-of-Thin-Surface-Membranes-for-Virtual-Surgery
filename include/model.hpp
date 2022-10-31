@@ -22,6 +22,9 @@ class Model {
         void deactivateRefMesh();
         void renderModel();
 
+        //Debugging
+        void printMeshInfo();
+
     private:
         vector<Mesh*> meshes;
         void loadModel(string file_path);
