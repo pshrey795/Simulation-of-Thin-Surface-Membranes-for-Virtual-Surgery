@@ -31,7 +31,9 @@ typedef Eigen::Vector2f vec2;
 typedef Eigen::Vector3f vec3;
 typedef Eigen::Vector4f vec4;
 typedef Eigen::Matrix<vec3, Dynamic, 1> vecX;
+typedef Eigen::Matrix<float, Dynamic, 1> vecXf;
 typedef Eigen::Matrix<float, 3, 3> mat3;
+typedef Eigen::Matrix<float, Dynamic, Dynamic> matXf;
 typedef Eigen::Matrix<mat3, Dynamic, Dynamic> matX;
 
 //Common Auxiliary Functions
@@ -48,5 +50,8 @@ std::ostream& operator<<(std::ostream& os, const vec3& v);
 //Eigen related functions for matrices and vectors
 vecX matVecMult(const matX& A, const vecX& x);
 vecX scalarMult(const vecX& x, float s);
+matXf explodeMatrix(const matX& A);
+vecXf explodeVector(const vecX& x);
+vecX compressVector(const vecXf& x);
 
 #endif

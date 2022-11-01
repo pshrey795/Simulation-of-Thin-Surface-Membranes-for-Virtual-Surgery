@@ -5,7 +5,7 @@ Mesh::Mesh(){
     //Using a sample mesh
     upVec = vec3(0,0,1);
     drawRefMesh = false;
-    debug = true;
+    debug = false;
 
     vector<vec3> vertices;
     vector<unsigned int> indices;

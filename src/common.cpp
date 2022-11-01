@@ -60,3 +60,43 @@ vecX scalarMult(const vecX& x, float s){
     }
     return res;
 }
+
+//Convert matrix of blocks to a matrix of floats
+matXf explodeMatrix(const matX& A){
+    matXf res(A.rows()*3, A.cols()*3);
+    for(int i = 0; i < A.rows(); i++){
+        for(int j = 0; j < A.cols(); j++){
+            mat3 matVal = A(i,j);
+            for(int k = 0; k < 3; k++){
+                for(int l = 0; l < 3; l++){
+                    res(i*3+k, j*3+l) = matVal(k,l);
+                }
+            }
+        }
+    }
+    return res;
+}
+vecXf explodeVector(const vecX& x){
+    vecXf res(x.rows()*3);
+    for(int i = 0; i < x.rows(); i++){
+        vec3 vecVal = x(i);
+        for(int j = 0; j < 3; j++){
+            res(i*3+j) = vecVal(j);
+        }
+    }
+    return res;
+}
+
+//Convert matrix of floats to a matrix of blocks
+vecX compressVector(const vecXf& x){
+    assert(x.rows()%3 == 0);
+    vecX res(x.rows()/3);
+    for(int i = 0; i < x.rows()/3; i++){
+        vec3 vecVal;
+        for(int j = 0; j < 3; j++){
+            vecVal(j) = x(i*3+j);
+        }
+        res(i) = vecVal;
+    }
+    return res;
+}

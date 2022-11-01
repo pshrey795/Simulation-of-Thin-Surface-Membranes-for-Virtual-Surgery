@@ -195,6 +195,33 @@ Face::Face(int a, int b, int c, bool isRemeshed){
 }
 
 //Calculating forces/Jacobians for implicit integration
-void calculateForce(Spring& s, vecX vel, vecX& f, matX& Jx, matX& Jv){
-    
+void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
+    unsigned int i = s.p1->particleID;
+    unsigned int j = s.p2->particleID;
+    vec3 xij = s.p1->position - s.p2->position;
+    vec3 vij = s.p1->velocity - s.p2->velocity;
+    double length = xij.norm();
+
+    //Force calculation
+    //Spring Force
+    double restLength = (s.p1->initPos - s.p2->initPos).norm();
+    double springForce = (-1) * s.ks * (((length + DELTA) / (restLength + DELTA)) - 1);
+    //Damping Force 
+    double dampForce = (-1) * s.kd * ((vij.dot(xij) + DELTA) / (restLength * length + DELTA));
+    //Net Force
+    vec3 netForce = (springForce + dampForce) * xij.normalized();
+    //Update force
+    f(i) += netForce;
+
+    //Jx calculation
+    vec3 xij_cap = xij.normalized();
+    mat3 dij = xij_cap * xij_cap.transpose();
+    mat3 J = (-1) * s.ks * ((1 / restLength - 1 / length) * (mat3::Identity() - dij) + (dij) / (restLength + DELTA));
+    Jx(i,i) += J;
+    Jx(i,j) -= J;
+
+    //Jv calculation 
+    J = (-1) * s.kd * dij;
+    Jv(i,i) += J;
+    Jv(i,j) -= J;
 }

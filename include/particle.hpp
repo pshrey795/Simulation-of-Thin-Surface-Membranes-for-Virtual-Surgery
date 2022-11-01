@@ -85,6 +85,6 @@ class Particle {
 };
 
 //Helper functions 
-void calculateForce(Spring& s, vecX vel, vecX& f, matX& Jx, matX& Jv);
+void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv);
 
 #endif

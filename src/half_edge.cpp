@@ -1883,11 +1883,14 @@ void HalfEdge::solveBwdEuler(float dt){
     this->resetForce(); 
     //Contributions from ghost springs
     for(unsigned int i=0;i<ghostSprings.size();i++){
-        calculateForce(ghostSprings[i], v_n, f_n, Jx, Jv);
+        calculateForce(ghostSprings[i], f_n, Jx, Jv);
     }
     //Contributions from springs aligned with the mesh
     for(unsigned int i=0;i<edge_list.size();i++){
-        calculateForce(edge_list[i]->spring, v_n, f_n, Jx, Jv);
+        //Assign particles to the spring 
+        edge_list[i]->spring.p1 = edge_list[i]->startParticle;
+        edge_list[i]->spring.p2 = edge_list[i]->twin->startParticle;
+        calculateForce(edge_list[i]->spring, f_n, Jx, Jv);
     }
     //Contributions from external forces
     for(unsigned int i = 0; i< particle_list.size(); i++){
@@ -1901,6 +1904,33 @@ void HalfEdge::solveBwdEuler(float dt){
     matX A = M - (dt * mat3::Identity()) * Jv - (dt * dt * mat3::Identity()) * Jx;
     //RHS of the equation
     vecX b = scalarMult(f_n + scalarMult(matVecMult(Jx, v_n),dt),dt);
+
+    //Currently, the entire system is in block form
+    //Need to expand it in all dimensions and convert in into sparse form before passing it to the solver
+    matXf A_exploded(3 * systemSize, 3 * systemSize);
+    vecXf b_exploded(3 * systemSize);
+
+    //Obtaining the exploded versions of the matrix/vector
+    A_exploded = explodeMatrix(A);
+    b_exploded = explodeVector(b);
+
+    //Converting the exploded matrix into sparse form
+    SparseMatrix<float> A_sparse = A_exploded.sparseView();
+
+    //Define the solver and the solution vector
+    SimplicialLDLT<SparseMatrix<float>> solver;
+    solver.compute(A_sparse);
+    vecXf dv_exploded(3 * systemSize);
+    dv_exploded = solver.solve(b_exploded);
+    vecX dv(systemSize);
+    dv = compressVector(dv_exploded);
+
+    //Velocity update
+    for(unsigned int i = 0; i < systemSize; i++){
+        if(!particle_list[i]->isFixed){
+            particle_list[i]->velocity += dv(i);
+        }
+    }
 }
 
 void HalfEdge::updateMesh(float dt, TimeIntegrationType integrationType){
