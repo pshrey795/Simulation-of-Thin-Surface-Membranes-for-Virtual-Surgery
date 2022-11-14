@@ -1922,12 +1922,8 @@ void HalfEdge::solveBwdEuler(float dt){
 
     //Currently, the entire system is in block form
     //Need to expand it in all dimensions and convert in into sparse form before passing it to the solver
-    matXf A_exploded(3 * systemSize, 3 * systemSize);
-    vecXf b_exploded(3 * systemSize);
-
-    //Obtaining the exploded versions of the matrix/vector
-    A_exploded = explodeMatrix(A);
-    b_exploded = explodeVector(b);
+    matXf A_exploded = explodeMatrix(A);
+    vecXf b_exploded = explodeVector(b);
 
     //Converting the exploded matrix into sparse form
     SparseMatrix<float> A_sparse = A_exploded.sparseView();
@@ -1944,14 +1940,13 @@ void HalfEdge::solveBwdEuler(float dt){
         cout << "Eigen solve failed!" << endl; 
     }
     vecX dv(systemSize);
-    debugStream << dv_exploded << endl; 
-    debugStream << "\n\n";
     dv = compressVector(dv_exploded);
+    v_n += dv;
 
     //Velocity update
     for(unsigned int i = 0; i < systemSize; i++){
         if(!particle_list[i]->isFixed){
-            particle_list[i]->velocity += dv(i);
+            particle_list[i]->velocity = v_n(i);
         }
     }
 }

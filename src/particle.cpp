@@ -221,7 +221,7 @@ void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
     //Jx calculation
     vec3 xij_cap = xij.normalized();
     mat3 dij = xij_cap * xij_cap.transpose();
-    mat3 J = (-1) * s.ks * ((1 / (restLength + DELTA) - 1 / (length + DELTA)) * (mat3::Identity() - dij) + (dij) / (restLength + DELTA));
+    mat3 J = (-1) * s.ks * ((1 - (restLength + DELTA) / (length + DELTA)) * (mat3::Identity() - dij) + (dij) / (restLength + DELTA));
     Jx(i,i) += J;
     Jx(i,j) -= J;
 

@@ -104,8 +104,8 @@ void Mesh::setupPath(){
     }else if(drawMode == 2){
         //Curved Cut
         inputPts.push_back(vec3(-3.226, -1.226, 0));
-        inputPts.push_back(vec3(-1.47, 3.435, 0));
-        inputPts.push_back(vec3(1.47, 3.435, 0));
+        inputPts.push_back(vec3(-1.47, 2.435, 0));
+        inputPts.push_back(vec3(1.47, 2.435, 0));
         inputPts.push_back(vec3(3.226, -1.226, 0));
     }
     currentPath->addCurve(inputPts);
