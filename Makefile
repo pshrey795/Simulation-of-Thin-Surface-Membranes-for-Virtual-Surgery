@@ -14,7 +14,7 @@ $(EXEC): $(OBJECTS) main.cpp include/*.hpp
 %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
-run: $(OBJECTS) main.cpp include/*.hpp
+run: $(OBJECTS) main.cpp include/*.hpp 
 	$(CC) $(OBJECTS) main.cpp -o $(EXEC) $(LDFLAGS)
 	./$(EXEC) $(M) $(DM) $(SM)
 

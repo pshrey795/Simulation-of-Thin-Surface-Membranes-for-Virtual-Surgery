@@ -16,7 +16,7 @@ struct Material {
 
 class Mesh {
     private:
-        TimeIntegrationType timeIntegrationType = FWD_EULER;
+        TimeIntegrationType timeIntegrationType = BWD_EULER;
 
         //Animation Parameters
         bool isPlaying = false;     

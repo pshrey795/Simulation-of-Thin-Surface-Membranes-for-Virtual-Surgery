@@ -1861,6 +1861,7 @@ void HalfEdge::solveBwdEuler(float dt){
     matX M(systemSize, systemSize); 
 
     //Obtaining mass matrix
+    //Debug: Correct
     for(int i = 0; i < systemSize; i++){
         for(int j = 0; j < systemSize; j++){
             if(i == j){
@@ -1872,15 +1873,27 @@ void HalfEdge::solveBwdEuler(float dt){
             }
         }
     }
-    // M = massMatrix.sparseView();
+
     //Obtaining velocity vector
+    //Debug: Correct
     for(int i = 0; i < systemSize; i++){
         v_n(i) = particle_list[i]->velocity;
     }
 
     //Force calculation
     //Obtaining force vector 
+    //Debugging Info:
+    //1) Force calculation is correct
+    //2) Jx pending
+    //3) Jv pending
     this->resetForce(); 
+    for(int i = 0; i < systemSize; i++){
+        f_n(i) = vec3(0,0,0);
+        for(int j = 0; j < systemSize; j++){
+            Jx(i,j) = mat3::Zero();
+            Jv(i,j) = mat3::Zero();
+        }
+    }
     //Contributions from ghost springs
     for(unsigned int i=0;i<ghostSprings.size();i++){
         calculateForce(ghostSprings[i], f_n, Jx, Jv);
@@ -1896,7 +1909,9 @@ void HalfEdge::solveBwdEuler(float dt){
     for(unsigned int i = 0; i< particle_list.size(); i++){
         vec3 f_ext = particle_list[i]->calculateExternalForce();
         f_n(i) += f_ext;
-        particle_list[i]->netForce = f_n(i);
+        particle_list[i]->netForce += f_ext;
+        //Debugging
+        // cout << (f_n(i)-particle_list[i]->netForce).norm() << endl;
     }
 
     //Setup of the linear system
@@ -1920,9 +1935,17 @@ void HalfEdge::solveBwdEuler(float dt){
     //Define the solver and the solution vector
     SimplicialLDLT<SparseMatrix<float>> solver;
     solver.compute(A_sparse);
+    if(solver.info() != Eigen::Success){
+        cout << "Eigen factorization failed!" << endl; 
+    }
     vecXf dv_exploded(3 * systemSize);
     dv_exploded = solver.solve(b_exploded);
+    if(solver.info() != Eigen::Success){
+        cout << "Eigen solve failed!" << endl; 
+    }
     vecX dv(systemSize);
+    debugStream << dv_exploded << endl; 
+    debugStream << "\n\n";
     dv = compressVector(dv_exploded);
 
     //Velocity update

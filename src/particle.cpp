@@ -125,7 +125,7 @@ Spring::Spring(Particle* p1, Particle* p2, double ks, double kd){
     this->p2 = p2;
 }
 
-void Spring::addForce(){
+vec3 Spring::addForce(){
     vec3 diff = p2->position - p1->position;
     vec3 velDiff = p2->velocity - p1->velocity;
     double length = diff.norm();
@@ -143,6 +143,8 @@ void Spring::addForce(){
     //Adding the force
     p1->netForce += netForce/2;
     p2->netForce -= netForce/2;
+
+    return netForce;
 }
 
 
@@ -167,7 +169,7 @@ Edge::Edge(){
     this->spring = Spring();
 }
 
-void Edge::addForce(){
+vec3 Edge::addForce(){
     this->spring.p1 = this->startParticle;
     this->spring.p2 = this->twin->startParticle;
     return this->spring.addForce();
@@ -202,6 +204,9 @@ void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
     vec3 vij = s.p1->velocity - s.p2->velocity;
     double length = xij.norm();
 
+    //Calculating a reference spring force for debugging
+    vec3 refForce = s.addForce();
+
     //Force calculation
     //Spring Force
     double restLength = (s.p1->initPos - s.p2->initPos).norm();
@@ -216,7 +221,7 @@ void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
     //Jx calculation
     vec3 xij_cap = xij.normalized();
     mat3 dij = xij_cap * xij_cap.transpose();
-    mat3 J = (-1) * s.ks * ((1 / restLength - 1 / length) * (mat3::Identity() - dij) + (dij) / (restLength + DELTA));
+    mat3 J = (-1) * s.ks * ((1 / (restLength + DELTA) - 1 / (length + DELTA)) * (mat3::Identity() - dij) + (dij) / (restLength + DELTA));
     Jx(i,i) += J;
     Jx(i,j) -= J;
 

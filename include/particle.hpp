@@ -16,7 +16,7 @@ struct Spring {
     Spring(double ks, double kd);
     Spring(Particle* p1, Particle* p2);
     Spring(Particle* p1, Particle* p2, double ks, double kd);
-    void addForce();
+    vec3 addForce();
 };
 
 struct Edge{
@@ -29,7 +29,7 @@ struct Edge{
     bool isBoundary;
     Edge(Particle *startParticle, Face *face);
     Edge();
-    void addForce();
+    vec3 addForce();
 };
 
 //Face stores;

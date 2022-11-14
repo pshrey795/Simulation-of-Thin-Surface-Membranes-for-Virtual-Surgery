@@ -46,6 +46,9 @@ double power(double x, int n);
 //Overload << operator for vec2, vec3
 std::ostream& operator<<(std::ostream& os, const vec2& v);
 std::ostream& operator<<(std::ostream& os, const vec3& v);
+std::ostream& operator<<(std::ostream& os, const vecXf& A);
+std::ostream& operator<<(std::ostream& os, const mat3& A);
+std::ostream& operator<<(std::ostream& os, const matXf& A);
 
 //Eigen related functions for matrices and vectors
 vecX matVecMult(const matX& A, const vecX& x);
@@ -53,5 +56,9 @@ vecX scalarMult(const vecX& x, float s);
 matXf explodeMatrix(const matX& A);
 vecXf explodeVector(const vecX& x);
 vecX compressVector(const vecXf& x);
+
+//Debug Files
+extern string debugFile;
+extern ofstream debugStream;
 
 #endif
