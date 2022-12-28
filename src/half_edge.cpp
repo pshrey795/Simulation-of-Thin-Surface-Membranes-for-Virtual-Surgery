@@ -96,8 +96,130 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
         }
     }
 
+    assignInitialState();
     updateGhostSprings();
     redistributeMass();
+}
+
+HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<tuple<int, int, vec3>> constraints){
+    int n = Vertices.size();
+
+    for(unsigned int i=0;i<n;i++){
+        vector<int> adj;
+        for(unsigned int j=0;j<n;j++){
+            adj.push_back(-1);
+        }
+        this->adjList.push_back(adj); 
+    }
+
+    //Adding vertices
+    for(unsigned int i=0;i<Vertices.size();i++){
+        auto newParticle = new Particle(Vertices[i]);
+        newParticle->particleID = i;
+        this->particle_list.push_back(newParticle);
+    }
+
+    int i=0;
+    while(i < Indices.size()){
+        int a,b,c;
+
+        //Particle Indices
+        a = Indices[i];
+        b = Indices[i+1];
+        c = Indices[i+2];
+
+        //Create Face and Half Edges
+        struct Face* f = new Face(a,b,c,false);
+        struct Edge* e1 = new Edge(particle_list[a],f);
+        struct Edge* e2 = new Edge(particle_list[b],f);
+        struct Edge* e3 = new Edge(particle_list[c],f);
+
+        //Linking edges to vertices if not done already 
+        if(particle_list[a]->edge == NULL){
+            particle_list[a]->edge = e1;
+        }
+        if(particle_list[b]->edge == NULL){
+            particle_list[b]->edge = e2;
+        }
+        if(particle_list[c]->edge == NULL){
+            particle_list[c]->edge = e3;
+        }
+
+        //Log twin edge values for later linking
+        adjList[a][b] = i;
+        adjList[b][c] = i+1;
+        adjList[c][a] = i+2;
+
+        //VERY IMPORTANT
+        //Need to make sure that the indices are given in anti clockwise order
+        //This condition is required for rendering as well as remeshing algorithms
+
+        //Linking next and prev entries
+        e1->next = e2;
+        e2->next = e3;
+        e3->next = e1;
+        e1->prev = e3;
+        e2->prev = e1;
+        e3->prev = e2;
+
+        //Linking face to one of the half edges
+        f->edge = e1;
+        this->face_list.push_back(f);
+
+        //Adding half edges
+        this->edge_list.push_back(e1);
+        this->edge_list.push_back(e2);
+        this->edge_list.push_back(e3);
+
+        //Next iteration
+        i+=3;
+    }
+    int currentSize = this->edge_list.size();
+
+    //Linking twin edges
+    for(unsigned int a=0;a<n;a++){
+        for(unsigned int b=0;b<n;b++){
+            if(adjList[a][b] == -1){
+                if(adjList[b][a] != -1){
+                    auto v = this->edge_list[adjList[b][a]]->next->startParticle;
+                    struct Edge* newEdge = new Edge(v,NULL);
+                    newEdge->twin = this->edge_list[adjList[b][a]];
+                    this->edge_list[adjList[b][a]]->twin = newEdge;
+                    this->edge_list.push_back(newEdge);
+                    adjList[a][b] = currentSize++;
+                }
+            }else{
+                if(adjList[b][a] != -1){
+                    edge_list[adjList[a][b]]->twin = edge_list[adjList[b][a]];
+                }
+            }
+        }
+    }
+
+    assignInitialState();
+    updateGhostSprings();
+    redistributeMass();
+
+    //Adding constraints
+    for(unsigned int i=0;i<constraints.size();i++){
+        int type = get<1>(constraints[i]);
+        int index = get<0>(constraints[i]);
+        switch(type){
+            case 0:{
+                //zero DOF
+                this->constraints[index] = mat3::Zero();
+                break;
+            }case 1:{
+                //one DOF along given vector
+                vec3 v = get<2>(constraints[i]);
+                this->constraints[index] = v * v.transpose();
+            }case 2:{
+                //two DOF perp to given vector
+                vec3 v = get<2>(constraints[i]);
+                this->constraints[index] = mat3::Identity() - v * v.transpose();
+            }
+        }
+    }
 }
 
 //Constructor of Half Edge data structure from a list of vertices and faces
@@ -196,8 +318,17 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<b
             }
         }
     }
+
+    assignInitialState();
     updateGhostSprings();
     redistributeMass();
+}
+
+void HalfEdge::assignInitialState(){
+    // this->particle_list[0]->velocity = vec3(-100.0f,-100.0f,0.0f);
+    // this->particle_list[4]->velocity = vec3(-100.0f,100.0f,0.0f);
+    // this->particle_list[20]->velocity = vec3(100.0f,-100.0f,0.0f);
+    // this->particle_list[24]->velocity = vec3(100.0f,100.0f,0.0f);
 }
 
 //Intersection with a plane
@@ -1914,6 +2045,15 @@ void HalfEdge::solveBwdEuler(float dt){
         debugStream << (f_n(i)-particle_list[i]->netForce).norm() << endl;
     }
     debugStream << "\n\n\n";
+
+    //Applying constraints
+    for(auto constraint : this->constraints){
+        int index = constraint.first;
+        mat3 S = constraint.second;
+        f_n(index) = S * f_n(index);
+        Jx.row(index) = S * Jx.row(index);
+        Jv.row(index) = S * Jv.row(index);
+    }
 
     //Setup of the linear system
     //System Matrix(Dense version)

@@ -30,6 +30,20 @@ double power(double x, int n){
 }
 
 //Eigen related functions for matrices and vectors
+matX matMult(const matX& A, const matX& B){
+    matX res(A.rows(), B.cols());
+    for(int i = 0; i < A.rows(); i++){
+        for(int j = 0; j < B.cols(); j++){
+            mat3 matVal = mat3::Zero();
+            for(int k = 0; k < A.cols(); k++){
+                matVal += A(i,k)*B(k,j);
+            }
+            res(i,j) = matVal;
+        }
+    }
+    return res;
+}
+
 vecX matVecMult(const matX& A, const vecX& x){
     vecX res(A.rows());
     for(int i = 0; i < A.rows(); i++){

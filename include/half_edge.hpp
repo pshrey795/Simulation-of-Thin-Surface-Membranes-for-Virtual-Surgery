@@ -24,12 +24,17 @@ class HalfEdge {
         vector<Face*> face_list;
         vector<vector<int>> adjList;
     
+        //Constraints
+        unordered_map<int, mat3> constraints;
+
         //Dynamic information of the particles
         vector<Spring> ghostSprings;
 
         //Constructor 
         HalfEdge();
         HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices);
+        //Constraint tuple (index, type, free/constrained direction)
+        HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<tuple<int, int, vec3>> constraints);
         HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<bool> clamp);
 
         //Obtaining the intersection points of the edges
@@ -80,6 +85,7 @@ class HalfEdge {
         void resetForce();
         void updateGhostSprings();
         void redistributeMass();
+        void assignInitialState();
 
         //Solver for the system of equations
         void solveFwdEuler(float dt);

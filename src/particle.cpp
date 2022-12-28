@@ -45,7 +45,7 @@ Particle::Particle(vec3 pos, Edge* e, double mass){
 }
 
 vec3 Particle::calculateExternalForce(){
-    return (this->m * GRAVITY);
+    return (this->m * vec3(0.0f, 0.0f, -9.8f));
 }
 
 void Particle::updatePos(double dt){

@@ -22,7 +22,7 @@
 #define EPSILON 0.03
 #define DELTA 0.001
 #define MIN_DIFF 0.01
-#define GRAVITY vec3(0.0f, 0.0f, -9.8f)
+#define GRAVITY vec3(0.0f, 0.0f, 0.0f)
 
 using namespace std;
 using namespace Eigen;
@@ -44,6 +44,7 @@ double C(int n, int r);
 double power(double x, int n);
 
 //Eigen related functions for matrices and vectors
+matX matMult(const matX& A, const matX& B);
 vecX matVecMult(const matX& A, const vecX& x);
 vecX scalarMult(const vecX& x, float s);
 matXf explodeMatrix(const matX& A);

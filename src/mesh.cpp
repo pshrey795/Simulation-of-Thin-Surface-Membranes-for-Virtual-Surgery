@@ -10,6 +10,7 @@ Mesh::Mesh(){
     vector<vec3> vertices;
     vector<unsigned int> indices;
     vector<bool> clamp; 
+    vector<tuple<int, int, vec3>> constraints;
 
     // Sample mesh 1
     for(int i = 0;i < 5;i++){
@@ -17,6 +18,7 @@ Mesh::Mesh(){
             vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
             if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
                 clamp.push_back(true);
+                constraints.push_back(make_tuple(j + i*5, 0, vec3(0,0,0)));
             }else{
                 clamp.push_back(false);
             }
@@ -48,7 +50,8 @@ Mesh::Mesh(){
     // indices.push_back(1);
     
 
-    this->mesh = new HalfEdge(vertices, indices, clamp);  
+    this->mesh = new HalfEdge(vertices, indices, clamp); 
+    // this->mesh = new HalfEdge(vertices, indices, constraints); 
     // this->mesh = new HalfEdge(vertices, indices);
 
     checkSanity();
