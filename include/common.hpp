@@ -20,7 +20,7 @@
 #define DEFAULT_STIFFNESS 10.0f
 #define DEFAULT_DAMPING 5.0f
 #define EPSILON 0.03
-#define DELTA 0.1
+#define DELTA 0.001
 #define MIN_DIFF 0.01
 #define GRAVITY vec3(0.0f, 0.0f, -9.8f)
 
@@ -43,22 +43,11 @@ long long factorial(int n);
 double C(int n, int r);
 double power(double x, int n);
 
-//Overload << operator for vec2, vec3
-std::ostream& operator<<(std::ostream& os, const vec2& v);
-std::ostream& operator<<(std::ostream& os, const vec3& v);
-std::ostream& operator<<(std::ostream& os, const vecXf& A);
-std::ostream& operator<<(std::ostream& os, const mat3& A);
-std::ostream& operator<<(std::ostream& os, const matXf& A);
-
 //Eigen related functions for matrices and vectors
 vecX matVecMult(const matX& A, const vecX& x);
 vecX scalarMult(const vecX& x, float s);
 matXf explodeMatrix(const matX& A);
 vecXf explodeVector(const vecX& x);
 vecX compressVector(const vecXf& x);
-
-//Debug Files
-extern string debugFile;
-extern ofstream debugStream;
 
 #endif

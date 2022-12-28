@@ -132,10 +132,10 @@ vec3 Spring::addForce(){
 
     //Spring force
     double restLength = (p1->initPos - p2->initPos).norm();
-    double springForce = ks * (((length + DELTA) / (restLength + DELTA)) - 1);
+    double springForce = ks * (length - restLength);
 
     //Damping force
-    double dampForce = kd * ((velDiff.dot(diff) + DELTA) / (restLength * length + DELTA));
+    double dampForce = kd * ((velDiff.dot(diff) + DELTA) / (length + DELTA));
 
     //Net force
     vec3 netForce = (springForce + dampForce) * diff.normalized();
@@ -210,9 +210,9 @@ void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
     //Force calculation
     //Spring Force
     double restLength = (s.p1->initPos - s.p2->initPos).norm();
-    double springForce = (-1) * s.ks * (((length + DELTA) / (restLength + DELTA)) - 1);
+    double springForce = (-1) * s.ks * (length - restLength);
     //Damping Force 
-    double dampForce = (-1) * s.kd * ((vij.dot(xij) + DELTA) / (restLength * length + DELTA));
+    double dampForce = (-1) * s.kd * ((vij.dot(xij) + DELTA) / (length + DELTA));
     //Net Force
     vec3 netForce = (springForce + dampForce) * xij.normalized();
     //Update force
@@ -221,7 +221,8 @@ void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
     //Jx calculation
     vec3 xij_cap = xij.normalized();
     mat3 dij = xij_cap * xij_cap.transpose();
-    mat3 J = (-1) * s.ks * ((1 - (restLength + DELTA) / (length + DELTA)) * (mat3::Identity() - dij) + (dij) / (restLength + DELTA));
+    double factor = max(0.0, (1 - (restLength + DELTA) / (length + DELTA)));
+    mat3 J = (-1) * s.ks * (factor * (mat3::Identity() - dij) + (dij));
     Jx(i,i) += J;
     Jx(i,j) -= J;
 

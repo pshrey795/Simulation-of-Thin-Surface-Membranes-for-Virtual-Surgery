@@ -1841,7 +1841,7 @@ void HalfEdge::solveFwdEuler(float dt){
     //2) Velocity update
     for(unsigned int i = 0; i < particle_list.size(); i++){
         if(!particle_list[i]->isFixed){
-            particle_list[i]->velocity += particle_list[i]->netForce * dt * particle_list[i]->invM;
+            particle_list[i]->velocity += (particle_list[i]->netForce * dt * particle_list[i]->invM);
         }
     }
 }
@@ -1911,8 +1911,9 @@ void HalfEdge::solveBwdEuler(float dt){
         f_n(i) += f_ext;
         particle_list[i]->netForce += f_ext;
         //Debugging
-        // cout << (f_n(i)-particle_list[i]->netForce).norm() << endl;
+        debugStream << (f_n(i)-particle_list[i]->netForce).norm() << endl;
     }
+    debugStream << "\n\n\n";
 
     //Setup of the linear system
     //System Matrix(Dense version)
