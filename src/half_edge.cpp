@@ -211,12 +211,14 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<t
                 break;
             }case 1:{
                 //one DOF along given vector
-                vec3 v = get<2>(constraints[i]);
+                vec3 v = get<2>(constraints[i]).normalized();
                 this->constraints[index] = v * v.transpose();
+                break;
             }case 2:{
                 //two DOF perp to given vector
-                vec3 v = get<2>(constraints[i]);
+                vec3 v = get<2>(constraints[i]).normalized();
                 this->constraints[index] = mat3::Identity() - v * v.transpose();
+                break;
             }
         }
     }
@@ -2013,10 +2015,6 @@ void HalfEdge::solveBwdEuler(float dt){
 
     //Force calculation
     //Obtaining force vector 
-    //Debugging Info:
-    //1) Force calculation is correct
-    //2) Jx pending
-    //3) Jv pending
     this->resetForce(); 
     for(int i = 0; i < systemSize; i++){
         f_n(i) = vec3(0,0,0);
@@ -2041,25 +2039,35 @@ void HalfEdge::solveBwdEuler(float dt){
         vec3 f_ext = particle_list[i]->calculateExternalForce();
         f_n(i) += f_ext;
         particle_list[i]->netForce += f_ext;
-        //Debugging
-        debugStream << (f_n(i)-particle_list[i]->netForce).norm() << endl;
     }
-    debugStream << "\n\n\n";
 
     //Applying constraints
-    for(auto constraint : this->constraints){
-        int index = constraint.first;
-        mat3 S = constraint.second;
-        f_n(index) = S * f_n(index);
-        Jx.row(index) = S * Jx.row(index);
-        Jv.row(index) = S * Jv.row(index);
-    }
+    //Debugging 
+    //1) Constrained force value: Correct
+    //2) Constrained Jacobian: Correct
+    // for(auto constraint : this->constraints){
+    //     int index = constraint.first;
+    //     mat3 S = constraint.second;
+    //     f_n(index) = S * f_n(index);
+    //     for(int i = 0; i < systemSize; i++){
+    //         Jx(index,i) = S * Jx(index,i);
+    //         Jv(index,i) = S * Jv(index,i);
+    //         if(i != index){
+    //             Jx(i, index) = S * Jx(i, index);
+    //             Jv(i, index) = S * Jv(i, index);
+    //         }
+    //     }
+    // }
 
     //Setup of the linear system
     //System Matrix(Dense version)
     matX A = M - (dt * mat3::Identity()) * Jv - (dt * dt * mat3::Identity()) * Jx;
     //RHS of the equation
     vecX b = scalarMult(f_n + scalarMult(matVecMult(Jx, v_n),dt),dt);
+
+    //Debugging constrained particles
+    //1) Constrained A value should be equal to the mass of the particle: Correct
+    //2) Constrained b value should be equal to zero: Correct
 
     //Currently, the entire system is in block form
     //Need to expand it in all dimensions and convert in into sparse form before passing it to the solver
@@ -2082,13 +2090,18 @@ void HalfEdge::solveBwdEuler(float dt){
     }
     vecX dv(systemSize);
     dv = compressVector(dv_exploded);
+    //What if we directly constrain the acceleration instead of constraining the force?
+    //The other method doesn't seem to work for DOF 2
+    for(auto constraint : this->constraints){
+        int index = constraint.first;
+        mat3 S = constraint.second;
+        dv(index) = S * dv(index);
+    }
     v_n += dv;
 
     //Velocity update
     for(unsigned int i = 0; i < systemSize; i++){
-        if(!particle_list[i]->isFixed){
-            particle_list[i]->velocity = v_n(i);
-        }
+        particle_list[i]->velocity = v_n(i);
     }
 }
 

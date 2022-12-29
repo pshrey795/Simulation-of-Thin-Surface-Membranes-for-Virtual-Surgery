@@ -18,12 +18,16 @@ Mesh::Mesh(){
             vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
             if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
                 clamp.push_back(true);
-                constraints.push_back(make_tuple(j + i*5, 0, vec3(0,0,0)));
             }else{
                 clamp.push_back(false);
             }
         }
     }
+
+    constraints.push_back(make_tuple(0, 0, vec3(1.0f, 1.0f, 0.0f)));
+    constraints.push_back(make_tuple(4, 0, vec3(1.0f, -1.0f, 0.0f)));
+    constraints.push_back(make_tuple(20, 0, vec3(1.0f, -1.0f, 0.0f)));
+    constraints.push_back(make_tuple(24, 0, vec3(1.0f, 1.0f, 0.0f)));
 
     for(int i = 0;i < 4;i++){
         for(int j = 0;j < 4;j++){
@@ -50,8 +54,8 @@ Mesh::Mesh(){
     // indices.push_back(1);
     
 
-    this->mesh = new HalfEdge(vertices, indices, clamp); 
-    // this->mesh = new HalfEdge(vertices, indices, constraints); 
+    // this->mesh = new HalfEdge(vertices, indices, clamp); 
+    this->mesh = new HalfEdge(vertices, indices, constraints); 
     // this->mesh = new HalfEdge(vertices, indices);
 
     checkSanity();
