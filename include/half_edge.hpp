@@ -33,9 +33,7 @@ class HalfEdge {
         //Constructor 
         HalfEdge();
         HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices);
-        //Constraint tuple (index, type, free/constrained direction)
-        HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<tuple<int, int, vec3>> constraints);
-        HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<bool> clamp);
+        HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, unordered_map<int, vec3> Constraints);
 
         //Obtaining the intersection points of the edges
         //Each element is a tuple with the following elements

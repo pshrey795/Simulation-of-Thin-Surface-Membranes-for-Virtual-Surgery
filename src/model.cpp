@@ -93,6 +93,15 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene){
     }
 
     Mesh* new_mesh = new Mesh(vertices, indices);
+    new_mesh->meshType = 1;
+
+    //Process Material
+    if(mesh->mMaterialIndex >= 0){
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+        aiColor3D color(0.0f, 0.0f, 0.0f);
+        material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+        new_mesh->mat = Material(vec3(color.r, color.g, color.b));
+    }
 
     return new_mesh;
 }

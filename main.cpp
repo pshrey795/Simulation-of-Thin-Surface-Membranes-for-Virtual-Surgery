@@ -5,7 +5,10 @@ using namespace std;
 Window window;
 Camera camera;
 Lighting lighting;
+
+//Scene Objects
 Model model;
+Model model2;
 
 //Rendering Modes
 int mode = 0;
@@ -33,6 +36,7 @@ void drawWorld() {
     drawEnv();
     setColor(vec3(0.7,0.7,0.7));
     model.renderModel();
+    model2.renderModel();
     setColor(vec3(0,0,0));
 }
 
@@ -67,15 +71,18 @@ int main(int argc, char **argv) {
     window.onKeyPress(keyPressed);
     camera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
     lighting.createDefault();
-    
+    model2 = Model("objects/sphere.obj");
+
     processInput(argc, argv);
 
     while (!window.shouldClose()) {
         camera.processInput(window);
         model.processInput(window);
+        model2.processInput(window);
         if (!paused){
             update(dt);
             model.update(dt);
+            model2.update(dt);
         }
         window.prepareDisplay();
         drawWorld();

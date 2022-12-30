@@ -7,7 +7,6 @@ Particle::Particle(vec3 pos, double mass){
     this->invM = 1 / mass;
     this->velocity = vec3(0.0f,0.0f,0.0f);
     this->netForce = vec3(0.0f,0.0f,0.0f);
-    this->isFixed = false;
     this->edge = NULL;
 }
 
@@ -18,7 +17,6 @@ Particle::Particle(vec3 pos, vec3 initPos, double mass){
     this->invM = 1 / mass;
     this->velocity = vec3(0.0f,0.0f,0.0f);
     this->netForce = vec3(0.0f,0.0f,0.0f);
-    this->isFixed = false;
     this->edge = NULL;
 }
 
@@ -29,7 +27,6 @@ Particle::Particle(vec3 pos, vec3 initPos, vec3 initVel, double mass){
     this->invM = 1 / mass;
     this->velocity = initVel;
     this->netForce = vec3(0.0f,0.0f,0.0f);
-    this->isFixed = false;
     this->edge = NULL;
 }
 
@@ -40,7 +37,6 @@ Particle::Particle(vec3 pos, Edge* e, double mass){
     this->invM = 1 / mass;
     this->velocity = vec3(0.0f,0.0f,0.0f);
     this->netForce = vec3(0.0f,0.0f,0.0f);
-    this->isFixed = false;
     this->edge = e;
 }
 
@@ -194,6 +190,15 @@ Face::Face(int a, int b, int c, bool isRemeshed){
     indices[2] = c;
     reMeshed = isRemeshed;
     edge = NULL;
+}
+
+Constraint::Constraint(){
+    isActive = false;
+}
+
+Constraint::Constraint(vec3 velocity){
+    this->velocity = velocity;
+    isActive = true;
 }
 
 //Calculating forces/Jacobians for implicit integration

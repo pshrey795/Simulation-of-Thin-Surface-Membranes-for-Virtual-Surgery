@@ -10,51 +10,34 @@ Mesh::Mesh(){
     vector<vec3> vertices;
     vector<unsigned int> indices;
     vector<bool> clamp; 
-    vector<tuple<int, int, vec3>> constraints;
+    unordered_map<int, vec3> constraints;
 
-    // Sample mesh 1
-    for(int i = 0;i < 5;i++){
-        for(int j = 0;j < 5;j++){
-            vertices.push_back(vec3(i*2 - 4.0f,j*2 - 4.0f,0));
-            if((i==0 && j==0) || (i==4 && j==0) || (i==0 && j==4) || (i==4 && j==4)){
-                clamp.push_back(true);
-            }else{
-                clamp.push_back(false);
-            }
+    int n = 5;
+    double f = 8.0 / (double)(n-1);
+
+    for(int i = 0;i < n;i++){
+        for(int j = 0;j < n;j++){
+            vertices.push_back(vec3(i*f - 4.0,j*f - 4.0,0));
         }
     }
 
-    constraints.push_back(make_tuple(0, 0, vec3(1.0f, 1.0f, 0.0f)));
-    constraints.push_back(make_tuple(4, 0, vec3(1.0f, -1.0f, 0.0f)));
-    constraints.push_back(make_tuple(20, 0, vec3(1.0f, -1.0f, 0.0f)));
-    constraints.push_back(make_tuple(24, 0, vec3(1.0f, 1.0f, 0.0f)));
+    constraints[0] = vec3(0.0f, 0.0f, 0.0f);
+    constraints[n-1] = vec3(0.0f, 0.0f, 0.0f);
+    constraints[n*n-n] = vec3(0.0f, 0.0f, 0.0f);
+    constraints[n*n-1] = vec3(0.0f, 0.0f, 0.0f);
 
-    for(int i = 0;i < 4;i++){
-        for(int j = 0;j < 4;j++){
-            indices.push_back(i*5+j);
-            indices.push_back((i+1)*5 + j);
-            indices.push_back((i+1)*5 + j+1);
-            indices.push_back(i*5+j);
-            indices.push_back((i+1)*5 + j+1);
-            indices.push_back(i*5 + j + 1);
+
+    for(int i = 0;i < n-1;i++){
+        for(int j = 0;j < n-1;j++){
+            indices.push_back(i*n+j);
+            indices.push_back((i+1)*n + j);
+            indices.push_back((i+1)*n + j+1);
+            indices.push_back(i*n+j);
+            indices.push_back((i+1)*n + j+1);
+            indices.push_back(i*n + j + 1);
         }
     }
 
-    //Sample mesh 2(For debugging purposes)
-    // vertices.push_back(vec3(-4,4,0));
-    // vertices.push_back(vec3(4,4,0));
-    // vertices.push_back(vec3(4,-4,0));
-    // vertices.push_back(vec3(-4,-4,0));
-
-    // indices.push_back(0);
-    // indices.push_back(3);
-    // indices.push_back(1);
-    // indices.push_back(3);
-    // indices.push_back(2);
-    // indices.push_back(1);
-    
-
-    // this->mesh = new HalfEdge(vertices, indices, clamp); 
     this->mesh = new HalfEdge(vertices, indices, constraints); 
     // this->mesh = new HalfEdge(vertices, indices);
 
@@ -72,28 +55,38 @@ Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
 //Mesh Update
 void Mesh::update(float dt){
     //Update the mesh
-    count = (count + 1) % 2;
-    if(isPlaying){
-        if(count == 0){
-            if(currIntersectIdx < intersectPts.size()){
-                if(currIntersectIdx == 0){
-                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                }else if(currIntersectIdx == intersectPts.size()-1){
-                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                }else{
-                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                }
-                checkSanity();
-                currIntersectIdx++;
-            }else{
-                // isPlaying = false;
+    if(meshType){
+        //Instrument
+        if(activatePhysics){
+            for(int i = 0; i < mesh->particle_list.size(); i++){
+                mesh->particle_list[i]->position += vec3(0.0f,0.0f,-2.0f) * dt;
             }
         }
-    }
-    if(activatePhysics && !isPlaying){
-        this->mesh->updateMesh(dt, timeIntegrationType);
+    }else{
+        //Membrane
+        count = (count + 1) % 2;
+        if(isPlaying){
+            if(count == 0){
+                if(currIntersectIdx < intersectPts.size()){
+                    if(currIntersectIdx == 0){
+                        auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                        this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+                    }else if(currIntersectIdx == intersectPts.size()-1){
+                        auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                        this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+                    }else{
+                        this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+                    }
+                    checkSanity();
+                    currIntersectIdx++;
+                }else{
+                    // isPlaying = false;
+                }
+            }
+        }
+        if(activatePhysics && !isPlaying){
+            this->mesh->updateMesh(dt, timeIntegrationType);
+        }
     }
 }
 
@@ -269,7 +262,7 @@ void Mesh::renderMesh(){
         vec3 v1 = mesh->particle_list[f->indices[0]]->position;
         vec3 v2 = mesh->particle_list[f->indices[1]]->position;
         vec3 v3 = mesh->particle_list[f->indices[2]]->position;
-        setColor(vec3(1.0f, 0.0f, 0.0f));
+        setColor(mat.albedo);
         drawTri(v1,v2,v3);
 
         if(drawRefMesh){

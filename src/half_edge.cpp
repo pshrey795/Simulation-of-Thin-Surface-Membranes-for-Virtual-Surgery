@@ -101,7 +101,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
     redistributeMass();
 }
 
-HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<tuple<int, int, vec3>> constraints){
+HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, unordered_map<int, vec3> Constraints){
     int n = Vertices.size();
 
     for(unsigned int i=0;i<n;i++){
@@ -118,130 +118,13 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<t
         newParticle->particleID = i;
         this->particle_list.push_back(newParticle);
     }
-
-    int i=0;
-    while(i < Indices.size()){
-        int a,b,c;
-
-        //Particle Indices
-        a = Indices[i];
-        b = Indices[i+1];
-        c = Indices[i+2];
-
-        //Create Face and Half Edges
-        struct Face* f = new Face(a,b,c,false);
-        struct Edge* e1 = new Edge(particle_list[a],f);
-        struct Edge* e2 = new Edge(particle_list[b],f);
-        struct Edge* e3 = new Edge(particle_list[c],f);
-
-        //Linking edges to vertices if not done already 
-        if(particle_list[a]->edge == NULL){
-            particle_list[a]->edge = e1;
-        }
-        if(particle_list[b]->edge == NULL){
-            particle_list[b]->edge = e2;
-        }
-        if(particle_list[c]->edge == NULL){
-            particle_list[c]->edge = e3;
-        }
-
-        //Log twin edge values for later linking
-        adjList[a][b] = i;
-        adjList[b][c] = i+1;
-        adjList[c][a] = i+2;
-
-        //VERY IMPORTANT
-        //Need to make sure that the indices are given in anti clockwise order
-        //This condition is required for rendering as well as remeshing algorithms
-
-        //Linking next and prev entries
-        e1->next = e2;
-        e2->next = e3;
-        e3->next = e1;
-        e1->prev = e3;
-        e2->prev = e1;
-        e3->prev = e2;
-
-        //Linking face to one of the half edges
-        f->edge = e1;
-        this->face_list.push_back(f);
-
-        //Adding half edges
-        this->edge_list.push_back(e1);
-        this->edge_list.push_back(e2);
-        this->edge_list.push_back(e3);
-
-        //Next iteration
-        i+=3;
-    }
-    int currentSize = this->edge_list.size();
-
-    //Linking twin edges
-    for(unsigned int a=0;a<n;a++){
-        for(unsigned int b=0;b<n;b++){
-            if(adjList[a][b] == -1){
-                if(adjList[b][a] != -1){
-                    auto v = this->edge_list[adjList[b][a]]->next->startParticle;
-                    struct Edge* newEdge = new Edge(v,NULL);
-                    newEdge->twin = this->edge_list[adjList[b][a]];
-                    this->edge_list[adjList[b][a]]->twin = newEdge;
-                    this->edge_list.push_back(newEdge);
-                    adjList[a][b] = currentSize++;
-                }
-            }else{
-                if(adjList[b][a] != -1){
-                    edge_list[adjList[a][b]]->twin = edge_list[adjList[b][a]];
-                }
-            }
-        }
-    }
-
-    assignInitialState();
-    updateGhostSprings();
-    redistributeMass();
 
     //Adding constraints
-    for(unsigned int i=0;i<constraints.size();i++){
-        int type = get<1>(constraints[i]);
-        int index = get<0>(constraints[i]);
-        switch(type){
-            case 0:{
-                //zero DOF
-                this->constraints[index] = mat3::Zero();
-                break;
-            }case 1:{
-                //one DOF along given vector
-                vec3 v = get<2>(constraints[i]).normalized();
-                this->constraints[index] = v * v.transpose();
-                break;
-            }case 2:{
-                //two DOF perp to given vector
-                vec3 v = get<2>(constraints[i]).normalized();
-                this->constraints[index] = mat3::Identity() - v * v.transpose();
-                break;
-            }
-        }
-    }
-}
-
-//Constructor of Half Edge data structure from a list of vertices and faces
-HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, vector<bool> clamp){
-    int n = Vertices.size();
-
-    for(unsigned int i=0;i<n;i++){
-        vector<int> adj;
-        for(unsigned int j=0;j<n;j++){
-            adj.push_back(-1);
-        }
-        this->adjList.push_back(adj); 
-    }
-
-    //Adding vertices
-    for(unsigned int i=0;i<Vertices.size();i++){
-        auto newParticle = new Particle(Vertices[i]);
-        newParticle->isFixed = clamp[i];
-        newParticle->particleID = i;
-        this->particle_list.push_back(newParticle);
+    for(auto c : Constraints){
+        int id = c.first;
+        vec3 vel = c.second;
+        particle_list[id]->velocity = vel;
+        particle_list[id]->constraint = Constraint(vel);
     }
 
     int i=0;
@@ -1973,7 +1856,7 @@ void HalfEdge::solveFwdEuler(float dt){
 
     //2) Velocity update
     for(unsigned int i = 0; i < particle_list.size(); i++){
-        if(!particle_list[i]->isFixed){
+        if(!particle_list[i]->constraint.isActive){
             particle_list[i]->velocity += (particle_list[i]->netForce * dt * particle_list[i]->invM);
         }
     }
@@ -2041,33 +1924,29 @@ void HalfEdge::solveBwdEuler(float dt){
         particle_list[i]->netForce += f_ext;
     }
 
-    //Applying constraints
-    //Debugging 
-    //1) Constrained force value: Correct
-    //2) Constrained Jacobian: Correct
-    // for(auto constraint : this->constraints){
-    //     int index = constraint.first;
-    //     mat3 S = constraint.second;
-    //     f_n(index) = S * f_n(index);
-    //     for(int i = 0; i < systemSize; i++){
-    //         Jx(index,i) = S * Jx(index,i);
-    //         Jv(index,i) = S * Jv(index,i);
-    //         if(i != index){
-    //             Jx(i, index) = S * Jx(i, index);
-    //             Jv(i, index) = S * Jv(i, index);
-    //         }
-    //     }
-    // }
-
     //Setup of the linear system
     //System Matrix(Dense version)
     matX A = M - (dt * mat3::Identity()) * Jv - (dt * dt * mat3::Identity()) * Jx;
     //RHS of the equation
     vecX b = scalarMult(f_n + scalarMult(matVecMult(Jx, v_n),dt),dt);
 
-    //Debugging constrained particles
-    //1) Constrained A value should be equal to the mass of the particle: Correct
-    //2) Constrained b value should be equal to zero: Correct
+    //Handling constraints
+    //1) Removing equations corresponding to the constraints
+    int numConstraints = 0;
+    // for(int i = 0; i < systemSize; i++){
+    //     if(particle_list[i]->constraint.isActive){
+    //         int idx = i - numConstraints;
+    //         //Add the contribution of the column to be removed on the RHS
+    //         for(int j = 0; j < systemSize - numConstraints; j++){
+    //             b(j) = b(j) - A(j,idx) * particle_list[i]->constraint.velocity;
+    //         }
+    //         //Delete the row and column in A and b, corresponding to the constraint
+    //         removeColumn(A, idx);
+    //         removeRow(A, idx);
+    //         removeRow(b, idx);
+    //         numConstraints++;
+    //     }
+    // }
 
     //Currently, the entire system is in block form
     //Need to expand it in all dimensions and convert in into sparse form before passing it to the solver
@@ -2083,25 +1962,23 @@ void HalfEdge::solveBwdEuler(float dt){
     if(solver.info() != Eigen::Success){
         cout << "Eigen factorization failed!" << endl; 
     }
-    vecXf dv_exploded(3 * systemSize);
+    vecXf dv_exploded(3 * (systemSize - numConstraints));
     dv_exploded = solver.solve(b_exploded);
     if(solver.info() != Eigen::Success){
         cout << "Eigen solve failed!" << endl; 
     }
-    vecX dv(systemSize);
+    vecX dv(systemSize - numConstraints);
     dv = compressVector(dv_exploded);
-    //What if we directly constrain the acceleration instead of constraining the force?
-    //The other method doesn't seem to work for DOF 2
-    for(auto constraint : this->constraints){
-        int index = constraint.first;
-        mat3 S = constraint.second;
-        dv(index) = S * dv(index);
-    }
-    v_n += dv;
 
     //Velocity update
-    for(unsigned int i = 0; i < systemSize; i++){
-        particle_list[i]->velocity = v_n(i);
+    numConstraints = 0;
+    for(int i = 0; i < particle_list.size(); i++){
+        if(particle_list[i]->constraint.isActive){
+            particle_list[i]->velocity = particle_list[i]->constraint.velocity;
+            // numConstraints++;
+        }else{
+            particle_list[i]->velocity += dv(i - numConstraints);
+        }
     }
 }
 

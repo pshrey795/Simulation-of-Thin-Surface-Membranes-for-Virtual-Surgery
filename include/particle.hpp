@@ -45,6 +45,14 @@ struct Face{
     Face();
 };
 
+//Stores the details of a velocity constraint
+struct Constraint{
+    bool isActive;
+    vec3 velocity;
+    Constraint();
+    Constraint(vec3 velocity);
+};
+
 enum TimeIntegrationType {
     FWD_EULER,
     BWD_EULER,
@@ -62,7 +70,6 @@ class Particle {
         vec3 velocity; 
         vec3 netForce;
         Edge* edge;
-        bool isFixed;           //Flag to check if the particle is fixed or not
         Particle(vec3 pos, double mass = DEFAULT_MASS);
         Particle(vec3 pos, vec3 initPos, double mass = DEFAULT_MASS);
         Particle(vec3 pos, vec3 initPos, vec3 initVel, double mass = DEFAULT_MASS);
@@ -81,6 +88,9 @@ class Particle {
 
         //For intersection purposes 
         double offset = 0.0f;
+
+        //Constraint status
+        Constraint constraint;
 
 };
 

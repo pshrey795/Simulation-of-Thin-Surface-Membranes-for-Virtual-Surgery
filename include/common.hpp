@@ -17,8 +17,8 @@
 
 #define DEFAULT_MASS 1.0f
 #define DEFAULT_DENISTY 0.35f
-#define DEFAULT_STIFFNESS 10.0f
-#define DEFAULT_DAMPING 5.0f
+#define DEFAULT_STIFFNESS 20.0f
+#define DEFAULT_DAMPING 10.0f
 #define EPSILON 0.03
 #define DELTA 0.001
 #define MIN_DIFF 0.01
@@ -50,5 +50,8 @@ vecX scalarMult(const vecX& x, float s);
 matXf explodeMatrix(const matX& A);
 vecXf explodeVector(const vecX& x);
 vecX compressVector(const vecXf& x);
+void removeRow(matX matrix, unsigned int rowToRemove);
+void removeRow(vecX vector, unsigned int rowToRemove);
+void removeColumn(matX matrix, unsigned int colToRemove);
 
 #endif

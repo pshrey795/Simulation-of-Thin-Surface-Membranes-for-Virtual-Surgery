@@ -7,12 +7,10 @@
 #include "path.hpp"
 #include "half_edge.hpp"
 #include "lighting.hpp"
+#include "material.hpp"
+
 using namespace std;
 using namespace Eigen;
-
-struct Material {
-    //To be filled depending on the properties to be captured 
-};
 
 class Mesh {
     private:
@@ -26,7 +24,6 @@ class Mesh {
 
         //Mesh Parameters
         HalfEdge *mesh;
-        Material mat;
 
         //Path Parameters
         Path* currentPath = NULL;
@@ -71,6 +68,11 @@ class Mesh {
         //Debugging
         void printMeshInfo();
 
+        //Material Properties
+        Material mat;
+
+        //Mesh type
+        int meshType = 0;
 };
 
 #endif
