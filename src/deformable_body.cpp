@@ -1,7 +1,7 @@
-#include "../include/mesh.hpp"
+#include "../include/deformable_body.hpp"
 
 //Mesh constructor
-Mesh::Mesh(){                       
+DeformableBody::DeformableBody(){                       
     //Using a sample mesh
     upVec = vec3(0,0,1);
     drawRefMesh = false;
@@ -12,7 +12,7 @@ Mesh::Mesh(){
     vector<bool> clamp; 
     unordered_map<int, vec3> constraints;
 
-    int n = 5;
+    int n = 20;
     double f = 8.0 / (double)(n-1);
 
     for(int i = 0;i < n;i++){
@@ -44,54 +44,35 @@ Mesh::Mesh(){
     checkSanity();
 }
 
-Mesh::Mesh(vector<vec3> vertices, vector<unsigned int> indices){
-    //A mesh specified using Assimp 
-    this->mesh = new HalfEdge(vertices, indices);
-    drawRefMesh = false;
-    debug = false;
-    checkSanity();
-}
-
 //Mesh Update
-void Mesh::update(float dt){
-    //Update the mesh
-    if(meshType){
-        //Instrument
-        if(activatePhysics){
-            for(int i = 0; i < mesh->particle_list.size(); i++){
-                mesh->particle_list[i]->position += vec3(0.0f,0.0f,-2.0f) * dt;
-            }
-        }
-    }else{
-        //Membrane
-        count = (count + 1) % 2;
-        if(isPlaying){
-            if(count == 0){
-                if(currIntersectIdx < intersectPts.size()){
-                    if(currIntersectIdx == 0){
-                        auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                        this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                    }else if(currIntersectIdx == intersectPts.size()-1){
-                        auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                        this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                    }else{
-                        this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                    }
-                    checkSanity();
-                    currIntersectIdx++;
+void DeformableBody::update(float dt){
+    count = (count + 1) % 2;
+    if(isPlaying){
+        if(count == 0){
+            if(currIntersectIdx < intersectPts.size()){
+                if(currIntersectIdx == 0){
+                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                    this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+                }else if(currIntersectIdx == intersectPts.size()-1){
+                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
                 }else{
-                    // isPlaying = false;
+                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
                 }
+                checkSanity();
+                currIntersectIdx++;
+            }else{
+                // isPlaying = false;
             }
         }
-        if(activatePhysics && !isPlaying){
-            this->mesh->updateMesh(dt, timeIntegrationType);
-        }
+    }
+    if(activatePhysics && !isPlaying){
+        this->mesh->updateMesh(dt, timeIntegrationType);
     }
 }
 
 //Setting up the path for cut/tear
-void Mesh::setupPath(){
+void DeformableBody::setupPath(){
     //Custom path
     currentPath = new Path();
     vector<vec3> inputPts;
@@ -136,7 +117,7 @@ void Mesh::setupPath(){
     currIntersectIdx = 0;
 }
 
-void Mesh::setupCut(){
+void DeformableBody::setupCut(){
     //Define a sample plane
     Plane p(vec3(-4.0f, 6.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
 
@@ -160,7 +141,7 @@ void Mesh::setupCut(){
 }
 
 //Mesh Process Input
-void Mesh::processInput(Window &window){
+void DeformableBody::processInput(Window &window){
     GLFWwindow *win = window.window;
     if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
         if(!isPlaying){
@@ -182,7 +163,7 @@ void Mesh::processInput(Window &window){
     }
 }
 
-void Mesh::removeDuplicates(vector<tuple<vec3,int,int>> &vertices){
+void DeformableBody::removeDuplicates(vector<tuple<vec3,int,int>> &vertices){
     int i = 0;
     while(i < vertices.size()-1){
         if(get<0>(vertices[i]) == get<0>(vertices[i+1])){
@@ -197,7 +178,7 @@ void Mesh::removeDuplicates(vector<tuple<vec3,int,int>> &vertices){
     }
 }
 
-void Mesh::removeFacePts(vector<tuple<vec3, int, int>> &vertices){
+void DeformableBody::removeFacePts(vector<tuple<vec3, int, int>> &vertices){
     int i = 1;
     while(i < vertices.size() - 1){
         if(get<1>(vertices[i]) == 2){
@@ -209,7 +190,7 @@ void Mesh::removeFacePts(vector<tuple<vec3, int, int>> &vertices){
 }
 
 //Filter intersection points
-vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> intersections, vec3 startPoint, vec3 endPoint,bool first){
+vector<tuple<vec3,int,int>> DeformableBody::filterAndSort(vector<tuple<vec3,int,int>> intersections, vec3 startPoint, vec3 endPoint,bool first){
     vector<tuple<vec3,int,int>> filteredIntersections;
     vec3 direction = endPoint - startPoint;
     double lowerBound = direction.dot(startPoint - startPoint);
@@ -237,7 +218,7 @@ vector<tuple<vec3,int,int>> Mesh::filterAndSort(vector<tuple<vec3,int,int>> inte
     return filteredIntersections;
 }
 
-vector<tuple<vec3, int, int>> Mesh::dirSort(vector<tuple<vec3, int, int>> intersections, Plane p){
+vector<tuple<vec3, int, int>> DeformableBody::dirSort(vector<tuple<vec3, int, int>> intersections, Plane p){
     vec3 direction = get<0>(intersections[0]) - p.origin;
     auto directionSort = [direction, p] (tuple<vec3, int, int> a, tuple<vec3, int, int> b) -> bool
     {
@@ -250,7 +231,7 @@ vector<tuple<vec3, int, int>> Mesh::dirSort(vector<tuple<vec3, int, int>> inters
 }
 
 //Rendering the mesh
-void Mesh::renderMesh(){
+void DeformableBody::renderMesh(){
     int n = mesh->face_list.size();
     int m = mesh->edge_list.size();
 
@@ -262,7 +243,7 @@ void Mesh::renderMesh(){
         vec3 v1 = mesh->particle_list[f->indices[0]]->position;
         vec3 v2 = mesh->particle_list[f->indices[1]]->position;
         vec3 v3 = mesh->particle_list[f->indices[2]]->position;
-        setColor(mat.albedo);
+        setColor(vec3(1.0f, 0.0f, 0.0f));
         drawTri(v1,v2,v3);
 
         if(drawRefMesh){
@@ -305,7 +286,7 @@ void Mesh::renderMesh(){
 }
 
 //Checking sanity of the half-edge data structure after every update
-bool Mesh::checkSanity(){
+bool DeformableBody::checkSanity(){
     if(debug){
         cout << "Checking sanity...\n";
         auto particles = this->mesh->particle_list;
@@ -413,7 +394,7 @@ bool Mesh::checkSanity(){
     return true;
 }
 
-void Mesh::printMeshInfo(){
+void DeformableBody::printMeshInfo(){
     for(int i=0;i<this->mesh->particle_list.size();i++){
         Particle* p = this->mesh->particle_list[i];
         cout << p->particleID << endl;

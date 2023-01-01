@@ -12,6 +12,7 @@
         "unordered_map": "cpp",
         "unordered_set": "cpp",
         "vector": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "ostream": "cpp"
     }
 }

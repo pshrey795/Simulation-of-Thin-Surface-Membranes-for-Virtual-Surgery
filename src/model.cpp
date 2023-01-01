@@ -1,7 +1,7 @@
 #include "../include/model.hpp"
 
 Model::Model(){
-    meshes.push_back(new Mesh());
+    meshes.push_back(new RigidBody());
 }
 
 Model::Model(string file_path){
@@ -11,30 +11,6 @@ Model::Model(string file_path){
 void Model::update(float dt){
     for(int i = 0;i < meshes.size();i++){
         meshes[i]->update(dt);
-    }
-}
-
-void Model::setDrawMode(int drawMode){
-    for(int i = 0;i < meshes.size();i++){
-        meshes[i]->drawMode = drawMode;
-    }
-}
-
-void Model::setSplitMode(int splitMode){
-    for(int i = 0;i < meshes.size();i++){
-        meshes[i]->splitMode = splitMode;
-    }
-}
-
-void Model::activateRefMesh(){
-    for(int i=0;i<meshes.size();i++){
-        meshes[i]->drawRefMesh = true;
-    }
-}
-
-void Model::deactivateRefMesh(){
-    for(int i=0;i<meshes.size();i++){
-        meshes[i]->drawRefMesh = false;
     }
 }
 
@@ -71,7 +47,7 @@ void Model::processNode(aiNode* node, const aiScene* scene){
     }
 }
 
-Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene){
+RigidBody* Model::processMesh(aiMesh* mesh, const aiScene* scene){
     vector<vec3> vertices; 
     vector<unsigned int> indices;
     int N = mesh->mNumVertices;
@@ -92,18 +68,17 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene){
         }
     }
 
-    Mesh* new_mesh = new Mesh(vertices, indices);
-    new_mesh->meshType = 1;
+    RigidBody* newBody = new RigidBody(vertices, indices);
 
     //Process Material
     if(mesh->mMaterialIndex >= 0){
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
         aiColor3D color(0.0f, 0.0f, 0.0f);
         material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-        new_mesh->mat = Material(vec3(color.r, color.g, color.b));
+        newBody->mat = Material(vec3(color.r, color.g, color.b));
     }
 
-    return new_mesh;
+    return newBody;
 }
 
 void Model::printMeshInfo(){

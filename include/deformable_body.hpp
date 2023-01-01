@@ -6,13 +6,11 @@
 #include "camera.hpp"
 #include "path.hpp"
 #include "half_edge.hpp"
-#include "lighting.hpp"
-#include "material.hpp"
 
 using namespace std;
 using namespace Eigen;
 
-class Mesh {
+class DeformableBody{
     private:
         TimeIntegrationType timeIntegrationType = BWD_EULER;
 
@@ -21,6 +19,10 @@ class Mesh {
         bool activatePhysics = false;
         int count = 0;                  //Frame counter to control speed of animation 
         double t = 0;                   //Time counter 
+
+        //To check sanity of the half edge data structure representing this mesh
+        bool debug;
+        bool checkSanity();
 
         //Mesh Parameters
         HalfEdge *mesh;
@@ -49,30 +51,23 @@ class Mesh {
         Edge* sideEdgeLeft;
         Edge* sideEdgeRight;
 
-        //To check sanity of the half edge data structure representing this mesh
-        bool debug;
-        bool checkSanity();
 
     public:
-        Mesh();
-        Mesh(vector<vec3> Vertices, vector<unsigned int> Indices);
+        DeformableBody();
+
+        bool drawRefMesh;
+        int drawMode;
+        int splitMode;
+
         void update(float dt);
         void processInput(Window &window);
 
-        //For rendering the mesh
-        bool drawRefMesh;
-        int drawMode;
-        int splitMode; 
+        //For rendering the mesh 
         void renderMesh(); 
 
         //Debugging
         void printMeshInfo();
 
-        //Material Properties
-        Material mat;
-
-        //Mesh type
-        int meshType = 0;
 };
 
 #endif

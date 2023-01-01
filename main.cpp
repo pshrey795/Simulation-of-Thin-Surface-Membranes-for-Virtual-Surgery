@@ -1,4 +1,5 @@
 #include "include/model.hpp"
+#include "include/deformable_body.hpp"
 
 using namespace std;
 
@@ -7,8 +8,8 @@ Camera camera;
 Lighting lighting;
 
 //Scene Objects
-Model model;
-Model model2;
+DeformableBody membrane; 
+Model instrument;
 
 //Rendering Modes
 int mode = 0;
@@ -21,10 +22,10 @@ bool paused = false;
 
 void drawEnv(){
     setColor(vec3(0.0f, 0.0f, 0.0f));
-    drawArrow(vec3(-16.0f,-16.0f,-25.0f), vec3(12.0f, 12.0f, 25.0f), 0.3f);
-    drawArrow(vec3(16.0f,16.0f,-25.0f), vec3(-12.0f, -12.0f, 25.0f), 0.3f);
-    drawArrow(vec3(-16.0f,16.0f,-25.0f), vec3(12.0f, -12.0f, 25.0f), 0.3f);
-    drawArrow(vec3(16.0f,-16.0f,-25.0f), vec3(-12.0f, 12.0f, 25.0f), 0.3f);
+    // drawArrow(vec3(-16.0f,-16.0f,-25.0f), vec3(12.0f, 12.0f, 25.0f), 0.3f);
+    // drawArrow(vec3(16.0f,16.0f,-25.0f), vec3(-12.0f, -12.0f, 25.0f), 0.3f);
+    // drawArrow(vec3(-16.0f,16.0f,-25.0f), vec3(12.0f, -12.0f, 25.0f), 0.3f);
+    // drawArrow(vec3(16.0f,-16.0f,-25.0f), vec3(-12.0f, 12.0f, 25.0f), 0.3f);
     setColor(vec3(0.3f, 0.5f, 0.7f));
     drawQuad(vec3(-25.0f,-25.0f,-25.0f), vec3(25.0f, -25.0f, -25.0f), vec3(25.0f, 25.0f, -25.0f), vec3(-25.0f, 25.0f, -25.0f));
 }
@@ -35,8 +36,8 @@ void drawWorld() {
     clear(vec3(0.5,0.7,0.9));
     drawEnv();
     setColor(vec3(0.7,0.7,0.7));
-    model.renderModel();
-    model2.renderModel();
+    membrane.renderMesh();
+    instrument.renderModel();
     setColor(vec3(0,0,0));
 }
 
@@ -60,10 +61,10 @@ void processInput(int argc, char** argv){
         splitMode = atoi(argv[3]);
     }
     if(mode){
-        model.activateRefMesh();
+        membrane.drawRefMesh = true;
     }
-    model.setDrawMode(drawMode);
-    model.setSplitMode(splitMode);
+    membrane.drawMode = drawMode;
+    membrane.splitMode = splitMode;
 }
 
 int main(int argc, char **argv) {
@@ -71,25 +72,22 @@ int main(int argc, char **argv) {
     window.onKeyPress(keyPressed);
     camera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
     lighting.createDefault();
-    model2 = Model("objects/sphere.obj");
+    instrument = Model("objects/sphere.obj");
 
     processInput(argc, argv);
 
     while (!window.shouldClose()) {
         camera.processInput(window);
-        model.processInput(window);
-        model2.processInput(window);
+        membrane.processInput(window);
+        instrument.processInput(window);
         if (!paused){
             update(dt);
-            model.update(dt);
-            model2.update(dt);
+            membrane.update(dt);
+            instrument.update(dt);
         }
         window.prepareDisplay();
         drawWorld();
         window.updateDisplay();
         window.waitForNextFrame(dt);
     }
-
-    //Post Simulation debugging 
-    // model.printMeshInfo();
 }

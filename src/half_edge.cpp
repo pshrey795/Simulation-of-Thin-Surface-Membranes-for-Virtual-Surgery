@@ -1931,22 +1931,30 @@ void HalfEdge::solveBwdEuler(float dt){
     vecX b = scalarMult(f_n + scalarMult(matVecMult(Jx, v_n),dt),dt);
 
     //Handling constraints
-    //1) Removing equations corresponding to the constraints
     int numConstraints = 0;
-    // for(int i = 0; i < systemSize; i++){
-    //     if(particle_list[i]->constraint.isActive){
-    //         int idx = i - numConstraints;
-    //         //Add the contribution of the column to be removed on the RHS
-    //         for(int j = 0; j < systemSize - numConstraints; j++){
-    //             b(j) = b(j) - A(j,idx) * particle_list[i]->constraint.velocity;
-    //         }
-    //         //Delete the row and column in A and b, corresponding to the constraint
-    //         removeColumn(A, idx);
-    //         removeRow(A, idx);
-    //         removeRow(b, idx);
-    //         numConstraints++;
-    //     }
-    // }
+    for(int i = 0; i < systemSize; i++){
+        if(particle_list[i]->constraint.isActive){
+            int idx = i - numConstraints;
+            debugStream << "i: " << i << ", idx:" << idx << ", numConstraints: " << numConstraints << endl;
+            //Delete the row and column in A and b, corresponding to the constraint
+            removeColumn(A, idx);
+            removeRow(A, idx);
+            removeRow(b, idx);
+            numConstraints++;
+        }
+    }
+    debugStream << "A: " << A.rows() << ", " << A.cols() << endl;
+    debugStream << "b: " << b.rows() << endl;
+    debugStream << "\n\n" << endl;
+
+    //Check symmetry of A
+    for(int i = 0; i < systemSize - numConstraints; i++){
+        for(int j = 0; j < systemSize - numConstraints; j++){
+            if(A(i,j) != A(j,i)){
+                debugStream << "A is not symmetric!" << endl;
+            }
+        }
+    }
 
     //Currently, the entire system is in block form
     //Need to expand it in all dimensions and convert in into sparse form before passing it to the solver
@@ -1958,6 +1966,7 @@ void HalfEdge::solveBwdEuler(float dt){
 
     //Define the solver and the solution vector
     SimplicialLDLT<SparseMatrix<float>> solver;
+    // ConjugateGradient<SparseMatrix<float>> solver;
     solver.compute(A_sparse);
     if(solver.info() != Eigen::Success){
         cout << "Eigen factorization failed!" << endl; 
@@ -1968,14 +1977,14 @@ void HalfEdge::solveBwdEuler(float dt){
         cout << "Eigen solve failed!" << endl; 
     }
     vecX dv(systemSize - numConstraints);
-    dv = compressVector(dv_exploded);
+    dv = compressVector(dv_exploded);   
 
     //Velocity update
     numConstraints = 0;
     for(int i = 0; i < particle_list.size(); i++){
         if(particle_list[i]->constraint.isActive){
             particle_list[i]->velocity = particle_list[i]->constraint.velocity;
-            // numConstraints++;
+            numConstraints++;
         }else{
             particle_list[i]->velocity += dv(i - numConstraints);
         }

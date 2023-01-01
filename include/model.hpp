@@ -1,7 +1,7 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
-#include "mesh.hpp"
+#include "rigid_body.hpp"
 using namespace std;
 using namespace Eigen;
 
@@ -15,21 +15,17 @@ class Model {
         Model();
         Model(string file_path);
         void update(float dt);
-        void setDrawMode(int drawMode);
-        void setSplitMode(int splitMode);
         void processInput(Window &window);
-        void activateRefMesh();
-        void deactivateRefMesh();
         void renderModel();
 
         //Debugging
         void printMeshInfo();
 
+        vector<RigidBody*> meshes;
     private:
-        vector<Mesh*> meshes;
         void loadModel(string file_path);
         void processNode(aiNode* node, const aiScene* scene);
-        Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
+        RigidBody* processMesh(aiMesh* mesh, const aiScene* scene);
 
 
 };

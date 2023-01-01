@@ -50,8 +50,8 @@ vecX scalarMult(const vecX& x, float s);
 matXf explodeMatrix(const matX& A);
 vecXf explodeVector(const vecX& x);
 vecX compressVector(const vecXf& x);
-void removeRow(matX matrix, unsigned int rowToRemove);
-void removeRow(vecX vector, unsigned int rowToRemove);
-void removeColumn(matX matrix, unsigned int colToRemove);
+void removeRow(matX& matrix, unsigned int rowToRemove);
+void removeRow(vecX& vector, unsigned int rowToRemove);
+void removeColumn(matX& matrix, unsigned int colToRemove);
 
 #endif

@@ -1,0 +1,2475 @@
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
+i: 0, idx:0, numConstraints: 0
+i: 19, idx:18, numConstraints: 1
+i: 380, idx:378, numConstraints: 2
+i: 399, idx:396, numConstraints: 3
+A: 396, 396
+b: 396
+
+
+
