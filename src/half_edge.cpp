@@ -120,11 +120,17 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, unordere
     }
 
     //Adding constraints
-    for(auto c : Constraints){
-        int id = c.first;
-        vec3 vel = c.second;
-        particle_list[id]->velocity = vel;
-        particle_list[id]->constraint = Constraint(vel);
+    for(unsigned int i = 0; i < Vertices.size(); i++){
+        if(Constraints.find(i) != Constraints.end()){
+            auto c = Constraints.find(i);
+            int id = c->first;
+            vec3 vel = c->second;
+            particle_list[id]->velocity = vel;
+            particle_list[id]->constraint = Constraint(vel);
+            constraints.insert(id);
+        }else{
+            particle_list[i]->constraint = Constraint();
+        }
     }
 
     int i=0;
@@ -331,7 +337,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
     int newIndexRight;
 
     //Creating new vertices and edges or using an existing Particle depending on the type of intersection point 
-    vec3 displacement = (1?(splitMode == 0):0) * EPSILON * normal;
+    vec3 displacement = (1?(splitMode == 0):0) * EPSILON_CUSTOM * normal;
     if(first){
         if(currentType == 0){
             newParticleLeft = this->particle_list[get<2>(intPt)];
@@ -1935,7 +1941,7 @@ void HalfEdge::solveBwdEuler(float dt){
     for(int i = 0; i < systemSize; i++){
         if(particle_list[i]->constraint.isActive){
             int idx = i - numConstraints;
-            debugStream << "i: " << i << ", idx:" << idx << ", numConstraints: " << numConstraints << endl;
+            // debugStream << "i: " << i << ", idx:" << idx << ", numConstraints: " << numConstraints << endl;
             //Delete the row and column in A and b, corresponding to the constraint
             removeColumn(A, idx);
             removeRow(A, idx);
@@ -1943,9 +1949,9 @@ void HalfEdge::solveBwdEuler(float dt){
             numConstraints++;
         }
     }
-    debugStream << "A: " << A.rows() << ", " << A.cols() << endl;
-    debugStream << "b: " << b.rows() << endl;
-    debugStream << "\n\n" << endl;
+    // debugStream << "A: " << A.rows() << ", " << A.cols() << endl;
+    // debugStream << "b: " << b.rows() << endl;
+    // debugStream << "\n\n" << endl;
 
     //Check symmetry of A
     for(int i = 0; i < systemSize - numConstraints; i++){

@@ -40,6 +40,7 @@ struct Face{
     struct Edge *edge;
     int indices[3];
     bool reMeshed = false;
+    vec3 color; 
     Face(int a, int b, int c, bool isRemeshed = true);
     void setFace(int a, int b, int c);
     Face();
@@ -67,8 +68,9 @@ class Particle {
         double m;               //Mass of the particle
         double invM;            //Inverse mass of the particle
         vec3 position;
-        vec3 velocity; 
-        vec3 netForce;
+        vec3 velocity;
+        vec3 netForce; 
+        vec3 externalForce;
         Edge* edge;
         Particle(vec3 pos, double mass = DEFAULT_MASS);
         Particle(vec3 pos, vec3 initPos, double mass = DEFAULT_MASS);

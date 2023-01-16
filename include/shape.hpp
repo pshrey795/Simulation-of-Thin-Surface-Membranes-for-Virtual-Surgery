@@ -7,12 +7,8 @@
 struct Sphere{
     vec3 centre;
     double radius;
-    vec3 vel; 
-    bool isActive; 
     Sphere();
-    Sphere(vec3 centre, double radius, vec3 vel);
-    void update(float dt);
-    void processInput(Window &window);
+    Sphere(vec3 centre, double radius);
 };
 
 #endif

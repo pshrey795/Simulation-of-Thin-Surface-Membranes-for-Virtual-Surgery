@@ -1,11 +1,13 @@
-#include "include/debug.hpp"
+#include "include/BVH.hpp"
 
 int main(){
-    matX A(1,1);
-    A(0,0) = 3 * mat3::Identity();
-    vecX x(1);
-    x(0) = vec3(1,2,3);
-    cout << explodeMatrix(A) << endl;
-    cout << explodeVector(x) << endl;
-    cout << explodeVector(matVecMult(A,x)) << endl;
+    vec3 x = vec3(0,0,0);
+    vec3 y = vec3(4,0,0);
+    vec3 z = vec3(0,3,0);
+    vec3 a = vec3(-3,1.5,0);
+    vec3 b = vec3(-1,1.5,3);
+    vec3 c = vec3(-1,1.5,-3);
+    int hitRecord = intersectTri(x,y,z,a,b,c);
+    cout << hitRecord << endl;
+    return 0;
 }

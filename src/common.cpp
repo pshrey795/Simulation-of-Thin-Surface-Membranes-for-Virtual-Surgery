@@ -132,3 +132,19 @@ void removeColumn(matX& matrix, unsigned int colToRemove){
 
     matrix.conservativeResize(numRows,numCols);
 }
+
+//Eigen comparison functions 
+vec3 min(const vec3& a, const vec3& b){
+    vec3 res;
+    for(int i = 0; i < 3; i++){
+        res(i) = std::min(a(i), b(i));
+    }
+    return res;
+}
+vec3 max(const vec3& a, const vec3& b){
+    vec3 res;
+    for(int i = 0; i < 3; i++){
+        res(i) = std::max(a(i), b(i));
+    }
+    return res;
+}

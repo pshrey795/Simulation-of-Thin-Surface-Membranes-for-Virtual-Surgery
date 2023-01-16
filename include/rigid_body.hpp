@@ -3,14 +3,24 @@
 
 #include "common.hpp"
 #include "draw.hpp"
+#include "debug.hpp"
 #include "lighting.hpp"
 #include "material.hpp"
 #include "shape.hpp"
+#include "intersect.hpp"
+
+#include<assimp/Importer.hpp>
+#include<assimp/scene.h>
+#include<assimp/postprocess.h>
+
+struct Primitive {
+    int v1, v2, v3; 
+    Primitive(int x, int y, int z) : v1(x), v2(y), v3(z) {}
+};
 
 class RigidBody{
     private:
-        //Animation Parameters
-        bool isPlaying = false;     
+        //Animation Parameters  
         bool activatePhysics = false;
         int count = 0;                  //Frame counter to control speed of animation 
         double t = 0;                   //Time counter 
@@ -19,15 +29,9 @@ class RigidBody{
         bool debug;
         bool checkSanity();
 
-        //Mesh Parameters
-        vector<vec3> vertices;
-        vector<unsigned int> indices;
-
-        //BVH
-
     public:
-        RigidBody(); 
-        RigidBody(vector<vec3> Vertices, vector<unsigned int> Indices);
+        RigidBody();
+        RigidBody(string filePath);
 
         void update(float dt);
         void processInput(Window &window);
@@ -38,10 +42,25 @@ class RigidBody{
         //Debugging
         void printMeshInfo();
 
+        //Mesh Parameters
+        vector<vec3> vertices;
+        vector<Primitive> faces;
+
         //Material
         Material mat;
 
-        vec3 velocity;
+        //Motion and Collision parameters
+        vec3 velocity;      
+        //Collision Mode:
+        //0 : Using BVH
+        //1 : Using sphere
+        int collisionMode;
+        //Response Mode:
+        //0: Velocity Constraint
+        //1: Penalty Force
+        int responseMode;
+        //Approximating sphere 
+        Sphere sphere;  
 };
 
 #endif

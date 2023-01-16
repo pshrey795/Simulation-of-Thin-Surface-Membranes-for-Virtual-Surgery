@@ -7,6 +7,7 @@ Particle::Particle(vec3 pos, double mass){
     this->invM = 1 / mass;
     this->velocity = vec3(0.0f,0.0f,0.0f);
     this->netForce = vec3(0.0f,0.0f,0.0f);
+    this->externalForce = vec3(0.0f, 0.0f, 0.0f);
     this->edge = NULL;
 }
 
@@ -17,6 +18,7 @@ Particle::Particle(vec3 pos, vec3 initPos, double mass){
     this->invM = 1 / mass;
     this->velocity = vec3(0.0f,0.0f,0.0f);
     this->netForce = vec3(0.0f,0.0f,0.0f);
+    this->externalForce = vec3(0.0f, 0.0f, 0.0f);
     this->edge = NULL;
 }
 
@@ -27,6 +29,7 @@ Particle::Particle(vec3 pos, vec3 initPos, vec3 initVel, double mass){
     this->invM = 1 / mass;
     this->velocity = initVel;
     this->netForce = vec3(0.0f,0.0f,0.0f);
+    this->externalForce = vec3(0.0f, 0.0f, 0.0f);
     this->edge = NULL;
 }
 
@@ -37,11 +40,12 @@ Particle::Particle(vec3 pos, Edge* e, double mass){
     this->invM = 1 / mass;
     this->velocity = vec3(0.0f,0.0f,0.0f);
     this->netForce = vec3(0.0f,0.0f,0.0f);
+    this->externalForce = vec3(0.0f, 0.0f, 0.0f);
     this->edge = e;
 }
 
 vec3 Particle::calculateExternalForce(){
-    return (this->m * vec3(0.0f, 0.0f, -9.8f));
+    return (this->externalForce + this->m * vec3(0.0f, 0.0f, -9.8f));
 }
 
 void Particle::updatePos(double dt){
@@ -175,6 +179,7 @@ vec3 Edge::addForce(){
 //Face implementations 
 Face::Face(){
     edge = NULL;
+    color = vec3(1.0f, 0.0f, 0.0f);
 }
 
 void Face::setFace(int a, int b, int c){
@@ -190,6 +195,7 @@ Face::Face(int a, int b, int c, bool isRemeshed){
     indices[2] = c;
     reMeshed = isRemeshed;
     edge = NULL;
+    color = vec3(1.0f, 0.0f, 0.0f);
 }
 
 Constraint::Constraint(){

@@ -24,9 +24,6 @@ class DeformableBody{
         bool debug;
         bool checkSanity();
 
-        //Mesh Parameters
-        HalfEdge *mesh;
-
         //Path Parameters
         Path* currentPath = NULL;
         unsigned int currIntersectIdx;
@@ -54,6 +51,9 @@ class DeformableBody{
 
     public:
         DeformableBody();
+
+        //Mesh Parameters
+        HalfEdge *mesh;
 
         bool drawRefMesh;
         int drawMode;

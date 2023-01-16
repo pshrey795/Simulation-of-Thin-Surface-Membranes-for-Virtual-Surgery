@@ -13,6 +13,7 @@
         "unordered_set": "cpp",
         "vector": "cpp",
         "core": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "ranges": "cpp"
     }
 }

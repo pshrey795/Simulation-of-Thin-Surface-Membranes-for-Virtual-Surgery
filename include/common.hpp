@@ -19,7 +19,7 @@
 #define DEFAULT_DENISTY 0.35f
 #define DEFAULT_STIFFNESS 20.0f
 #define DEFAULT_DAMPING 10.0f
-#define EPSILON 0.03
+#define EPSILON_CUSTOM 0.03
 #define DELTA 0.001
 #define MIN_DIFF 0.01
 #define GRAVITY vec3(0.0f, 0.0f, 0.0f)
@@ -53,5 +53,9 @@ vecX compressVector(const vecXf& x);
 void removeRow(matX& matrix, unsigned int rowToRemove);
 void removeRow(vecX& vector, unsigned int rowToRemove);
 void removeColumn(matX& matrix, unsigned int colToRemove);
+
+//Eigen comparison functions
+vec3 min(const vec3& a, const vec3& b);
+vec3 max(const vec3& a, const vec3& b);
 
 #endif

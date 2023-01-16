@@ -4,7 +4,7 @@ Camera::Camera() :
     mousePressed(false),
     target(vec3(0,0,0)),
     yaw(0), pitch(0), dist(2),
-    fovy(M_PI/3), moveSpeed(1), zoomSpeed(1), turnSpeed(0.2),
+    fovy(M_PI/3), moveSpeed(5), zoomSpeed(1), turnSpeed(0.2),
     lastInputTime(glfwGetTime()) {
 }
 

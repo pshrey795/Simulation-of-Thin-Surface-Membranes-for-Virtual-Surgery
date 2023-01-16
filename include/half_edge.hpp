@@ -25,7 +25,7 @@ class HalfEdge {
         vector<vector<int>> adjList;
     
         //Constraints
-        unordered_map<int, mat3> constraints;
+        unordered_set<int> constraints;
 
         //Dynamic information of the particles
         vector<Spring> ghostSprings;

@@ -6,13 +6,14 @@ DeformableBody::DeformableBody(){
     upVec = vec3(0,0,1);
     drawRefMesh = false;
     debug = false;
+    activatePhysics = false;
 
     vector<vec3> vertices;
     vector<unsigned int> indices;
     vector<bool> clamp; 
     unordered_map<int, vec3> constraints;
 
-    int n = 20;
+    int n = 25;
     double f = 8.0 / (double)(n-1);
 
     for(int i = 0;i < n;i++){
@@ -143,22 +144,28 @@ void DeformableBody::setupCut(){
 //Mesh Process Input
 void DeformableBody::processInput(Window &window){
     GLFWwindow *win = window.window;
-    if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
-        if(!isPlaying){
-            isPlaying = true;
-            if(drawMode == 1 || drawMode == 2){
-                setupPath();
-            }else if(drawMode == 0){
-                setupCut();
-            }
-        }
-    }else if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
+    // if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
+    //     if(!isPlaying){
+    //         isPlaying = true;
+    //         if(drawMode == 1 || drawMode == 2){
+    //             setupPath();
+    //         }else if(drawMode == 0){
+    //             setupCut();
+    //         }
+    //     }
+    // }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
+    //     if(isPlaying){
+    //         isPlaying = false;
+    //     }
+    // }
+
+    if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
         if(!activatePhysics){
             activatePhysics = true;
         }
-    }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
-        if(isPlaying){
-            isPlaying = false;
+    }else if(glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS){
+        if(activatePhysics){
+            activatePhysics = false;
         }
     }
 }
@@ -243,7 +250,7 @@ void DeformableBody::renderMesh(){
         vec3 v1 = mesh->particle_list[f->indices[0]]->position;
         vec3 v2 = mesh->particle_list[f->indices[1]]->position;
         vec3 v3 = mesh->particle_list[f->indices[2]]->position;
-        setColor(vec3(1.0f, 0.0f, 0.0f));
+        setColor(f->color);
         drawTri(v1,v2,v3);
 
         if(drawRefMesh){
