@@ -18,7 +18,7 @@ int splitMode = 0;
 //Debugging
 vector<vec3> intersectionPoints;
 
-float dt = 1/60.0f;
+float dt = 1/600.0f;
 float t = 0;
 bool paused = false;
 
@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
         window.prepareDisplay();
         drawWorld();
         detectCollision(membrane, instrument, intersectionPoints);
-        membrane.printMeshInfo();
+        // membrane.printMeshInfo();
         window.updateDisplay();
         window.waitForNextFrame(dt);
     }

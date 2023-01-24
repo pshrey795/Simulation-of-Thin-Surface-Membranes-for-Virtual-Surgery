@@ -48,7 +48,7 @@ DeformableBody::DeformableBody(){
 //Mesh Update
 void DeformableBody::update(float dt){
     //Mesh Simulation 
-    if(activatePhysics && !toCut){
+    if(activatePhysics){
         this->mesh->updateMesh(dt, timeIntegrationType);
     }
 }
@@ -150,23 +150,31 @@ void DeformableBody::getIntersectionPts(){
     intersectPts.clear();
     int currIdx = 0;
     //First point on the centroid of the starting cut face
-    vec3 x = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[0]]->position;
-    vec3 y = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[1]]->position;
-    vec3 z = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[2]]->position;
+    vec3 x = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[0]]->initPos;
+    vec3 y = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[1]]->initPos;
+    vec3 z = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[2]]->initPos;
     vec3 startCentroid = (x + y + z) / 3.0f;
     intersectPts.push_back(make_tuple(startCentroid, 2, cutGraph[0]));
     //Intermediate points on the centres of edges between adjacent cut faces
     do{
         int edgeIdx = cutGraph[currIdx];
         Edge* currEdge = mesh->edge_list[edgeIdx];
-        vec3 p = currEdge->startParticle->position;
-        vec3 q = currEdge->twin->startParticle->position;
+        vec3 p = currEdge->startParticle->initPos;
+        vec3 q = currEdge->twin->startParticle->initPos;
         vec3 newPt = (p + q) / 2.0f; 
         intersectPts.push_back(make_tuple(newPt, 1, edgeIdx));
         currIdx = currEdge->twin->face->helperIdx;
     }while(currIdx != 0);
     //Second point on the centroid of the end cut face
-    intersectPts.push_back(make_tuple(startCentroid, 2, cutGraph[0]));
+    intersectPts.push_back(make_tuple(startCentroid, 0, mesh->particle_list.size()));
+
+    //Debugging
+    // for(auto pt : intersectPts){
+    //     cout << get<0>(pt) << endl;
+    //     cout << get<1>(pt) << endl;
+    //     cout << get<2>(pt) << endl;
+    //     cout << "\n\n";
+    // }
 }
 
 void DeformableBody::processCut(){
@@ -464,7 +472,7 @@ bool DeformableBody::checkSanity(){
 
 void DeformableBody::printMeshInfo(){
     //Display intersection pts
-    setPointSize(20.0f);
+    setPointSize(10.0f);
     setColor(vec3(255.0f, 255.0f, 0.0f));
     for(auto pt : intersectPts){
         drawPoint(get<0>(pt));

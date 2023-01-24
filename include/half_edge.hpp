@@ -53,6 +53,7 @@ class HalfEdge {
         //2) Intersection Record of the next point
         //3) Direction of normal of the plane of splitting
         void reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode);
+        //Extra auxiliary edges for 
 
         //Updating the mesh
         void updateMesh(float dt, TimeIntegrationType integrationType = FWD_EULER);

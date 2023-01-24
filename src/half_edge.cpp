@@ -2160,5 +2160,3 @@ vec3 HalfEdge::getVelAtFace(Face* f, vec3 pos){
 
     return u * v1 + v * v2 + w * v3;
 }
-
-
