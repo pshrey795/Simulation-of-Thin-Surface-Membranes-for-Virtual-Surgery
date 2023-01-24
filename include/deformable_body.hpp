@@ -16,6 +16,7 @@ class DeformableBody{
 
         //Animation Parameters
         bool toCut = false;  
+        bool startCut = false;
         bool activatePhysics = false;
         int count = 0;                  //Frame counter to control speed of animation 
         double t = 0;                   //Time counter 
@@ -40,6 +41,7 @@ class DeformableBody{
         vector<int> cutGraph;
         void constructCutGraph();
         void getIntersectionPts();
+        void processCut();
 
         //Storing intersection points of the path with the mesh 
         vector<tuple<vec3, int, int>> intersectPts;

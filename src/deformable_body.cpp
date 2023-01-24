@@ -5,7 +5,7 @@ DeformableBody::DeformableBody(){
     //Using a sample mesh
     upVec = vec3(0,0,1);
     drawRefMesh = false;
-    debug = false;
+    debug = true;
     activatePhysics = false;
 
     vector<vec3> vertices;
@@ -47,28 +47,6 @@ DeformableBody::DeformableBody(){
 
 //Mesh Update
 void DeformableBody::update(float dt){
-    //Mesh Cutting on predefined path
-    // count = (count + 1) % 2;
-    // if(toCut){
-    //     if(count == 0){
-    //         if(currIntersectIdx < intersectPts.size()){
-    //             if(currIntersectIdx == 0){
-    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-    //                 this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-    //             }else if(currIntersectIdx == intersectPts.size()-1){
-    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-    //             }else{
-    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-    //             }
-    //             checkSanity();
-    //             currIntersectIdx++;
-    //         }else{
-    //             // toCut = false;
-    //         }
-    //     }
-    // }
-
     //Mesh Simulation 
     if(activatePhysics && !toCut){
         this->mesh->updateMesh(dt, timeIntegrationType);
@@ -122,6 +100,10 @@ void DeformableBody::setupPath(){
 }
 
 void DeformableBody::constructCutGraph(){
+    //Reset data structures
+    cutList.clear();
+    cutGraph.clear();
+
     //Registering the nodes of the cut graph
     //Typically these faces are in direct collision with the instrument
     for(int i = 0; i < mesh->face_list.size(); i++){
@@ -187,6 +169,44 @@ void DeformableBody::getIntersectionPts(){
     intersectPts.push_back(make_tuple(startCentroid, 2, cutGraph[0]));
 }
 
+void DeformableBody::processCut(){
+    //Mesh Cutting on predefined path
+    // count = (count + 1) % 2;
+    // if(toCut){
+    //     if(count == 0){
+    //         if(currIntersectIdx < intersectPts.size()){
+    //             if(currIntersectIdx == 0){
+    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+    //                 this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+    //             }else if(currIntersectIdx == intersectPts.size()-1){
+    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+    //             }else{
+    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+    //             }
+    //             checkSanity();
+    //             currIntersectIdx++;
+    //         }else{
+    //             // toCut = false;
+    //         }
+    //     }
+    // }
+
+    //Collision Induced Mesh Cutting
+    for(int i = 0; i < intersectPts.size(); i++){
+        if(i == 0){
+            auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+            this->mesh->reMesh(newIntPt, intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f), splitMode);
+        }else if(i == intersectPts.size()-1){
+            auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+            this->mesh->reMesh(intersectPts[i-1], intersectPts[i], newIntPt, crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f), splitMode);
+        }else{
+            this->mesh->reMesh(intersectPts[i-1], intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f), splitMode);
+        }
+        checkSanity();
+    }
+}
+
 //Mesh Process Input
 void DeformableBody::processInput(Window &window){
     GLFWwindow *win = window.window;
@@ -202,6 +222,11 @@ void DeformableBody::processInput(Window &window){
         if(!toCut){
             constructCutGraph();
             getIntersectionPts();
+        }
+    }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
+        if(!startCut){
+            startCut = true;
+            processCut();
         }
     }
 }
@@ -439,10 +464,9 @@ bool DeformableBody::checkSanity(){
 
 void DeformableBody::printMeshInfo(){
     //Display intersection pts
-    setPointSize(10.0f);
-    setColor(vec3(1.0f, 1.0f, 0.0f));
+    setPointSize(20.0f);
+    setColor(vec3(255.0f, 255.0f, 0.0f));
     for(auto pt : intersectPts){
-        cout << get<0>(pt) << endl;
         drawPoint(get<0>(pt));
     }
 }
