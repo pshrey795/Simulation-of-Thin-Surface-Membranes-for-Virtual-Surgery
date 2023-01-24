@@ -58,7 +58,6 @@ class HalfEdge {
         void updateMesh(float dt, TimeIntegrationType integrationType = FWD_EULER);
 
         //Helper functions for computations with triangles
-        double triArea(vec3 a, vec3 b, vec3 c);
         bool isInside(Face* face, vec3 point);
         bool isInsidePos(Face* face, vec3 point);
 

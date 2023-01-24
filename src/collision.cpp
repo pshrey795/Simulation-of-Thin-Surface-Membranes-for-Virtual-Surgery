@@ -5,7 +5,7 @@ bool deq(double a, double b){
 }
 
 double penalty(double x){
-    return 100.0f * x * x;
+    return 100.0f * x;
 }
 
 void extrapolateLine(Particle* x, Particle* y, vec3 p, vec3 val, int responseMode){
@@ -149,22 +149,32 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec
             vec3 x = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]]->position;
             vec3 y = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]]->position;
             vec3 z = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]]->position;
+            vec3 normal = (y - x).cross(z - x).normalized();
             vec3 centre = instrument.sphere.centre;
             vec3 closest = closestPtOnTri(x, y, z, centre);
             double length = (closest - centre).norm();
             vec3 closestUnitVec = (closest - centre).normalized();
             if(length < instrument.sphere.radius){
-                // intersectionPoints.push_back(closest);
-                membrane.mesh->face_list[i]->color = vec3(0.0f, 1.0f, 0.0f);
+                //Track triangles in direct collision
+                double xLength = (x - centre).norm() - instrument.sphere.radius;
+                double yLength = (y - centre).norm() - instrument.sphere.radius;
+                double zLength = (z - centre).norm() - instrument.sphere.radius;
+                if(xLength >= 0.0f || yLength >= 0.0f || zLength >= 0.0f){
+                    membrane.mesh->face_list[i]->color = vec3(0.0f, 1.0f, 0.0f);
+                    membrane.mesh->face_list[i]->reMeshed = true;
+                }else{
+                    membrane.mesh->face_list[i]->color = vec3(1.0f, 0.0f, 0.0f);
+                    membrane.mesh->face_list[i]->reMeshed = false;
+                }
                 //Collision Response
                 if(instrument.responseMode){
                     //2. Penalty Force
                     double penaltyForce = penalty(instrument.sphere.radius - length);
                     vec3 forceVal = penaltyForce * closestUnitVec;
-                    extrapolateTri(membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]], 
-                                   membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]], 
-                                   membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]], 
-                                   closest, forceVal, instrument.responseMode);
+                    // extrapolateTri(membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]], 
+                    //                membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]], 
+                    //                membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]], 
+                    //                closest, forceVal, instrument.responseMode);
                 }else{
                     //1. Velocity constraints
                     //Finding the component of velocity in the direction of the closest point
@@ -204,6 +214,11 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec
             vec3 x = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]]->position;
             vec3 y = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]]->position;
             vec3 z = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]]->position;
+            vec3 normal = (y - x).cross(z - x).normalized();
+            vec3 centre = instrument.sphere.centre;
+            vec3 closest = closestPtOnTri(x, y, z, centre);
+            double length = (closest - centre).norm();
+            vec3 closestUnitVec = (closest - centre).normalized();
             int result;
             for(int j = 0; j < instrument.faces.size(); j++){
                 vec3 a = instrument.vertices[instrument.faces[j].v1];
@@ -216,6 +231,12 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec
             }
             if(result){
                 membrane.mesh->face_list[i]->color = vec3(0.0f, 1.0f, 0.0f);
+                // double penaltyForce = penalty(instrument.sphere.radius - length);
+                // vec3 forceVal = penaltyForce * closestUnitVec;
+                // extrapolateTri(membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]], 
+                //                 membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]], 
+                //                 membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]], 
+                //                 closest, forceVal, instrument.responseMode);
             }else{
                 membrane.mesh->face_list[i]->color = vec3(1.0f, 0.0f, 0.0f);
             }

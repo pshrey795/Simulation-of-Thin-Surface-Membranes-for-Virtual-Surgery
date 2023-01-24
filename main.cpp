@@ -95,6 +95,7 @@ int main(int argc, char **argv) {
         window.prepareDisplay();
         drawWorld();
         detectCollision(membrane, instrument, intersectionPoints);
+        membrane.printMeshInfo();
         window.updateDisplay();
         window.waitForNextFrame(dt);
     }

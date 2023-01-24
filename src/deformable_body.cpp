@@ -13,7 +13,7 @@ DeformableBody::DeformableBody(){
     vector<bool> clamp; 
     unordered_map<int, vec3> constraints;
 
-    int n = 25;
+    int n = 20;
     double f = 8.0 / (double)(n-1);
 
     for(int i = 0;i < n;i++){
@@ -47,27 +47,30 @@ DeformableBody::DeformableBody(){
 
 //Mesh Update
 void DeformableBody::update(float dt){
-    count = (count + 1) % 2;
-    if(isPlaying){
-        if(count == 0){
-            if(currIntersectIdx < intersectPts.size()){
-                if(currIntersectIdx == 0){
-                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                }else if(currIntersectIdx == intersectPts.size()-1){
-                    auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                }else{
-                    this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-                }
-                checkSanity();
-                currIntersectIdx++;
-            }else{
-                // isPlaying = false;
-            }
-        }
-    }
-    if(activatePhysics && !isPlaying){
+    //Mesh Cutting on predefined path
+    // count = (count + 1) % 2;
+    // if(toCut){
+    //     if(count == 0){
+    //         if(currIntersectIdx < intersectPts.size()){
+    //             if(currIntersectIdx == 0){
+    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+    //                 this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+    //             }else if(currIntersectIdx == intersectPts.size()-1){
+    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+    //             }else{
+    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
+    //             }
+    //             checkSanity();
+    //             currIntersectIdx++;
+    //         }else{
+    //             // toCut = false;
+    //         }
+    //     }
+    // }
+
+    //Mesh Simulation 
+    if(activatePhysics && !toCut){
         this->mesh->updateMesh(dt, timeIntegrationType);
     }
 }
@@ -118,47 +121,75 @@ void DeformableBody::setupPath(){
     currIntersectIdx = 0;
 }
 
-void DeformableBody::setupCut(){
-    //Define a sample plane
-    Plane p(vec3(-4.0f, 6.0f, 0.0f), vec3(1.0f, 1.0f, 0.0f));
-
-    //Get the intersection points
-    this->intersectPts = dirSort(this->mesh->Intersect(p), p);
-    removeDuplicates(this->intersectPts);
-
-    for(int i=0;i<intersectPts.size();i++){
-        normals.push_back(p.normal);
+void DeformableBody::constructCutGraph(){
+    //Registering the nodes of the cut graph
+    //Typically these faces are in direct collision with the instrument
+    for(int i = 0; i < mesh->face_list.size(); i++){
+        if(mesh->face_list[i]->reMeshed){
+            mesh->face_list[i]->helperIdx = cutList.size();
+            cutList.push_back(i);
+            cutGraph.push_back(-1);
+        } 
     }
 
-    // vec3 newVertex(3.5f, -1.0f, 0.0f);
-    // intersectPts.pop_back();
-    // intersectPts.push_back(make_tuple(newVertex, 2, 0));
+    //Directed graph(cycle) of cut faces
+    if(cutList.size() > 0){
+        int currIdx = 0;
+        int lastIdx = -1;
+        while(true){
+            Face* currFace = mesh->face_list[cutList[currIdx]];
+            Edge* currEdge = currFace->edge;
+            do{
+                if(currEdge->twin->face){
+                    if(currEdge->twin->face->reMeshed){
+                        int newIdx = currEdge->twin->face->helperIdx;
+                        if(newIdx != lastIdx){
+                            cutGraph[currIdx] = currEdge->listIdx;
+                            lastIdx = currIdx;
+                            currIdx = newIdx;
+                            break;
+                        }
+                    }
+                }
+                currEdge = currEdge->next;
+            }while(currEdge != currFace->edge);
+            if(currIdx == 0){
+                break;
+            }
+        }
+    }
 
-    // vec3 newVertex1(-3.5f, -1.0f, 0.0f);
-    // intersectPts.erase(intersectPts.begin());
-    // intersectPts.insert(intersectPts.begin(), make_tuple(newVertex1, 2, 0));
+    //Activate cutting
+    toCut = true;
+}
 
-    currIntersectIdx = 0;
+//TODO: Check the third index of a face intersection point tuple 
+void DeformableBody::getIntersectionPts(){
+    intersectPts.clear();
+    int currIdx = 0;
+    //First point on the centroid of the starting cut face
+    vec3 x = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[0]]->position;
+    vec3 y = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[1]]->position;
+    vec3 z = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[2]]->position;
+    vec3 startCentroid = (x + y + z) / 3.0f;
+    intersectPts.push_back(make_tuple(startCentroid, 2, cutGraph[0]));
+    //Intermediate points on the centres of edges between adjacent cut faces
+    do{
+        int edgeIdx = cutGraph[currIdx];
+        Edge* currEdge = mesh->edge_list[edgeIdx];
+        vec3 p = currEdge->startParticle->position;
+        vec3 q = currEdge->twin->startParticle->position;
+        vec3 newPt = (p + q) / 2.0f; 
+        intersectPts.push_back(make_tuple(newPt, 1, edgeIdx));
+        currIdx = currEdge->twin->face->helperIdx;
+    }while(currIdx != 0);
+    //Second point on the centroid of the end cut face
+    intersectPts.push_back(make_tuple(startCentroid, 2, cutGraph[0]));
 }
 
 //Mesh Process Input
 void DeformableBody::processInput(Window &window){
     GLFWwindow *win = window.window;
-    // if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
-    //     if(!isPlaying){
-    //         isPlaying = true;
-    //         if(drawMode == 1 || drawMode == 2){
-    //             setupPath();
-    //         }else if(drawMode == 0){
-    //             setupCut();
-    //         }
-    //     }
-    // }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
-    //     if(isPlaying){
-    //         isPlaying = false;
-    //     }
-    // }
-
     if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
         if(!activatePhysics){
             activatePhysics = true;
@@ -166,6 +197,11 @@ void DeformableBody::processInput(Window &window){
     }else if(glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS){
         if(activatePhysics){
             activatePhysics = false;
+        }
+    }else if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
+        if(!toCut){
+            constructCutGraph();
+            getIntersectionPts();
         }
     }
 }
@@ -402,8 +438,11 @@ bool DeformableBody::checkSanity(){
 }
 
 void DeformableBody::printMeshInfo(){
-    for(int i=0;i<this->mesh->particle_list.size();i++){
-        Particle* p = this->mesh->particle_list[i];
-        cout << p->particleID << endl;
+    //Display intersection pts
+    setPointSize(10.0f);
+    setColor(vec3(1.0f, 1.0f, 0.0f));
+    for(auto pt : intersectPts){
+        cout << get<0>(pt) << endl;
+        drawPoint(get<0>(pt));
     }
 }

@@ -186,14 +186,14 @@ void Face::setFace(int a, int b, int c){
     indices[0] = a;
     indices[1] = b;
     indices[2] = c;
-    reMeshed = true;
 }
 
-Face::Face(int a, int b, int c, bool isRemeshed){
+Face::Face(int a, int b, int c){
     indices[0] = a;
     indices[1] = b;
     indices[2] = c;
-    reMeshed = isRemeshed;
+    helperIdx = -1;
+    reMeshed = false;
     edge = NULL;
     color = vec3(1.0f, 0.0f, 0.0f);
 }
@@ -209,8 +209,8 @@ Constraint::Constraint(vec3 velocity){
 
 //Calculating forces/Jacobians for implicit integration
 void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
-    unsigned int i = s.p1->particleID;
-    unsigned int j = s.p2->particleID;
+    unsigned int i = s.p1->listIdx;
+    unsigned int j = s.p2->listIdx;
     vec3 xij = s.p1->position - s.p2->position;
     vec3 vij = s.p1->velocity - s.p2->velocity;
     double length = xij.norm();

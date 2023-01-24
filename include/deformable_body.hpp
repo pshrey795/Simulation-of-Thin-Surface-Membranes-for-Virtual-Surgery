@@ -15,7 +15,7 @@ class DeformableBody{
         TimeIntegrationType timeIntegrationType = BWD_EULER;
 
         //Animation Parameters
-        bool isPlaying = false;     
+        bool toCut = false;  
         bool activatePhysics = false;
         int count = 0;                  //Frame counter to control speed of animation 
         double t = 0;                   //Time counter 
@@ -24,12 +24,22 @@ class DeformableBody{
         bool debug;
         bool checkSanity();
 
-        //Path Parameters
+        //Cut Parameters
         Path* currentPath = NULL;
         unsigned int currIntersectIdx;
         vec3 upVec;                     //Vertical vector, to be decided from the instrument
         void setupPath();
-        void setupCut();
+        
+        //Cut Graph
+        //List of nodes, store only the indices of the cut faces
+        vector<int> cutList;
+        //Cut Graph stores the graph of faces for determining the intersection points
+        //In general, an undirected graph, so stored as an adjacency list
+        //Currently, we expect a single cycle, so store simply as a list
+        // vector<vector<int>> cutGraph;    
+        vector<int> cutGraph;
+        void constructCutGraph();
+        void getIntersectionPts();
 
         //Storing intersection points of the path with the mesh 
         vector<tuple<vec3, int, int>> intersectPts;
@@ -55,10 +65,12 @@ class DeformableBody{
         //Mesh Parameters
         HalfEdge *mesh;
 
+        //Visual Debugging
         bool drawRefMesh;
         int drawMode;
         int splitMode;
 
+        //Simulation and Interaction 
         void update(float dt);
         void processInput(Window &window);
 

@@ -15,7 +15,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
     //Adding vertices
     for(unsigned int i=0;i<Vertices.size();i++){
         auto newParticle = new Particle(Vertices[i]);
-        newParticle->particleID = i;
+        newParticle->listIdx = i;
         this->particle_list.push_back(newParticle);
     }
 
@@ -29,7 +29,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
         c = Indices[i+2];
 
         //Create Face and Half Edges
-        struct Face* f = new Face(a,b,c,false);
+        struct Face* f = new Face(a,b,c);
         struct Edge* e1 = new Edge(particle_list[a],f);
         struct Edge* e2 = new Edge(particle_list[b],f);
         struct Edge* e3 = new Edge(particle_list[c],f);
@@ -64,11 +64,15 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
 
         //Linking face to one of the half edges
         f->edge = e1;
+        f->listIdx = this->face_list.size();
         this->face_list.push_back(f);
 
         //Adding half edges
+        e1->listIdx = this->edge_list.size();
         this->edge_list.push_back(e1);
+        e2->listIdx = this->edge_list.size();
         this->edge_list.push_back(e2);
+        e3->listIdx = this->edge_list.size();
         this->edge_list.push_back(e3);
 
         //Next iteration
@@ -85,6 +89,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices){
                     struct Edge* newEdge = new Edge(v,NULL);
                     newEdge->twin = this->edge_list[adjList[b][a]];
                     this->edge_list[adjList[b][a]]->twin = newEdge;
+                    newEdge->listIdx = this->edge_list.size();
                     this->edge_list.push_back(newEdge);
                     adjList[a][b] = currentSize++;
                 }
@@ -115,7 +120,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, unordere
     //Adding vertices
     for(unsigned int i=0;i<Vertices.size();i++){
         auto newParticle = new Particle(Vertices[i]);
-        newParticle->particleID = i;
+        newParticle->listIdx = i;
         this->particle_list.push_back(newParticle);
     }
 
@@ -143,7 +148,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, unordere
         c = Indices[i+2];
 
         //Create Face and Half Edges
-        struct Face* f = new Face(a,b,c,false);
+        struct Face* f = new Face(a,b,c);
         struct Edge* e1 = new Edge(particle_list[a],f);
         struct Edge* e2 = new Edge(particle_list[b],f);
         struct Edge* e3 = new Edge(particle_list[c],f);
@@ -178,11 +183,15 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, unordere
 
         //Linking face to one of the half edges
         f->edge = e1;
+        f->listIdx = this->face_list.size();
         this->face_list.push_back(f);
 
         //Adding half edges
+        e1->listIdx = this->edge_list.size();
         this->edge_list.push_back(e1);
+        e2->listIdx = this->edge_list.size();
         this->edge_list.push_back(e2);
+        e3->listIdx = this->edge_list.size();
         this->edge_list.push_back(e3);
 
         //Next iteration
@@ -199,6 +208,7 @@ HalfEdge::HalfEdge(vector<vec3> Vertices, vector<unsigned int> Indices, unordere
                     struct Edge* newEdge = new Edge(v,NULL);
                     newEdge->twin = this->edge_list[adjList[b][a]];
                     this->edge_list[adjList[b][a]]->twin = newEdge;
+                    newEdge->listIdx = this->edge_list.size();
                     this->edge_list.push_back(newEdge);
                     adjList[a][b] = currentSize++;
                 }
@@ -228,7 +238,6 @@ vector<tuple<vec3,int,int>> HalfEdge::Intersect(Plane plane){
     auto intersectingEdges = IntersectingEdges();
     return IntersectingVertices(intersectingEdges);
 }
-
 vector<tuple<vec3, int, int>> HalfEdge::updateIntersectionPts(vector<tuple<vec3, int, int>> intersectionPts){
     vector<tuple<vec3, int, int>> newIntersectionPts;
     for(auto i : intersectionPts){
@@ -245,16 +254,12 @@ vector<tuple<vec3, int, int>> HalfEdge::updateIntersectionPts(vector<tuple<vec3,
     }
     return newIntersectionPts;
 }
-
-//Calculating offsets for each Particle from the plane
 void HalfEdge::ParticleOffsets(Plane plane){
     for(unsigned int i=0;i<particle_list.size();i++){
         double newOffset = plane.normal.dot(particle_list[i]->initPos - plane.origin);
         particle_list[i]->offset = newOffset;
     }
 }
-
-//Obtaining the edges that intersect with the plane
 vector<int> HalfEdge::IntersectingEdges(){
     vector<int> intersectingEdges;
     vector<int> isEdgeIntersecting;
@@ -295,29 +300,26 @@ vector<tuple<vec3,int,int>> HalfEdge::IntersectingVertices(vector<int> edges){
     }
     return intersectingVertices;
 }
-double HalfEdge::triArea(vec3 a, vec3 b, vec3 c){
-    vec3 x = b - a;
-    vec3 y = c - a;
-    return abs(0.5 * (x.cross(y)).norm());
-}
+
 bool HalfEdge::isInside(Face* face, vec3 point){
     vec3 a = this->particle_list[face->indices[0]]->initPos;
     vec3 b = this->particle_list[face->indices[1]]->initPos;
     vec3 c = this->particle_list[face->indices[2]]->initPos;
-    double A = this->triArea(a,b,c);
-    double A1 = this->triArea(point,b,c);
-    double A2 = this->triArea(point,c,a);
-    double A3 = this->triArea(point,a,b);
+    double A = triArea(a,b,c);
+    double A1 = triArea(point,b,c);
+    double A2 = triArea(point,c,a);
+    double A3 = triArea(point,a,b);
     return (abs((A1 + A2 + A3) - A) < MIN_DIFF);
 }
+
 bool HalfEdge::isInsidePos(Face* face, vec3 point){
     vec3 a = this->particle_list[face->indices[0]]->position;
     vec3 b = this->particle_list[face->indices[1]]->position;
     vec3 c = this->particle_list[face->indices[2]]->position;
-    double A = this->triArea(a,b,c);
-    double A1 = this->triArea(point,b,c);
-    double A2 = this->triArea(point,c,a);
-    double A3 = this->triArea(point,a,b);
+    double A = triArea(a,b,c);
+    double A1 = triArea(point,b,c);
+    double A2 = triArea(point,c,a);
+    double A3 = triArea(point,a,b);
     return (abs((A1 + A2 + A3) - A) < MIN_DIFF);
 }
 
@@ -337,7 +339,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
     int newIndexRight;
 
     //Creating new vertices and edges or using an existing Particle depending on the type of intersection point 
-    vec3 displacement = (1?(splitMode == 0):0) * EPSILON_CUSTOM * normal;
+    // vec3 displacement = (1?(splitMode == 0):0) * EPSILON_CUSTOM * normal;
+    vec3 displacement = vec3(0.0f, 0.0f, 0.0f);
     if(first){
         if(currentType == 0){
             newParticleLeft = this->particle_list[get<2>(intPt)];
@@ -348,7 +351,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             newParticleLeft->position = oldPos - displacement;
             newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
             newIndexRight = n;
-            newParticleRight->particleID = newIndexRight;
+            newParticleRight->listIdx = newIndexRight;
             this->particle_list.push_back(newParticleRight);
         }else if(currentType == 1){
             vec3 newInitPos = get<0>(intPt);
@@ -358,8 +361,8 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
             newIndexLeft = n;
             newIndexRight = n+1;
-            newParticleLeft->particleID = newIndexLeft;
-            newParticleRight->particleID = newIndexRight;
+            newParticleLeft->listIdx = newIndexLeft;
+            newParticleRight->listIdx = newIndexRight;
             this->particle_list.push_back(newParticleLeft);
             this->particle_list.push_back(newParticleRight);
         }else{
@@ -376,7 +379,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             Particle* newParticle = new Particle(oldPos, newInitPos, newVelocity);
             newParticleLeft = newParticleRight = newParticle;
             newIndexLeft = newIndexRight = n;
-            newParticle->particleID = newIndexLeft;
+            newParticle->listIdx = newIndexLeft;
             this->particle_list.push_back(newParticle);
         }
     }else if(last){
@@ -389,7 +392,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             newParticleLeft->position = oldPos - displacement;
             newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
             newIndexRight = n;
-            newParticleRight->particleID = newIndexRight;
+            newParticleRight->listIdx = newIndexRight;
             this->particle_list.push_back(newParticleRight);
         }
     }else{  
@@ -401,7 +404,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
         newParticleLeft->position = oldPos - displacement;
         newParticleRight = new Particle(oldPos + displacement, newInitPos, newVelocity);
         newIndexRight = n;
-        newParticleRight->particleID = newIndexRight;
+        newParticleRight->listIdx = newIndexRight;
         this->particle_list.push_back(newParticleRight);
     }
 
@@ -468,7 +471,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
                 Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
                 int nextIndex = this->particle_list.size();
-                nextParticle->particleID = nextIndex;
+                nextParticle->listIdx = nextIndex;
                 this->particle_list.push_back(nextParticle);
                 nextIntPt = make_tuple(newPos, 0, nextIndex);
 
@@ -753,7 +756,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
                 Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
                 int nextIndex = this->particle_list.size();
-                nextParticle->particleID = nextIndex;
+                nextParticle->listIdx = nextIndex;
                 this->particle_list.push_back(nextParticle);
                 nextIntPt = make_tuple(newPos, 0, nextIndex);
 
@@ -1196,7 +1199,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
                 Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
                 int nextIndex = this->particle_list.size();
-                nextParticle->particleID = nextIndex;
+                nextParticle->listIdx = nextIndex;
                 this->particle_list.push_back(nextParticle);
                 nextIntPt = make_tuple(newPos, 0, nextIndex);
 
@@ -1501,7 +1504,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             vec3 newVelocity = getVelAtEdge(nextEdge, newPos);
             Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
             int nextIndex = this->particle_list.size();
-            nextParticle->particleID = nextIndex;
+            nextParticle->listIdx = nextIndex;
             this->particle_list.push_back(nextParticle);
             nextIntPt = make_tuple(newPos, 0, nextIndex);
 
@@ -1701,7 +1704,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             vec3 newVelocity = getVelAtFace(currentEdge->face, newPos);
             Particle* nextParticle = new Particle(newPos, newInitPos, newVelocity);
             int nextIndex = this->particle_list.size();
-            nextParticle->particleID = nextIndex;
+            nextParticle->listIdx = nextIndex;
             this->particle_list.push_back(nextParticle);
 
             //Obtaining old particle indices

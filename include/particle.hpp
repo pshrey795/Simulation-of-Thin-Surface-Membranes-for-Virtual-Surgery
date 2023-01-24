@@ -2,6 +2,7 @@
 #define PARTICLE_HPP
 
 #include "debug.hpp"
+#include "intersect.hpp"
 
 using namespace std; 
 
@@ -26,6 +27,7 @@ struct Edge{
     struct Edge *twin;
     struct Face *face;
     struct Spring spring;
+    int listIdx;
     bool isBoundary;
     Edge(Particle *startParticle, Face *face);
     Edge();
@@ -41,7 +43,9 @@ struct Face{
     int indices[3];
     bool reMeshed = false;
     vec3 color; 
-    Face(int a, int b, int c, bool isRemeshed = true);
+    int listIdx;
+    int helperIdx;
+    Face(int a, int b, int c);
     void setFace(int a, int b, int c);
     Face();
 };
@@ -64,7 +68,7 @@ class Particle {
     private:        
 
     public:
-        unsigned int particleID;
+        unsigned int listIdx;
         double m;               //Mass of the particle
         double invM;            //Inverse mass of the particle
         vec3 position;
