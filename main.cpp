@@ -18,7 +18,7 @@ int splitMode = 0;
 //Debugging
 vector<vec3> intersectionPoints;
 
-float dt = 1/600.0f;
+float dt = 1/60.0f;
 float t = 0;
 bool paused = false;
 

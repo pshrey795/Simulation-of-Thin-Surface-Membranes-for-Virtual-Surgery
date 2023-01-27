@@ -92,7 +92,7 @@ void RigidBody::processInput(Window &window){
     }else if(glfwGetKey(win, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS){
         velocity = vec3(0.0f, 0.0f, 2.0f);
     }else if(glfwGetKey(win, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS){
-        velocity = vec3(0.0f, 0.0f, -2.0f);
+        velocity = vec3(0.0f, 0.0f, -20.0f);
     }
 }
 

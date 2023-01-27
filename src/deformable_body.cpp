@@ -154,8 +154,9 @@ void DeformableBody::getIntersectionPts(){
     vec3 y = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[1]]->initPos;
     vec3 z = mesh->particle_list[mesh->face_list[cutList[currIdx]]->indices[2]]->initPos;
     vec3 startCentroid = (x + y + z) / 3.0f;
-    intersectPts.push_back(make_tuple(startCentroid, 2, cutGraph[0]));
+    intersectPts.push_back(make_tuple(startCentroid, 2, mesh->particle_list.size()));
     //Intermediate points on the centres of edges between adjacent cut faces
+    int localCount = 0;
     do{
         int edgeIdx = cutGraph[currIdx];
         Edge* currEdge = mesh->edge_list[edgeIdx];
@@ -164,6 +165,10 @@ void DeformableBody::getIntersectionPts(){
         vec3 newPt = (p + q) / 2.0f; 
         intersectPts.push_back(make_tuple(newPt, 1, edgeIdx));
         currIdx = currEdge->twin->face->helperIdx;
+        localCount++;
+        if(localCount == 0){
+            break;
+        }
     }while(currIdx != 0);
     //Second point on the centroid of the end cut face
     intersectPts.push_back(make_tuple(startCentroid, 0, mesh->particle_list.size()));
@@ -201,6 +206,7 @@ void DeformableBody::processCut(){
     // }
 
     //Collision Induced Mesh Cutting
+    mesh->firstVertexIdx = mesh->particle_list.size();
     for(int i = 0; i < intersectPts.size(); i++){
         if(i == 0){
             auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
@@ -213,6 +219,9 @@ void DeformableBody::processCut(){
         }
         checkSanity();
     }
+
+    mesh->updateGhostSprings();
+    mesh->redistributeMass();
 }
 
 //Mesh Process Input
@@ -471,10 +480,14 @@ bool DeformableBody::checkSanity(){
 }
 
 void DeformableBody::printMeshInfo(){
-    //Display intersection pts
-    setPointSize(10.0f);
-    setColor(vec3(255.0f, 255.0f, 0.0f));
-    for(auto pt : intersectPts){
-        drawPoint(get<0>(pt));
+    //Track the problematic particle
+    if(mesh->firstVertexIdx != -1){
+        Particle* pt = mesh->particle_list[mesh->firstVertexIdx];
+        cout << "Position: " << pt->position << endl;
+        cout << "Velocity: " << pt->velocity << endl;
+        cout << "Mass:" << pt->m << endl;
+        cout << "Other mass: " << mesh->particle_list[mesh->firstVertexIdx - 1]->m << endl;
+        cout << "External Force: " << pt->externalForce << endl;
+        cout << "\n\n\n"; 
     }
 }

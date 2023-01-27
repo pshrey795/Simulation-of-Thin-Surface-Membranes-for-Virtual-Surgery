@@ -1412,7 +1412,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             }
         }
     }else if(last){
-        if(currentType != 2){
+        if(currentType == 0){
             rightCrossEdge->startParticle = newParticleRight;
             Edge* currentEdge = rightCrossEdge->twin->next;
             while(currentEdge != NULL){
@@ -1835,9 +1835,6 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
     if(rightCrossEdge != NULL){
         rightCrossEdge->isBoundary = true;
     }
-
-    updateGhostSprings();
-    redistributeMass();
 }
 
 void HalfEdge::resetForce(){
@@ -1959,7 +1956,7 @@ void HalfEdge::solveBwdEuler(float dt){
     //Check symmetry of A
     for(int i = 0; i < systemSize - numConstraints; i++){
         for(int j = 0; j < systemSize - numConstraints; j++){
-            if(A(i,j) != A(j,i)){
+            if(A(i,j) != A(j,i).transpose()){
                 debugStream << "A is not symmetric!" << endl;
             }
         }
@@ -1974,7 +1971,8 @@ void HalfEdge::solveBwdEuler(float dt){
     SparseMatrix<float> A_sparse = A_exploded.sparseView();
 
     //Define the solver and the solution vector
-    SimplicialLDLT<SparseMatrix<float>> solver;
+    // SimplicialLDLT<SparseMatrix<float>> solver;
+    SparseLU<SparseMatrix<float>> solver;
     // ConjugateGradient<SparseMatrix<float>> solver;
     solver.compute(A_sparse);
     if(solver.info() != Eigen::Success){
