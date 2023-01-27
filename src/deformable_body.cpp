@@ -481,13 +481,11 @@ bool DeformableBody::checkSanity(){
 
 void DeformableBody::printMeshInfo(){
     //Track the problematic particle
-    if(mesh->firstVertexIdx != -1){
-        Particle* pt = mesh->particle_list[mesh->firstVertexIdx];
-        cout << "Position: " << pt->position << endl;
-        cout << "Velocity: " << pt->velocity << endl;
-        cout << "Mass:" << pt->m << endl;
-        cout << "Other mass: " << mesh->particle_list[mesh->firstVertexIdx - 1]->m << endl;
-        cout << "External Force: " << pt->externalForce << endl;
-        cout << "\n\n\n"; 
+    if(mesh->particle_list.size() > 400){
+        setPointSize(20.0f);
+        setColor(vec3(255.0f, 255.0f, 0.0f));
+        drawPoint(mesh->particle_list[400]->position);
+        drawPoint(mesh->particle_list[401]->position);
+        drawPoint(mesh->particle_list[402]->position);
     }
 }

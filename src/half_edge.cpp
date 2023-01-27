@@ -383,7 +383,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             this->particle_list.push_back(newParticle);
         }
     }else if(last){
-        if(currentType != 2){
+        if(currentType == 0){
             newParticleLeft = this->particle_list[get<2>(intPt)];
             newIndexLeft = get<2>(intPt);
             vec3 oldPos = newParticleLeft->position;
@@ -1332,7 +1332,7 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
                 }
 
                 //Particle to edge relations 
-                newParticleLeft->edge = newEdge1;
+                newParticleLeft->edge = newEdge3;
                 nextParticle->edge = newEdge8;
                 this->particle_list[oldIndexRight]->edge = newEdge6;
 
@@ -1443,6 +1443,9 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
             rightCrossEdge->twin = lastTwin;
             lastTwin->twin = rightCrossEdge;
             rightCrossEdge->startParticle = newParticleRight;
+
+            edge_list.push_back(edge1);
+            edge_list.push_back(rightCrossEdge);
         }
         if(nextType == 0){
             //Current: Particle, Next: Particle
@@ -1936,6 +1939,17 @@ void HalfEdge::solveBwdEuler(float dt){
     //RHS of the equation
     vecX b = scalarMult(f_n + scalarMult(matVecMult(Jx, v_n),dt),dt);
 
+    //Check symmetry of A
+    for(int i = 0; i < systemSize; i++){
+        for(int j = 0; j < systemSize; j++){
+            if(A(i,j) != A(j,i).transpose()){
+                debugStream << "A is not symmetric!" << endl;
+                debugStream << firstVertexIdx << " " << i << " " << j << endl;
+                debugStream << "\n\n\n";
+            }
+        }
+    }
+
     //Handling constraints
     int numConstraints = 0;
     for(int i = 0; i < systemSize; i++){
@@ -1953,15 +1967,6 @@ void HalfEdge::solveBwdEuler(float dt){
     // debugStream << "b: " << b.rows() << endl;
     // debugStream << "\n\n" << endl;
 
-    //Check symmetry of A
-    for(int i = 0; i < systemSize - numConstraints; i++){
-        for(int j = 0; j < systemSize - numConstraints; j++){
-            if(A(i,j) != A(j,i).transpose()){
-                debugStream << "A is not symmetric!" << endl;
-            }
-        }
-    }
-
     //Currently, the entire system is in block form
     //Need to expand it in all dimensions and convert in into sparse form before passing it to the solver
     matXf A_exploded = explodeMatrix(A);
@@ -1971,8 +1976,8 @@ void HalfEdge::solveBwdEuler(float dt){
     SparseMatrix<float> A_sparse = A_exploded.sparseView();
 
     //Define the solver and the solution vector
-    // SimplicialLDLT<SparseMatrix<float>> solver;
-    SparseLU<SparseMatrix<float>> solver;
+    SimplicialLDLT<SparseMatrix<float>> solver;
+    // SparseLU<SparseMatrix<float>> solver;
     // ConjugateGradient<SparseMatrix<float>> solver;
     solver.compute(A_sparse);
     if(solver.info() != Eigen::Success){

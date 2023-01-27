@@ -57,9 +57,6 @@ class DeformableBody{
         Particle* vertexLast;
         Edge* crossEdgeLeft;
         Edge* crossEdgeRight;
-        Edge* sideEdgeLeft;
-        Edge* sideEdgeRight;
-
 
     public:
         DeformableBody();
