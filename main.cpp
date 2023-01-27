@@ -79,7 +79,7 @@ void processInput(int argc, char** argv){
 }
 
 int main(int argc, char **argv) {
-    window.create("Test Window", 2560, 1440);
+    window.create("Test Window", 1920, 1080);
     window.onKeyPress(keyPressed);
     camera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
     lighting.createDefault();

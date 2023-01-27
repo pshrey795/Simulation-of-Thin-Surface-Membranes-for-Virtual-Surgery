@@ -117,7 +117,7 @@ void DeformableBody::constructCutGraph(){
     //Directed graph(cycle) of cut faces
     if(cutList.size() > 0){
         int currIdx = 0;
-        int lastIdx = -1;
+        int lastIdx = -2;
         while(true){
             Face* currFace = mesh->face_list[cutList[currIdx]];
             Edge* currEdge = currFace->edge;

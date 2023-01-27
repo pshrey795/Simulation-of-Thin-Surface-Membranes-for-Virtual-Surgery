@@ -180,6 +180,7 @@ vec3 Edge::addForce(){
 Face::Face(){
     edge = NULL;
     color = vec3(1.0f, 0.0f, 0.0f);
+    helperIdx = -1;
 }
 
 void Face::setFace(int a, int b, int c){

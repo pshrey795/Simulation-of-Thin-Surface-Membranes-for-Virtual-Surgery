@@ -191,6 +191,7 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec
                 }
             }else{
                 membrane.mesh->face_list[i]->color = vec3(1.0f, 0.0f, 0.0f);
+                membrane.mesh->face_list[i]->reMeshed = false;
             }
         }
     }else{

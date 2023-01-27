@@ -43,15 +43,15 @@ class HalfEdge {
         // of the intersection point
         vector<tuple<vec3, int, int>> Intersect(Plane plane);
         vector<tuple<vec3, int, int>> updateIntersectionPts(vector<tuple<vec3, int, int>> intersections);
-
+        
         //Alternate cutting algorithm 
         //Intersection Record (point, type, vertex/edge of intersection) (Type 0: Vertex, Type 1: Edge, Type 2: Face)
         //Type -1 if last or first point
 
         //1) Intersection Record of the previous point(just to check if this is the first vertex)
-        //1) Intersection Record of the current point 
-        //2) Intersection Record of the next point
-        //3) Direction of normal of the plane of splitting
+        //2) Intersection Record of the current point 
+        //3) Intersection Record of the next point
+        //4) Direction of normal of the plane of splitting
         void reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode);
         void updateGhostSprings();
         void redistributeMass(); 
