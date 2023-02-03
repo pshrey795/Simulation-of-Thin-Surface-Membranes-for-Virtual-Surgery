@@ -13,19 +13,22 @@ DeformableBody::DeformableBody(){
     vector<bool> clamp; 
     unordered_map<int, vec3> constraints;
 
-    int n = 20;
+    int n = 15;
     double f = 8.0 / (double)(n-1);
 
     for(int i = 0;i < n;i++){
         for(int j = 0;j < n;j++){
             vertices.push_back(vec3(i*f - 4.0,j*f - 4.0,0));
+            if(i == 0 || i == n-1 || j == 0 || j == n-1){
+                constraints[i*n+j] = vec3(0.0f, 0.0f, 0.0f);
+            }
         }
     }
 
-    constraints[0] = vec3(0.0f, 0.0f, 0.0f);
-    constraints[n-1] = vec3(0.0f, 0.0f, 0.0f);
-    constraints[n*n-n] = vec3(0.0f, 0.0f, 0.0f);
-    constraints[n*n-1] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[0] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[n-1] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[n*n-n] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[n*n-1] = vec3(0.0f, 0.0f, 0.0f);
 
 
     for(int i = 0;i < n-1;i++){
@@ -349,25 +352,25 @@ void DeformableBody::renderMesh(){
     }
 
     //Drawing Edges
-    for(int i = 0; i < m; i++){
-        Edge* e = mesh->edge_list[i];
-        if(true){
-            setLineWidth(3.0f);
-            setColor(vec3(0.0f, 0.0f, 0.0f));
+    // for(int i = 0; i < m; i++){
+    //     Edge* e = mesh->edge_list[i];
+    //     if(true){
+    //         setLineWidth(3.0f);
+    //         setColor(vec3(0.0f, 0.0f, 0.0f));
 
-            //Drawing the actual mesh
-            vec3 v1 = e->startParticle->position;
-            vec3 v2 = e->twin->startParticle->position;
-            drawLine(v1,v2);
+    //         //Drawing the actual mesh
+    //         vec3 v1 = e->startParticle->position;
+    //         vec3 v2 = e->twin->startParticle->position;
+    //         drawLine(v1,v2);
 
-            if(drawRefMesh){
-                //Drawing the reference mesh
-                vec3 iv1 = e->startParticle->initPos;
-                vec3 iv2 = e->twin->startParticle->initPos;
-                drawLine(iv1,iv2);
-            }
-        }
-    }
+    //         if(drawRefMesh){
+    //             //Drawing the reference mesh
+    //             vec3 iv1 = e->startParticle->initPos;
+    //             vec3 iv2 = e->twin->startParticle->initPos;
+    //             drawLine(iv1,iv2);
+    //         }
+    //     }
+    // }
 }
 
 //Checking sanity of the half-edge data structure after every update

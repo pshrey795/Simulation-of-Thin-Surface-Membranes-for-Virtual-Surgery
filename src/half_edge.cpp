@@ -1840,6 +1840,224 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
     }
 }
 
+void HalfEdge::reMeshEdge(int i){
+    Edge* currentEdge = this->edge_list[i];
+    int n = this->particle_list.size();
+    int cutCase = 0;
+    if(currentEdge->face == NULL){
+        //The edge is shared by only one face, i.e. a boundary edge
+        cutCase = 1;
+        currentEdge = currentEdge->twin; 
+    }else if(currentEdge->twin->face == NULL){
+        cutCase = 1; 
+    }
+
+    //New mesh entities
+    Particle* newParticleLeft;
+    Particle* newParticleRight;
+    int newIndexLeft;
+    int newIndexRight;
+    Particle* leftParticle = currentEdge->startParticle;
+    Particle* rightParticle = currentEdge->twin->startParticle;
+    vec3 newPos = (leftParticle->position + rightParticle->position) / 2.0f;
+    vec3 normal = (leftParticle->position - rightParticle->position).normalized();
+    vec3 newInitPos = (leftParticle->initPos + rightParticle->initPos) / 2.0f;
+    vec3 newVelocity = (leftParticle->velocity + rightParticle->velocity) / 2.0f;
+    newParticleLeft = new Particle(newPos + normal * 0.1f, newInitPos, newVelocity);
+    newParticleRight = new Particle(newPos - normal * 0.1f, newInitPos, newVelocity);
+    newIndexLeft = n;
+    newIndexRight = n+1;
+    newParticleLeft->listIdx = newIndexLeft;
+    newParticleRight->listIdx = newIndexRight;
+    this->particle_list.push_back(newParticleLeft);
+    this->particle_list.push_back(newParticleRight);
+
+    if(cutCase){
+        //Obtaining old particle indices
+        Particle* centreParticle = currentEdge->prev->startParticle;
+        int oldIndexLeft = leftParticle->listIdx;
+        int oldIndexRight = rightParticle->listIdx;
+        int oldIndexCentre = centreParticle->listIdx;
+
+        //Edge edge relations
+        Edge* newEdge1 = new Edge();
+        Edge* newEdge2 = new Edge();
+        Edge* newEdge3 = new Edge();
+        Edge* newEdge4 = new Edge();
+        Edge* newEdge5 = new Edge();
+        Edge* newEdge6 = new Edge();
+
+        //Twin edges
+        newEdge1->twin = newEdge2;
+        newEdge2->twin = newEdge1;
+        newEdge3->twin = newEdge4;
+        newEdge4->twin = newEdge3;
+        newEdge5->twin = newEdge6;
+        newEdge6->twin = newEdge5;
+
+        //Next/Prev edges
+        newEdge2->next = currentEdge->next;
+        newEdge2->prev = newEdge3;
+        newEdge3->next = newEdge2;
+        newEdge3->prev = currentEdge->next;
+        currentEdge->next->next = newEdge3;
+        currentEdge->next->prev = newEdge2;
+        newEdge6->next = currentEdge->prev;
+        newEdge6->prev = currentEdge;
+        currentEdge->prev->prev = newEdge6;
+        currentEdge->next = newEdge6;
+
+        //Edge to particle relations
+        newEdge1->startParticle = rightParticle;
+        newEdge2->startParticle = newParticleRight;
+        newEdge3->startParticle = centreParticle;
+        newEdge4->startParticle = newParticleRight;
+        newEdge5->startParticle = centreParticle;
+        newEdge6->startParticle = newParticleLeft;
+        currentEdge->twin->startParticle = newParticleLeft;
+
+        //Particle to edge relations
+        newParticleLeft->edge = newEdge6;
+        newParticleRight->edge = newEdge2;
+        rightParticle->edge = newEdge1;
+
+        //Face to particle/edge relations
+        Face* oldFace = currentEdge->face;
+        oldFace->setFace(oldIndexLeft, newIndexLeft, oldIndexCentre);
+        oldFace->edge = currentEdge;
+        Face* newFace = new Face(newIndexRight, oldIndexRight, oldIndexCentre);
+        newFace->edge = newEdge2;
+
+        //Edge to face relations
+        newEdge2->face = newFace; 
+        newEdge2->next->face = newFace;
+        newEdge3->face = newFace;
+        newEdge6->face = oldFace;
+
+        //Adding new edges/faces
+        this->edge_list.push_back(newEdge1);
+        this->edge_list.push_back(newEdge2);
+        this->edge_list.push_back(newEdge3);
+        this->edge_list.push_back(newEdge4);
+        this->edge_list.push_back(newEdge5);
+        this->edge_list.push_back(newEdge6);
+        this->face_list.push_back(newFace);
+    }else{
+        //Obtaining old particle indices
+        Particle* centreParticle1 = currentEdge->prev->startParticle;
+        Particle* centreParticle2 = currentEdge->twin->prev->startParticle;
+        int oldIndexLeft = leftParticle->listIdx;
+        int oldIndexRight = rightParticle->listIdx;
+        int oldIndexCentre1 = centreParticle1->listIdx;
+        int oldIndexCentre2 = centreParticle2->listIdx;
+
+        //Edge edge relations
+        Edge* newEdge1 = new Edge();
+        Edge* newEdge2 = new Edge();
+        Edge* newEdge3 = new Edge();
+        Edge* newEdge4 = new Edge();
+        Edge* newEdge5 = new Edge();
+        Edge* newEdge6 = new Edge();
+        Edge* newEdge7 = new Edge();
+        Edge* newEdge8 = new Edge();
+        Edge* newEdge9 = new Edge();
+        Edge* newEdge10 = new Edge();
+
+        //Twin edges
+        newEdge1->twin = newEdge2;
+        newEdge2->twin = newEdge1;
+        newEdge3->twin = newEdge4;
+        newEdge4->twin = newEdge3;
+        newEdge5->twin = newEdge6;
+        newEdge6->twin = newEdge5;
+        newEdge7->twin = newEdge8;
+        newEdge8->twin = newEdge7;
+        newEdge9->twin = newEdge10;
+        newEdge10->twin = newEdge9;
+
+        //Next/Prev edges
+        Edge* currentPrevEdge2 = currentEdge->twin->prev;
+        newEdge1->next = currentEdge->twin;
+        newEdge1->prev = currentEdge->twin->next;
+        currentEdge->twin->prev = newEdge1;
+        currentEdge->twin->next->next = newEdge1;
+        newEdge4->next = currentPrevEdge2;
+        newEdge4->prev = newEdge5;
+        currentPrevEdge2->next = newEdge5;
+        currentPrevEdge2->prev = newEdge4;
+        newEdge5->next = newEdge4;
+        newEdge5->prev = currentPrevEdge2;
+        newEdge6->next = currentEdge->next;
+        newEdge6->prev = newEdge7;
+        newEdge7->next = newEdge6;
+        newEdge7->prev = currentEdge->next;
+        currentEdge->next->next = newEdge7;
+        currentEdge->next->prev = newEdge6;
+        newEdge10->next = currentEdge->prev;
+        newEdge10->prev = currentEdge;
+        currentEdge->prev->prev = newEdge10;
+        currentEdge->next = newEdge10;
+
+        //Edge to particle relations
+        newEdge1->startParticle = centreParticle2;
+        newEdge2->startParticle = newParticleLeft;
+        newEdge3->startParticle = centreParticle2;
+        newEdge4->startParticle = newParticleRight;
+        newEdge5->startParticle = rightParticle;
+        newEdge6->startParticle = newParticleRight;
+        newEdge7->startParticle = centreParticle1;
+        newEdge8->startParticle = newParticleRight;
+        newEdge9->startParticle = centreParticle1;
+        newEdge10->startParticle = newParticleLeft;
+        currentEdge->twin->startParticle = newParticleLeft;
+
+        //Particle to edge relations
+        newParticleLeft->edge = newEdge10;
+        newParticleRight->edge = newEdge6;
+        rightParticle->edge = newEdge5;
+
+        //Face to particle/edge relations
+        Face* oldFace1 = currentEdge->face;
+        Face* oldFace2 = currentEdge->twin->face;
+        oldFace1->setFace(oldIndexLeft, newIndexLeft, oldIndexCentre1);
+        oldFace1->edge = currentEdge;
+        oldFace2->setFace(newIndexLeft, oldIndexLeft, oldIndexCentre2);
+        oldFace2->edge = currentEdge->twin;
+        Face* newFace1 = new Face(newIndexRight, oldIndexRight, oldIndexCentre1);
+        newFace1->edge = newEdge6;
+        Face* newFace2 = new Face(oldIndexRight, newIndexRight, oldIndexCentre2);
+        newFace2->edge = newEdge5;
+
+        //Edge to face relations
+        newEdge1->face = oldFace2;
+        newEdge4->face = newFace2;
+        newEdge5->face = newFace2;
+        currentPrevEdge2->face = newFace2;
+        newEdge6->face = newFace1; 
+        newEdge6->next->face = newFace1;
+        newEdge7->face = newFace1;
+        newEdge10->face = oldFace1;
+
+        //Adding new edges/faces
+        this->edge_list.push_back(newEdge1);
+        this->edge_list.push_back(newEdge2);
+        this->edge_list.push_back(newEdge3);
+        this->edge_list.push_back(newEdge4);
+        this->edge_list.push_back(newEdge5);
+        this->edge_list.push_back(newEdge6);
+        this->edge_list.push_back(newEdge7);
+        this->edge_list.push_back(newEdge8);
+        this->edge_list.push_back(newEdge9);
+        this->edge_list.push_back(newEdge10);
+        this->face_list.push_back(newFace1);
+        this->face_list.push_back(newFace2);
+    }
+}
+
+void HalfEdge::reMeshFace(int i){
+    
+}
+
 void HalfEdge::resetForce(){
     for(unsigned int i=0;i<particle_list.size();i++){
         particle_list[i]->netForce = vec3(0,0,0);

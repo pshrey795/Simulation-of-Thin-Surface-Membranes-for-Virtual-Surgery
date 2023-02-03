@@ -16,7 +16,7 @@ int drawMode = 0;
 int splitMode = 0;
 
 //Debugging
-vector<vec3> intersectionPoints;
+vector<int> intersectingEdges;
 
 float dt = 1/60.0f;
 float t = 0;
@@ -33,10 +33,12 @@ void drawEnv(){
 }
 
 void drawDebug(){
-    setPointSize(10.0f);
-    setColor(vec3(0.0f, 0.0f, 1.0f));
-    for(auto v : intersectionPoints){
-        drawPoint(v);
+    setColor(vec3(0.0f, 0.0f, 255.0f));
+    setLineWidth(3.0f);
+    for(int i = 0; i < intersectingEdges.size(); i++){
+        vec3 v1 = membrane.mesh->edge_list[i]->startParticle->position;
+        vec3 v2 = membrane.mesh->edge_list[i]->twin->startParticle->position;
+        drawLine(v1, v2);
     }
 }
 
@@ -48,7 +50,7 @@ void drawWorld() {
     setColor(vec3(0.7,0.7,0.7));
     membrane.renderMesh();
     instrument.renderMesh();
-    // drawDebug();
+    drawDebug();
     setColor(vec3(0,0,0));
 }
 
@@ -94,7 +96,8 @@ int main(int argc, char **argv) {
         instrument.update(dt);
         window.prepareDisplay();
         drawWorld();
-        detectCollision(membrane, instrument, intersectionPoints);
+        detectCollision(membrane, instrument);
+        updateMesh(membrane, intersectingEdges);
         membrane.printMeshInfo();
         window.updateDisplay();
         window.waitForNextFrame(dt);

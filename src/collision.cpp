@@ -96,7 +96,7 @@ void extrapolateTri(Particle* x, Particle* y, Particle* z, vec3 p, vec3 val, int
     }
 }
 
-void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec3>& intersectionPoints){
+void detectCollision(DeformableBody& membrane, RigidBody& instrument){
     //Reset all constraints on the membrane
     for(int i = 0; i < membrane.mesh->particle_list.size(); i++){
         membrane.mesh->particle_list[i]->externalForce = vec3(0.0f, 0.0f, 0.0f); 
@@ -143,14 +143,13 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec
 
         //2. Triangle Sphere Intersection
         //Collision Response on faces
-        intersectionPoints.clear();
         for(int i = 0; i < membrane.mesh->face_list.size(); i++){
             //First find the closest point on triangle to the sphere centre
             vec3 x = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]]->position;
             vec3 y = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]]->position;
             vec3 z = membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]]->position;
             vec3 normal = (y - x).cross(z - x).normalized();
-            vec3 centre = instrument.sphere.centre;
+            vec3 centre = instrument.sphere.centre;double xLength = (x - centre).norm() - instrument.sphere.radius;
             vec3 closest = closestPtOnTri(x, y, z, centre);
             double length = (closest - centre).norm();
             vec3 closestUnitVec = (closest - centre).normalized();
@@ -159,22 +158,22 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec
                 double xLength = (x - centre).norm() - instrument.sphere.radius;
                 double yLength = (y - centre).norm() - instrument.sphere.radius;
                 double zLength = (z - centre).norm() - instrument.sphere.radius;
-                if(xLength >= 0.0f || yLength >= 0.0f || zLength >= 0.0f){
-                    membrane.mesh->face_list[i]->color = vec3(0.0f, 1.0f, 0.0f);
-                    membrane.mesh->face_list[i]->reMeshed = true;
-                }else{
-                    membrane.mesh->face_list[i]->color = vec3(1.0f, 0.0f, 0.0f);
-                    membrane.mesh->face_list[i]->reMeshed = false;
-                }
+                // if(xLength >= 0.0f || yLength >= 0.0f || zLength >= 0.0f){
+                //     membrane.mesh->face_list[i]->color = vec3(0.0f, 1.0f, 0.0f);
+                //     membrane.mesh->face_list[i]->reMeshed = true;
+                // }else{
+                //     membrane.mesh->face_list[i]->color = vec3(1.0f, 0.0f, 0.0f);
+                //     membrane.mesh->face_list[i]->reMeshed = false;
+                // }
                 //Collision Response
                 if(instrument.responseMode){
                     //2. Penalty Force
                     double penaltyForce = penalty(instrument.sphere.radius - length);
                     vec3 forceVal = penaltyForce * closestUnitVec;
-                    // extrapolateTri(membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]], 
-                    //                membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]], 
-                    //                membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]], 
-                    //                closest, forceVal, instrument.responseMode);
+                    extrapolateTri(membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[0]], 
+                                   membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[1]], 
+                                   membrane.mesh->particle_list[membrane.mesh->face_list[i]->indices[2]], 
+                                   closest, forceVal, instrument.responseMode);
                 }else{
                     //1. Velocity constraints
                     //Finding the component of velocity in the direction of the closest point
@@ -244,3 +243,20 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec
         }
     }
 }
+
+void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges){
+    intersectingEdges.clear();
+    for(int i = 0; i < membrane.mesh->edge_list.size(); i++){
+        Particle* p1 = membrane.mesh->edge_list[i]->startParticle;
+        Particle* p2 = membrane.mesh->edge_list[i]->twin->startParticle;
+        float length = (p1->position - p2->position).norm();
+        float initLength = (p1->initPos - p2->initPos).norm();
+        if(length / initLength > 1.5f){
+            intersectingEdges.push_back(i);
+            // membrane.mesh->reMeshEdge(i);
+            // membrane.mesh->redistributeMass();
+            // membrane.mesh->updateGhostSprings();
+            // membrane.checkSanity();
+        }
+    }
+}   

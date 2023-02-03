@@ -21,10 +21,6 @@ class DeformableBody{
         int count = 0;                  //Frame counter to control speed of animation 
         double t = 0;                   //Time counter 
 
-        //To check sanity of the half edge data structure representing this mesh
-        bool debug;
-        bool checkSanity();
-
         //Cut Parameters
         Path* currentPath = NULL;
         unsigned int currIntersectIdx;
@@ -79,6 +75,9 @@ class DeformableBody{
         //Debugging
         void printMeshInfo();
 
+        //To check sanity of the half edge data structure representing this mesh
+        bool debug;
+        bool checkSanity();
 };
 
 #endif

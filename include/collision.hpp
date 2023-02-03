@@ -4,6 +4,7 @@
 #include "rigid_body.hpp"
 #include "deformable_body.hpp"
 
-void detectCollision(DeformableBody& membrane, RigidBody& instrument, vector<vec3>& intersectionPoints);
+void detectCollision(DeformableBody& membrane, RigidBody& instrument);
+void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges);
 
 #endif
