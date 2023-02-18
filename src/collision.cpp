@@ -158,13 +158,13 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument){
                 double xLength = (x - centre).norm() - instrument.sphere.radius;
                 double yLength = (y - centre).norm() - instrument.sphere.radius;
                 double zLength = (z - centre).norm() - instrument.sphere.radius;
-                // if(xLength >= 0.0f || yLength >= 0.0f || zLength >= 0.0f){
-                //     membrane.mesh->face_list[i]->color = vec3(0.0f, 1.0f, 0.0f);
-                //     membrane.mesh->face_list[i]->reMeshed = true;
-                // }else{
-                //     membrane.mesh->face_list[i]->color = vec3(1.0f, 0.0f, 0.0f);
-                //     membrane.mesh->face_list[i]->reMeshed = false;
-                // }
+                if(xLength >= 0.0f || yLength >= 0.0f || zLength >= 0.0f){
+                    membrane.mesh->face_list[i]->color = vec3(0.0f, 1.0f, 0.0f);
+                    membrane.mesh->face_list[i]->reMeshed = true;
+                }else{
+                    membrane.mesh->face_list[i]->color = vec3(1.0f, 0.0f, 0.0f);
+                    membrane.mesh->face_list[i]->reMeshed = false;
+                }
                 //Collision Response
                 if(instrument.responseMode){
                     //2. Penalty Force
@@ -253,10 +253,10 @@ void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges){
         float initLength = (p1->initPos - p2->initPos).norm();
         if(length / initLength > 1.5f){
             intersectingEdges.push_back(i);
-            // membrane.mesh->reMeshEdge(i);
-            // membrane.mesh->redistributeMass();
-            // membrane.mesh->updateGhostSprings();
-            // membrane.checkSanity();
+            membrane.mesh->reMeshEdge(i);
+            membrane.mesh->redistributeMass();
+            membrane.mesh->updateGhostSprings();
+            membrane.checkSanity();
         }
     }
 }   

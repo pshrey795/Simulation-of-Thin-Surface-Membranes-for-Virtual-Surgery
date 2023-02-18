@@ -352,25 +352,25 @@ void DeformableBody::renderMesh(){
     }
 
     //Drawing Edges
-    // for(int i = 0; i < m; i++){
-    //     Edge* e = mesh->edge_list[i];
-    //     if(true){
-    //         setLineWidth(3.0f);
-    //         setColor(vec3(0.0f, 0.0f, 0.0f));
+    for(int i = 0; i < m; i++){
+        Edge* e = mesh->edge_list[i];
+        if(true){
+            setLineWidth(3.0f);
+            setColor(vec3(0.0f, 0.0f, 0.0f));
 
-    //         //Drawing the actual mesh
-    //         vec3 v1 = e->startParticle->position;
-    //         vec3 v2 = e->twin->startParticle->position;
-    //         drawLine(v1,v2);
+            //Drawing the actual mesh
+            vec3 v1 = e->startParticle->position;
+            vec3 v2 = e->twin->startParticle->position;
+            drawLine(v1,v2);
 
-    //         if(drawRefMesh){
-    //             //Drawing the reference mesh
-    //             vec3 iv1 = e->startParticle->initPos;
-    //             vec3 iv2 = e->twin->startParticle->initPos;
-    //             drawLine(iv1,iv2);
-    //         }
-    //     }
-    // }
+            if(drawRefMesh){
+                //Drawing the reference mesh
+                vec3 iv1 = e->startParticle->initPos;
+                vec3 iv2 = e->twin->startParticle->initPos;
+                drawLine(iv1,iv2);
+            }
+        }
+    }
 }
 
 //Checking sanity of the half-edge data structure after every update
