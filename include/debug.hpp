@@ -2,16 +2,11 @@
 #define DEBUG_HPP
 
 #include "common.hpp"
+#include "gui.hpp"
 
 //Debug Files
 extern string debugFile;
 extern ofstream debugStream;
-
-class Debug {
-
-    public:
-
-};
 
 //Overload << operator for vec2, vec3
 std::ostream& operator<<(std::ostream& os, const vec2& v);

@@ -3,7 +3,9 @@
 using namespace std;
 
 Window window;
+Window debugWindow;
 Camera camera;
+Camera debugCamera;
 Lighting lighting;
 
 //Scene Objects
@@ -33,16 +35,15 @@ void drawEnv(){
 }
 
 void drawDebug(){
-    setColor(vec3(0.0f, 0.0f, 255.0f));
-    setLineWidth(3.0f);
-    for(int i = 0; i < intersectingEdges.size(); i++){
-        vec3 v1 = membrane.mesh->edge_list[i]->startParticle->position;
-        vec3 v2 = membrane.mesh->edge_list[i]->twin->startParticle->position;
-        drawLine(v1, v2);
-    }
+    debugCamera.apply(debugWindow);
+    lighting.apply();
+    clear(vec3(0.5,0.7,0.9));
+    setColor(vec3(0.7,0.7,0.7));
+    membrane.renderDebugMesh();
+    setColor(vec3(0,0,0));
 }
 
-void drawWorld() {
+void drawWorld(){
     camera.apply(window);
     lighting.apply();
     clear(vec3(0.5,0.7,0.9));
@@ -50,7 +51,6 @@ void drawWorld() {
     setColor(vec3(0.7,0.7,0.7));
     membrane.renderMesh();
     instrument.renderMesh();
-    drawDebug();
     setColor(vec3(0,0,0));
 }
 
@@ -81,25 +81,49 @@ void processInput(int argc, char** argv){
 }
 
 int main(int argc, char **argv) {
-    window.create("Test Window", 1920, 1080);
+    //Creating windows
+    window.create("Simulation Window", 960, 540);
     window.onKeyPress(keyPressed);
+    debugWindow.create("Debug Window", 960, 540);
+    debugWindow.onKeyPress(keyPressed);
+    debugWindow.debug = true;
+
+    //Creating simulation objects
     camera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
+    debugCamera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
     lighting.createDefault();
     instrument = RigidBody("objects/sphere.obj");
     processInput(argc, argv);
-    while (!window.shouldClose()) {
+
+    while(!window.shouldClose() && !debugWindow.shouldClose()){
+        //Rendering the main simulation
+        window.makeCurrent();
         camera.processInput(window);
         membrane.processInput(window);
         instrument.processInput(window);
+        window.prepareDisplay();
+        drawWorld();
+        window.updateDisplay();
+        window.waitForNextFrame(dt);
+
+        //Rendering debug visualization
+        debugWindow.makeCurrent();
+        debugCamera.processInput(debugWindow);
+        membrane.processInput(debugWindow);
+        instrument.processInput(debugWindow);
+        debugWindow.prepareDisplay();
+        drawDebug();
+        debugWindow.updateDisplay();
+        debugWindow.waitForNextFrame(dt);
+
+        //Simulation update
         update(dt);
         membrane.update(dt);
         instrument.update(dt);
-        window.prepareDisplay();
-        drawWorld();
         detectCollision(membrane, instrument);
-        updateMesh(membrane, intersectingEdges);
-        membrane.printMeshInfo();
-        window.updateDisplay();
-        window.waitForNextFrame(dt);
+        // updateMesh(membrane, intersectingEdges);
     }
+    window.terminate();
+    debugWindow.terminate();
+    glfwTerminate();
 }

@@ -64,6 +64,7 @@ class DeformableBody{
         bool drawRefMesh;
         int drawMode;
         int splitMode;
+        int debugMode;
 
         //Simulation and Interaction 
         void update(float dt);
@@ -71,6 +72,7 @@ class DeformableBody{
 
         //For rendering the mesh 
         void renderMesh(); 
+        void renderDebugMesh();
 
         //Debugging
         void printMeshInfo();

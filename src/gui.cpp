@@ -4,14 +4,13 @@ Window::Window():
     window(NULL),
     lastFrameTime(0),
     width(0), height(0),
-    keyPressed(NULL) {
+    keyPressed(NULL), debug(false) {
 }
 
-Window::~Window() {
+void Window::terminate(){
     if (!window)
         return;
     glfwDestroyWindow(window);
-    glfwTerminate();
 }
 
 void Window::create(std::string name, int width, int height) {

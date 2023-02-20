@@ -6,12 +6,13 @@
 class Window {
 public:
     GLFWwindow *window;
+    bool debug;
     float lastFrameTime;
     int width, height;
     typedef void KeyPressCallback(int key);
     KeyPressCallback *keyPressed;
     Window();
-    ~Window();
+    void terminate();
     void create(std::string name, int width, int height);
     void makeCurrent();
     void prepareDisplay();

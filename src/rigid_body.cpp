@@ -73,26 +73,28 @@ void RigidBody::update(float dt){
 
 void RigidBody::processInput(Window &window){
     GLFWwindow* win = window.window;
-    if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
-        if(!activatePhysics){
-            activatePhysics = true;
+    if(!window.debug){
+        if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
+            if(!activatePhysics){
+                activatePhysics = true;
+            }
+        }else if(glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS){
+            if(activatePhysics){
+                activatePhysics = false;
+            }
+        }else if(glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS){
+            velocity = vec3(0.0f, 2.0f, 0.0f);
+        }else if(glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS){
+            velocity = vec3(0.0f, -2.0f, 0.0f);
+        }else if(glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS){
+            velocity = vec3(-2.0f, 0.0f, 0.0f);
+        }else if(glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS){
+            velocity = vec3(2.0f, 0.0f, 0.0f);
+        }else if(glfwGetKey(win, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS){
+            velocity = vec3(0.0f, 0.0f, 2.0f);
+        }else if(glfwGetKey(win, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS){
+            velocity = vec3(0.0f, 0.0f, -2.0f);
         }
-    }else if(glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS){
-        if(activatePhysics){
-            activatePhysics = false;
-        }
-    }else if(glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS){
-        velocity = vec3(0.0f, 2.0f, 0.0f);
-    }else if(glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS){
-        velocity = vec3(0.0f, -2.0f, 0.0f);
-    }else if(glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS){
-        velocity = vec3(-2.0f, 0.0f, 0.0f);
-    }else if(glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        velocity = vec3(2.0f, 0.0f, 0.0f);
-    }else if(glfwGetKey(win, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS){
-        velocity = vec3(0.0f, 0.0f, 2.0f);
-    }else if(glfwGetKey(win, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS){
-        velocity = vec3(0.0f, 0.0f, -2.0f);
     }
 }
 

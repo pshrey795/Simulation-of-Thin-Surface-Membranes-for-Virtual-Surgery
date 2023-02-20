@@ -6,6 +6,7 @@ DeformableBody::DeformableBody(){
     upVec = vec3(0,0,1);
     drawRefMesh = false;
     debug = true;
+    debugMode = 1;
     activatePhysics = false;
 
     vector<vec3> vertices;
@@ -230,23 +231,31 @@ void DeformableBody::processCut(){
 //Mesh Process Input
 void DeformableBody::processInput(Window &window){
     GLFWwindow *win = window.window;
-    if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
-        if(!activatePhysics){
-            activatePhysics = true;
+    if(window.debug){
+        if(glfwGetKey(win, GLFW_KEY_1) == GLFW_PRESS){
+            debugMode = 1;
+        }else if(glfwGetKey(win, GLFW_KEY_2) == GLFW_PRESS){
+            debugMode = 2;
         }
-    }else if(glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS){
-        if(activatePhysics){
-            activatePhysics = false;
-        }
-    }else if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
-        if(!toCut){
-            constructCutGraph();
-            getIntersectionPts();
-        }
-    }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
-        if(!startCut){
-            startCut = true;
-            processCut();
+    }else{
+        if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
+            if(!activatePhysics){
+                activatePhysics = true;
+            }
+        }else if(glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS){
+            if(activatePhysics){
+                activatePhysics = false;
+            }
+        }else if(glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS){
+            if(!toCut){
+                constructCutGraph();
+                getIntersectionPts();
+            }
+        }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
+            if(!startCut){
+                startCut = true;
+                processCut();
+            }
         }
     }
 }
@@ -369,6 +378,61 @@ void DeformableBody::renderMesh(){
                 vec3 iv2 = e->twin->startParticle->initPos;
                 drawLine(iv1,iv2);
             }
+        }
+    }
+}
+
+void DeformableBody::renderDebugMesh(){
+    int n = mesh->face_list.size();
+    int m = mesh->edge_list.size();
+
+    if(debugMode == 1){
+        //Visualize deformation of edges
+        vector<float> stretch;
+        float maxStretch = 1.0f;
+        for(int i = 0; i < m; i++){
+            Particle* p1 = mesh->edge_list[i]->startParticle;
+            Particle* p2 = mesh->edge_list[i]->twin->startParticle;
+            float length = (p1->position - p2->position).norm();
+            float initLength = (p1->initPos - p2->initPos).norm();
+            float currStretch = (length - initLength) / initLength; 
+            stretch.push_back(currStretch);
+        }
+        setLineWidth(2.0f);
+        for(int i = 0; i < m; i++){
+            vec3 v1 = mesh->edge_list[i]->startParticle->position;
+            vec3 v2 = mesh->edge_list[i]->twin->startParticle->position;
+            float factor = stretch[i] / maxStretch;
+            vec3 color = vec3(0.0f, 255.0f, 0.0f) * (1.0f - factor) + vec3(255.0f, 0.0f, 0.0f) * factor;
+            debugStream << color << "\n";
+            setColor(color);
+            drawLine(v1, v2);
+        }
+    }else if(debugMode == 2){
+        //Visualize deformation of faces
+        vector<float> stretch;
+        float maxStretch = 1.0f;
+        for(int i = 0; i < n; i++){
+            vec3 v1 = mesh->face_list[i]->edge->startParticle->position;
+            vec3 v2 = mesh->face_list[i]->edge->next->startParticle->position;
+            vec3 v3 = mesh->face_list[i]->edge->prev->startParticle->position;
+            vec3 iv1 = mesh->face_list[i]->edge->startParticle->initPos;
+            vec3 iv2 = mesh->face_list[i]->edge->next->startParticle->initPos;
+            vec3 iv3 = mesh->face_list[i]->edge->prev->startParticle->initPos;
+            float area = triArea(v1, v2, v3);
+            float initArea = triArea(iv1, iv2, iv3);
+            float currStretch = (area - initArea) / initArea; 
+            stretch.push_back(currStretch);
+        }
+        for(int i = 0; i < n; i++){
+            vec3 v1 = mesh->face_list[i]->edge->startParticle->position;
+            vec3 v2 = mesh->face_list[i]->edge->next->startParticle->position;
+            vec3 v3 = mesh->face_list[i]->edge->prev->startParticle->position;
+            float factor = stretch[i] / maxStretch;
+            vec3 color = vec3(0.0f, 255.0f, 0.0f) * (1.0f - factor) + vec3(255.0f, 0.0f, 0.0f) * factor;
+            debugStream << color << "\n";
+            setColor(color);
+            drawTri(v1,v2,v3);
         }
     }
 }
