@@ -154,6 +154,7 @@ Edge::Edge(Particle *startParticle, Face *face){
     this->next = NULL;
     this->prev = NULL;
     this->twin = NULL;
+    this->ghostTwin = NULL;
     this->face = face;
     this->isBoundary = false;
     this->spring = Spring();
@@ -164,6 +165,7 @@ Edge::Edge(){
     this->next = NULL;
     this->prev = NULL;
     this->twin = NULL;
+    this->ghostTwin = NULL;
     this->face = NULL;
     this->isBoundary = false;
     this->spring = Spring();
