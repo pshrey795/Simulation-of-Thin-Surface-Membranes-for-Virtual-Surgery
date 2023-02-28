@@ -1840,7 +1840,6 @@ void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> int
     }
 }
 
-/*
 void HalfEdge::reMeshEdge(int i){
     Edge* currentEdge = this->edge_list[i];
     int n = this->particle_list.size();
@@ -2053,10 +2052,198 @@ void HalfEdge::reMeshEdge(int i){
         this->face_list.push_back(newFace1);
         this->face_list.push_back(newFace2);
     }
-}*/
+}
+
+void HalfEdge::splitVertex(int i, vec3 normal){
+    //Vertex Splitting Algorithm
+    //Step 1: Choose the vertex to split using the given edge
+    Particle* P = particle_list[i];
+    bool validP;    
+    //Check validity of A
+    int P_positive_count = 0;
+    int P_negative_count = 0;
+    vector<Face*> P_faces;
+    //Anticlockwise traversal
+    Edge* currentEdge = P->edge;
+    int flag = 0;
+    while(true){
+        if(currentEdge == P->edge && flag){
+            break;
+        }else{
+            if(currentEdge->face == NULL){
+                if(currentEdge->twin->ghostTwin == NULL){
+                    break;
+                }else if(currentEdge->twin->ghostTwin->startParticle == currentEdge->startParticle){
+                    currentEdge = currentEdge->twin->ghostTwin;
+                }else{
+                    break;
+                }
+            }else{
+                currentEdge = currentEdge->prev->twin;
+            }
+        }
+        flag = 1;
+    }
+    //Clockwise traversal
+    Edge* startEdge = currentEdge;
+    flag = 0;
+    while(true){
+        if(currentEdge == startEdge && flag){
+            break;
+        }else{
+            if(currentEdge->face == NULL){
+                currentEdge = currentEdge->twin->next;
+            }else{
+                //Process current face
+                P_faces.push_back(currentEdge->face);
+                vec3 v1 = currentEdge->startParticle->position;
+                vec3 v2 = currentEdge->next->startParticle->position;
+                vec3 v3 = currentEdge->prev->startParticle->position;
+                vec3 centroid = (v1 + v2 + v3) / 3.0f;
+                float factor = (centroid - P->position).dot(normal); 
+                if(factor >= 0.0f){
+                    P_positive_count++;
+                }else{
+                    P_negative_count++;
+                }
+                if(currentEdge->twin->next == NULL){
+                    if(currentEdge->ghostTwin == NULL){
+                        break;
+                    }else if(currentEdge->ghostTwin->twin->startParticle == currentEdge->startParticle){
+                        currentEdge = currentEdge->ghostTwin->twin;
+                    }else{
+                        break;
+                    }
+                }else{
+                    currentEdge = currentEdge->twin->next;
+                }
+            }
+        }
+        flag = 1;
+    }
+    validP = (P_positive_count != 0) && (P_negative_count != 0);
+    if(!validP){
+        return;
+    }
+
+    //Step 2: Split the chosen vertex
+    Particle* newParticle = new Particle(P->position, P->initPos, P->velocity);
+    newParticle->listIdx = this->particle_list.size();
+    this->particle_list.push_back(newParticle);
+    int oldIdx = P->listIdx;
+    int newIdx = newParticle->listIdx;
+    
+    //Step 3: Split the faces and edges between the old and the new vertex (i.e. remesh)
+    //Step 4: Assign ghost twins to newly created edges
+    int lastSign = 0; 
+    Face* currFace;
+    if(startEdge->face != NULL || startEdge->ghostTwin != NULL){
+        currFace = P_faces[P_faces.size() - 1];
+        vec3 v1 = particle_list[currFace->indices[0]]->position;
+        vec3 v2 = particle_list[currFace->indices[1]]->position;
+        vec3 v3 = particle_list[currFace->indices[2]]->position;
+        vec3 centroid = (v1 + v2 + v3) / 3.0f;
+        if((centroid - P->position).dot(normal) >= 0.0f){
+            lastSign = 1;
+        }else{
+            lastSign = -1;
+        }
+    }
+    for(int i = 0; i < P_faces.size(); i++){
+        currFace = P_faces[i];
+        currFace->color = vec3(0.0f, 1.0f, 0.0f);
+        vec3 v1 = particle_list[currFace->indices[0]]->position;
+        vec3 v2 = particle_list[currFace->indices[1]]->position;
+        vec3 v3 = particle_list[currFace->indices[2]]->position;
+        vec3 centroid = (v1 + v2 + v3) / 3.0f;
+        float factor = (centroid - P->position).dot(normal);
+        if(abs(factor) < 0.0001f){
+            factor = lastSign;
+        }
+        currentEdge = currFace->edge;
+        while(currentEdge->startParticle != P && currentEdge->startParticle != newParticle){
+            currentEdge = currentEdge->next;
+        }
+        if(lastSign * factor >= 0.0f){
+            if(factor < 0.0f){
+                int oldLeftIdx = currentEdge->prev->startParticle->listIdx;
+                int oldRightIdx = currentEdge->next->startParticle->listIdx;
+                currFace->setFace(newIdx, oldRightIdx, oldLeftIdx);
+                currFace->edge = currentEdge;
+                newParticle->edge = currentEdge;
+                currentEdge->startParticle = newParticle;
+                if(i == 0 && (startEdge->face == NULL && startEdge->ghostTwin == NULL)){
+                    currentEdge->prev->twin->startParticle = newParticle;
+                }
+                lastSign = -1;
+            }else{
+                currentEdge->startParticle = P;
+                P->edge = currentEdge;
+                lastSign = 1;
+            }
+        }else{
+            if(factor < 0.0f){
+                currentEdge->startParticle = newParticle;
+                newParticle->edge = currentEdge;
+                int oldLeftIdx = currentEdge->prev->startParticle->listIdx;
+                int oldRightIdx = currentEdge->next->startParticle->listIdx;
+                currFace->setFace(newIdx, oldRightIdx, oldLeftIdx);
+                currFace->edge = currentEdge;
+                if(currentEdge->prev->twin->face == NULL){
+                    //Joined by ghost twin edge
+                    currentEdge->prev->twin->startParticle = newParticle;
+                }else{
+                    //Joined by normal twin edge
+                    Particle* rightParticle = currentEdge->prev->startParticle;
+                    Edge* upperEdge = new Edge();
+                    Edge* lowerEdge = new Edge();
+                    Edge* currentOppEdge = currentEdge->prev->twin;
+                    upperEdge->startParticle = rightParticle;
+                    lowerEdge->startParticle = newParticle;
+                    currentEdge->prev->twin = lowerEdge;
+                    lowerEdge->twin = currentEdge->prev;
+                    upperEdge->twin = currentOppEdge;
+                    currentOppEdge->twin = upperEdge;
+                    //Assigning ghost twins
+                    currentEdge->prev->ghostTwin = currentOppEdge;
+                    currentOppEdge->ghostTwin = currentEdge->prev;
+                    this->edge_list.push_back(upperEdge);
+                    this->edge_list.push_back(lowerEdge);
+                }
+                lastSign = -1;
+            }else{
+                currentEdge->startParticle = P;
+                P->edge = currentEdge;
+                if(currentEdge->prev->twin->face == NULL){
+                    //Joined by ghost twin edges
+                    currentEdge->prev->ghostTwin->startParticle = newParticle;
+                }else{
+                    //Joined by normal twin edges
+                    Particle* rightParticle = currentEdge->prev->startParticle;
+                    Edge* upperEdge = new Edge();
+                    Edge* lowerEdge = new Edge();
+                    Edge* currentOppEdge = currentEdge->prev->twin;
+                    upperEdge->startParticle = rightParticle;
+                    lowerEdge->startParticle = P;
+                    currentOppEdge->startParticle = newParticle;
+                    currentEdge->prev->twin = lowerEdge;
+                    lowerEdge->twin = currentEdge->prev;
+                    upperEdge->twin = currentOppEdge;
+                    currentOppEdge->twin = upperEdge;
+                    //Assigning ghost twins
+                    currentEdge->prev->ghostTwin = currentOppEdge;
+                    currentOppEdge->ghostTwin = currentEdge->prev;
+                    this->edge_list.push_back(upperEdge);
+                    this->edge_list.push_back(lowerEdge);
+                }
+                lastSign = 1;
+            }
+        }
+    }
+}
 
 //Vertex Splitting, adapted from Fast Simulation of Cloth Tearing 
-void HalfEdge::reMeshEdge(int i){
+void HalfEdge::reMeshEdge2(int i){
     Edge* cutEdge = this->edge_list[i];
 
     //Vertex Splitting Algorithm
@@ -2068,6 +2255,7 @@ void HalfEdge::reMeshEdge(int i){
     //Check validity of A
     int A_positive_count = 0;
     int A_negative_count = 0;
+    vector<Face*> A_faces;
     //Anticlockwise traversal
     Edge* currentEdge = cutEdge;
     int flag = 0;
@@ -2078,37 +2266,29 @@ void HalfEdge::reMeshEdge(int i){
             if(currentEdge->face == NULL){
                 if(currentEdge->twin->ghostTwin == NULL){
                     break;
-                }else{
+                }else if(currentEdge->twin->ghostTwin->startParticle == currentEdge->startParticle){
                     currentEdge = currentEdge->twin->ghostTwin;
+                }else{
+                    break;
                 }
             }else{
-                //Process current face
-                vec3 v1 = currentEdge->startParticle->position;
-                vec3 v2 = currentEdge->next->startParticle->position;
-                vec3 v3 = currentEdge->prev->startParticle->position;
-                vec3 centroid = (v1 + v2 + v3) / 3.0f;
-                float factor = (centroid - A->position).dot(normal); 
-                if(factor >= 0.0f){
-                    A_positive_count++;
-                }else{
-                    A_negative_count++;
-                }
                 currentEdge = currentEdge->prev->twin;
             }
         }
         flag = 1;
     }
     //Clockwise traversal
-    currentEdge = cutEdge;
+    Edge* startEdgeA = currentEdge;
     flag = 0;
     while(true){
-        if(currentEdge == cutEdge && flag){
+        if(currentEdge == startEdgeA && flag){
             break;
         }else{
             if(currentEdge->face == NULL){
                 currentEdge = currentEdge->twin->next;
             }else{
                 //Process current face
+                A_faces.push_back(currentEdge->face);
                 vec3 v1 = currentEdge->startParticle->position;
                 vec3 v2 = currentEdge->next->startParticle->position;
                 vec3 v3 = currentEdge->prev->startParticle->position;
@@ -2122,8 +2302,10 @@ void HalfEdge::reMeshEdge(int i){
                 if(currentEdge->twin->next == NULL){
                     if(currentEdge->ghostTwin == NULL){
                         break;
+                    }else if(currentEdge->ghostTwin->twin->startParticle == currentEdge->startParticle){
+                        currentEdge = currentEdge->ghostTwin->twin;
                     }else{
-                        currentEdge = currentEdge->ghostTwin;
+                        break;
                     }
                 }else{
                     currentEdge = currentEdge->twin->next;
@@ -2132,10 +2314,11 @@ void HalfEdge::reMeshEdge(int i){
         }
         flag = 1;
     }
-    validA = (A_positive_count == 0) || (A_negative_count == 0);
+    validA = (A_positive_count != 0) && (A_negative_count != 0);
     //Check validity of B
     int B_positive_count = 0;
     int B_negative_count = 0;
+    vector<Face*> B_faces;
     //Anticlockwise traversal
     currentEdge = cutEdge->twin;
     flag = 0;
@@ -2146,37 +2329,29 @@ void HalfEdge::reMeshEdge(int i){
             if(currentEdge->face == NULL){
                 if(currentEdge->twin->ghostTwin == NULL){
                     break;
-                }else{
+                }else if(currentEdge->twin->ghostTwin->startParticle == currentEdge->startParticle){
                     currentEdge = currentEdge->twin->ghostTwin;
+                }else{
+                    break;
                 }
             }else{
-                //Process current face
-                vec3 v1 = currentEdge->startParticle->position;
-                vec3 v2 = currentEdge->next->startParticle->position;
-                vec3 v3 = currentEdge->prev->startParticle->position;
-                vec3 centroid = (v1 + v2 + v3) / 3.0f;
-                float factor = (centroid - B->position).dot(normal); 
-                if(factor >= 0.0f){
-                    B_positive_count++;
-                }else{
-                    B_negative_count++;
-                }
                 currentEdge = currentEdge->prev->twin;
             }
         }
         flag = 1;
     }
     //Clockwise Traversal
-    currentEdge = cutEdge->twin;
+    Edge* startEdgeB = currentEdge;
     flag = 0;
     while(true){
-        if(currentEdge == cutEdge->twin && flag){
+        if(currentEdge == startEdgeB && flag){
             break;
         }else{
             if(currentEdge->face == NULL){
                 currentEdge = currentEdge->twin->next;
             }else{
                 //Process current face
+                B_faces.push_back(currentEdge->face);
                 vec3 v1 = currentEdge->startParticle->position;
                 vec3 v2 = currentEdge->next->startParticle->position;
                 vec3 v3 = currentEdge->prev->startParticle->position;
@@ -2190,8 +2365,10 @@ void HalfEdge::reMeshEdge(int i){
                 if(currentEdge->twin->next == NULL){
                     if(currentEdge->ghostTwin == NULL){
                         break;
+                    }else if(currentEdge->ghostTwin->twin->startParticle == currentEdge->startParticle){
+                        currentEdge = currentEdge->ghostTwin->twin;
                     }else{
-                        currentEdge = currentEdge->ghostTwin;
+                        break;
                     }
                 }else{
                     currentEdge = currentEdge->twin->next;
@@ -2200,25 +2377,30 @@ void HalfEdge::reMeshEdge(int i){
         }
         flag = 1;
     }
-    validB = (B_positive_count == 0) || (B_negative_count == 0);
+    validB = (B_positive_count != 0) && (B_negative_count != 0);
     //Choose vertex to split
     Particle* P;
+    vector<Face*> P_faces;
     Edge* startEdge;
     if(validA || validB){
         if(validA && validB){
             if(A->m >= B->m){
                 P = A;
-                startEdge = cutEdge;
+                P_faces = A_faces;
+                startEdge = startEdgeA;
             }else{
                 P = B;
-                startEdge = cutEdge->twin;
+                P_faces = B_faces;
+                startEdge = startEdgeB;
             }
         }else if(validA){
             P = A;
-            startEdge = cutEdge;
+            P_faces = A_faces;
+            startEdge = startEdgeA;
         }else{
             P = B;
-            startEdge = cutEdge->twin;
+            P_faces = B_faces;
+            startEdge = startEdgeB;
         }
     }else{
         return;
@@ -2232,24 +2414,112 @@ void HalfEdge::reMeshEdge(int i){
     int newIdx = newParticle->listIdx;
 
     //Step 3: Split the faces and edges between the old and the new vertex (i.e. remesh)
-    //Anticlockwise traversal
-    flag = 0;
-    currentEdge = startEdge;
-    float lastValue = 0.0f;
-    while(true){
-        
-    }
-    //Clockwise traversal
-    flag = 0;
-    currentEdge = startEdge;
-    lastValue = 0.0f;
-    while(true){
-        
-    }
-
     //Step 4: Assign ghost twins to newly created edges
-
-
+    int lastSign = 0; 
+    Face* currFace;
+    if(startEdge->face != NULL || startEdge->ghostTwin != NULL){
+        currFace = P_faces[P_faces.size() - 1];
+        vec3 v1 = particle_list[currFace->indices[0]]->position;
+        vec3 v2 = particle_list[currFace->indices[1]]->position;
+        vec3 v3 = particle_list[currFace->indices[2]]->position;
+        vec3 centroid = (v1 + v2 + v3) / 3.0f;
+        if((centroid - P->position).dot(normal) >= 0.0f){
+            lastSign = 1;
+        }else{
+            lastSign = -1;
+        }
+    }
+    for(int i = 0; i < P_faces.size(); i++){
+        currFace = P_faces[i];
+        currFace->color = vec3(0.0f, 1.0f, 0.0f);
+        vec3 v1 = particle_list[currFace->indices[0]]->position;
+        vec3 v2 = particle_list[currFace->indices[1]]->position;
+        vec3 v3 = particle_list[currFace->indices[2]]->position;
+        vec3 centroid = (v1 + v2 + v3) / 3.0f;
+        float factor = (centroid - P->position).dot(normal);
+        if(abs(factor) < 0.0001f){
+            factor = lastSign;
+        }
+        currentEdge = currFace->edge;
+        while(currentEdge->startParticle != P && currentEdge->startParticle != newParticle){
+            currentEdge = currentEdge->next;
+        }
+        if(lastSign * factor >= 0.0f){
+            if(factor < 0.0f){
+                int oldLeftIdx = currentEdge->prev->startParticle->listIdx;
+                int oldRightIdx = currentEdge->next->startParticle->listIdx;
+                currFace->setFace(newIdx, oldRightIdx, oldLeftIdx);
+                currFace->edge = currentEdge;
+                newParticle->edge = currentEdge;
+                currentEdge->startParticle = newParticle;
+                if(i == 0 && (startEdge->face == NULL && startEdge->ghostTwin == NULL)){
+                    currentEdge->prev->twin->startParticle = newParticle;
+                }
+                lastSign = -1;
+            }else{
+                currentEdge->startParticle = P;
+                P->edge = currentEdge;
+                lastSign = 1;
+            }
+        }else{
+            if(factor < 0.0f){
+                currentEdge->startParticle = newParticle;
+                newParticle->edge = currentEdge;
+                int oldLeftIdx = currentEdge->prev->startParticle->listIdx;
+                int oldRightIdx = currentEdge->next->startParticle->listIdx;
+                currFace->setFace(newIdx, oldRightIdx, oldLeftIdx);
+                currFace->edge = currentEdge;
+                if(currentEdge->prev->twin->face == NULL){
+                    //Joined by ghost twin edge
+                    currentEdge->prev->twin->startParticle = newParticle;
+                }else{
+                    //Joined by normal twin edge
+                    Particle* rightParticle = currentEdge->prev->startParticle;
+                    Edge* upperEdge = new Edge();
+                    Edge* lowerEdge = new Edge();
+                    Edge* currentOppEdge = currentEdge->prev->twin;
+                    upperEdge->startParticle = rightParticle;
+                    lowerEdge->startParticle = newParticle;
+                    currentEdge->prev->twin = lowerEdge;
+                    lowerEdge->twin = currentEdge->prev;
+                    upperEdge->twin = currentOppEdge;
+                    currentOppEdge->twin = upperEdge;
+                    //Assigning ghost twins
+                    currentEdge->prev->ghostTwin = currentOppEdge;
+                    currentOppEdge->ghostTwin = currentEdge->prev;
+                    this->edge_list.push_back(upperEdge);
+                    this->edge_list.push_back(lowerEdge);
+                }
+                lastSign = -1;
+            }else{
+                currentEdge->startParticle = P;
+                P->edge = currentEdge;
+                if(currentEdge->prev->twin->face == NULL){
+                    //Joined by ghost twin edges
+                    currentEdge->prev->ghostTwin->startParticle = newParticle;
+                }else{
+                    //Joined by normal twin edges
+                    Particle* rightParticle = currentEdge->prev->startParticle;
+                    Edge* upperEdge = new Edge();
+                    Edge* lowerEdge = new Edge();
+                    Edge* currentOppEdge = currentEdge->prev->twin;
+                    upperEdge->startParticle = rightParticle;
+                    lowerEdge->startParticle = P;
+                    currentOppEdge->startParticle = newParticle;
+                    currentEdge->prev->twin = lowerEdge;
+                    lowerEdge->twin = currentEdge->prev;
+                    upperEdge->twin = currentOppEdge;
+                    currentOppEdge->twin = upperEdge;
+                    //Assigning ghost twins
+                    currentEdge->prev->ghostTwin = currentOppEdge;
+                    currentOppEdge->ghostTwin = currentEdge->prev;
+                    this->edge_list.push_back(upperEdge);
+                    this->edge_list.push_back(lowerEdge);
+                }
+                lastSign = 1;
+            }
+        }
+    }
 }
 
 void HalfEdge::resetForce(){

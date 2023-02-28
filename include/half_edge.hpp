@@ -54,6 +54,8 @@ class HalfEdge {
         //4) Direction of normal of the plane of splitting
         void reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode);
         void reMeshEdge(int i);
+        void splitVertex(int i, vec3 normal);
+        void reMeshEdge2(int i);
         void updateGhostSprings();
         void redistributeMass(); 
 

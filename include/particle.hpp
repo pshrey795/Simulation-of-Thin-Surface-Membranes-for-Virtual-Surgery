@@ -30,6 +30,7 @@ struct Edge{
     struct Spring spring;
     int listIdx;
     bool isBoundary;
+    bool isActive;
     Edge(Particle *startParticle, Face *face);
     Edge();
     vec3 addForce();

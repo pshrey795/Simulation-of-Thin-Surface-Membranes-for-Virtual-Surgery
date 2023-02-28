@@ -252,11 +252,14 @@ void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges){
         float length = (p1->position - p2->position).norm();
         float initLength = (p1->initPos - p2->initPos).norm();
         if(length / initLength > 1.5f){
-            intersectingEdges.push_back(i);
-            membrane.mesh->reMeshEdge(i);
-            membrane.mesh->redistributeMass();
-            membrane.mesh->updateGhostSprings();
-            membrane.checkSanity();
+            if(membrane.mesh->edge_list[i]->isActive){
+                membrane.mesh->edge_list[i]->isActive = false;
+                intersectingEdges.push_back(i);
+                membrane.mesh->reMeshEdge(i);
+                membrane.mesh->redistributeMass();
+                membrane.mesh->updateGhostSprings();
+                membrane.checkSanity();
+            }
         }
     }
 }   

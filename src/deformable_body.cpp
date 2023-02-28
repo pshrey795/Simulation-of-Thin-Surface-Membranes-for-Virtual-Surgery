@@ -20,16 +20,16 @@ DeformableBody::DeformableBody(){
     for(int i = 0;i < n;i++){
         for(int j = 0;j < n;j++){
             vertices.push_back(vec3(i*f - 4.0,j*f - 4.0,0));
-            if(i == 0 || i == n-1 || j == 0 || j == n-1){
-                constraints[i*n+j] = vec3(0.0f, 0.0f, 0.0f);
-            }
+            // if(i == 0 || i == n-1 || j == 0 || j == n-1){
+            //     constraints[i*n+j] = vec3(0.0f, 0.0f, 0.0f);
+            // }
         }
     }
 
-    // constraints[0] = vec3(0.0f, 0.0f, 0.0f);
-    // constraints[n-1] = vec3(0.0f, 0.0f, 0.0f);
-    // constraints[n*n-n] = vec3(0.0f, 0.0f, 0.0f);
-    // constraints[n*n-1] = vec3(0.0f, 0.0f, 0.0f);
+    constraints[0] = vec3(0.0f, 0.0f, 0.0f);
+    constraints[n-1] = vec3(0.0f, 0.0f, 0.0f);
+    constraints[n*n-n] = vec3(0.0f, 0.0f, 0.0f);
+    constraints[n*n-1] = vec3(0.0f, 0.0f, 0.0f);
 
 
     for(int i = 0;i < n-1;i++){
@@ -46,6 +46,12 @@ DeformableBody::DeformableBody(){
     this->mesh = new HalfEdge(vertices, indices, constraints); 
     // this->mesh = new HalfEdge(vertices, indices);
 
+    //Activate all edges for cutting
+    for(int i = 0; i < mesh->edge_list.size(); i++){
+        mesh->edge_list[i]->isActive = true;
+    }
+
+    currIntersectIdx = 10;
     checkSanity();
 }
 
@@ -251,11 +257,17 @@ void DeformableBody::processInput(Window &window){
                 constructCutGraph();
                 getIntersectionPts();
             }
-        }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
+        }else if(glfwGetKey(win, GLFW_KEY_U) == GLFW_PRESS){
             if(!startCut){
                 startCut = true;
-                processCut();
+                mesh->splitVertex(currIntersectIdx, vec3(0.0f, 1.0f, 0.0f));
+                currIntersectIdx += 15;
+                mesh->redistributeMass();
+                mesh->updateGhostSprings();
+                checkSanity();
             }
+        }else if(glfwGetKey(win, GLFW_KEY_Y) == GLFW_PRESS){
+            startCut = false;
         }
     }
 }
@@ -416,12 +428,18 @@ void DeformableBody::renderDebugMesh(){
             vec3 v1 = mesh->face_list[i]->edge->startParticle->position;
             vec3 v2 = mesh->face_list[i]->edge->next->startParticle->position;
             vec3 v3 = mesh->face_list[i]->edge->prev->startParticle->position;
+            vec3 median = (v1 + v2 + v3) / 3.0f;
             vec3 iv1 = mesh->face_list[i]->edge->startParticle->initPos;
             vec3 iv2 = mesh->face_list[i]->edge->next->startParticle->initPos;
             vec3 iv3 = mesh->face_list[i]->edge->prev->startParticle->initPos;
-            float area = triArea(v1, v2, v3);
-            float initArea = triArea(iv1, iv2, iv3);
-            float currStretch = (area - initArea) / initArea; 
+            vec3 initMedian = (iv1 + iv2 + iv3) / 3.0f;
+            float vm1 = (v1 - median).norm(); float ivm1 = (iv1 - initMedian).norm();
+            float vm2 = (v2 - median).norm(); float ivm2 = (iv2 - initMedian).norm();
+            float vm3 = (v3 - median).norm(); float ivm3 = (iv3 - initMedian).norm();
+            float stretch1 = abs(vm1 - ivm1) / ivm1;
+            float stretch2 = abs(vm2 - ivm2) / ivm2;
+            float stretch3 = abs(vm3 - ivm3) / ivm3;
+            float currStretch = max(stretch1, max(stretch2, stretch3)); 
             stretch.push_back(currStretch);
         }
         for(int i = 0; i < n; i++){
@@ -433,6 +451,20 @@ void DeformableBody::renderDebugMesh(){
             debugStream << color << "\n";
             setColor(color);
             drawTri(v1,v2,v3);
+        }
+
+        //Drawing Edges
+        for(int i = 0; i < m; i++){
+            Edge* e = mesh->edge_list[i];
+            if(true){
+                setLineWidth(3.0f);
+                setColor(vec3(0.0f, 0.0f, 0.0f));
+
+                //Drawing the actual mesh
+                vec3 v1 = e->startParticle->position;
+                vec3 v2 = e->twin->startParticle->position;
+                drawLine(v1,v2);
+            }
         }
     }
 }
