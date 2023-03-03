@@ -20,16 +20,16 @@ DeformableBody::DeformableBody(){
     for(int i = 0;i < n;i++){
         for(int j = 0;j < n;j++){
             vertices.push_back(vec3(i*f - 4.0,j*f - 4.0,0));
-            // if(i == 0 || i == n-1 || j == 0 || j == n-1){
-            //     constraints[i*n+j] = vec3(0.0f, 0.0f, 0.0f);
-            // }
+            if(i == 0 || i == n-1 || j == 0 || j == n-1){
+                constraints[i*n+j] = vec3(0.0f, 0.0f, 0.0f);
+            }
         }
     }
 
-    constraints[0] = vec3(0.0f, 0.0f, 0.0f);
-    constraints[n-1] = vec3(0.0f, 0.0f, 0.0f);
-    constraints[n*n-n] = vec3(0.0f, 0.0f, 0.0f);
-    constraints[n*n-1] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[0] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[n-1] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[n*n-n] = vec3(0.0f, 0.0f, 0.0f);
+    // constraints[n*n-1] = vec3(0.0f, 0.0f, 0.0f);
 
 
     for(int i = 0;i < n-1;i++){
@@ -261,7 +261,7 @@ void DeformableBody::processInput(Window &window){
             if(!startCut){
                 startCut = true;
                 mesh->splitVertex(currIntersectIdx, vec3(0.0f, 1.0f, 0.0f));
-                currIntersectIdx += 15;
+                currIntersectIdx += 13;
                 mesh->redistributeMass();
                 mesh->updateGhostSprings();
                 checkSanity();
