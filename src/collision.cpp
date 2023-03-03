@@ -251,7 +251,8 @@ void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges){
         Particle* p2 = membrane.mesh->edge_list[i]->twin->startParticle;
         float length = (p1->position - p2->position).norm();
         float initLength = (p1->initPos - p2->initPos).norm();
-        if(length / initLength > 1.5f){
+        float factor = (length - initLength) / initLength;
+        if(factor > 1.5f){
             if(membrane.mesh->edge_list[i]->isActive){
                 // membrane.mesh->edge_list[i]->isActive = false;
                 membrane.mesh->reMeshEdge2(i);

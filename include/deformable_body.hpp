@@ -15,6 +15,7 @@ class DeformableBody{
         TimeIntegrationType timeIntegrationType = BWD_EULER;
 
         //Animation Parameters
+        bool isPlaying = false;
         bool toCut = false;  
         bool startCut = false;
         bool activatePhysics = false;
@@ -61,9 +62,7 @@ class DeformableBody{
         HalfEdge *mesh;
 
         //Visual Debugging
-        bool drawRefMesh;
         int drawMode;
-        int splitMode;
         int debugMode;
 
         //Simulation and Interaction 

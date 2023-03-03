@@ -15,7 +15,6 @@ RigidBody instrument;
 //Rendering Modes
 int mode = 0;
 int drawMode = 0;
-int splitMode = 0;
 
 //Debugging
 vector<int> intersectingEdges;
@@ -66,31 +65,22 @@ void keyPressed(int key) {
 void processInput(int argc, char** argv){
     if(argc > 1){
         mode = atoi(argv[1]);
-    }
-    if(argc > 2){
-        drawMode = atoi(argv[2]);
-    }
-    if(argc > 3){
-        splitMode = atoi(argv[3]);
-    }
-    if(mode){
-        membrane.drawRefMesh = true;
+        drawMode = atoi(argv[1]);
     }
     membrane.drawMode = drawMode;
-    membrane.splitMode = splitMode;
 }
 
 int main(int argc, char **argv) {
     //Creating windows
-    window.create("Simulation Window", 960, 540);
+    window.create("Simulation Window", 1920, 1080);
     window.onKeyPress(keyPressed);
-    debugWindow.create("Debug Window", 960, 540);
+    debugWindow.create("Debug Window", 1920, 1080);
     debugWindow.onKeyPress(keyPressed);
     debugWindow.debug = true;
 
     //Creating simulation objects
-    camera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
-    debugCamera.lookAt(vec3(0.0f,-45.0f,45.0f), vec3(0.0f,0.0f,-10.0f));
+    camera.lookAt(vec3(0.0f,-20.0f,25.0f), vec3(0.0f,0.0f,-0.0f));
+    debugCamera.lookAt(vec3(0.0f,-10.0f,15.0f), vec3(0.0f,0.0f,-0.0f));
     lighting.createDefault();
     instrument = RigidBody("objects/sphere.obj");
     processInput(argc, argv);
@@ -121,7 +111,9 @@ int main(int argc, char **argv) {
         membrane.update(dt);
         instrument.update(dt);
         detectCollision(membrane, instrument);
-        updateMesh(membrane, intersectingEdges);
+        if(mode){
+            updateMesh(membrane, intersectingEdges);
+        }
     }
     window.terminate();
     debugWindow.terminate();

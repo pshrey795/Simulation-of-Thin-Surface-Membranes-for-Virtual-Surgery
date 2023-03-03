@@ -47,6 +47,7 @@ RigidBody::RigidBody(string filePath){
     //Default Parameters
     responseMode = 1;
     collisionMode = 1;
+    drawRBD = true;
     velocity = vec3(0,0,0);
     if(collisionMode){
         //Approximating sphere
@@ -82,6 +83,10 @@ void RigidBody::processInput(Window &window){
             if(activatePhysics){
                 activatePhysics = false;
             }
+        }else if(glfwGetKey(win, GLFW_KEY_2) == GLFW_PRESS){
+            drawRBD = false;
+        }else if(glfwGetKey(win, GLFW_KEY_1) == GLFW_PRESS){
+            drawRBD = true;
         }else if(glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS){
             velocity = vec3(0.0f, 2.0f, 0.0f);
         }else if(glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS){
@@ -101,20 +106,22 @@ void RigidBody::processInput(Window &window){
 void RigidBody::renderMesh(){
     int m = faces.size();
 
-    //Drawing faces
-    for(int i = 0; i < m; i++){
-        glEnable(GL_BLEND);
-        glDepthMask(GL_FALSE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if(drawRBD){
+        //Drawing faces
+        for(int i = 0; i < m; i++){
+            glEnable(GL_BLEND);
+            glDepthMask(GL_FALSE);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        vec3 v1 = vertices[faces[i].v1];
-        vec3 v2 = vertices[faces[i].v2];
-        vec3 v3 = vertices[faces[i].v3];
-        setColor(vec4(mat.albedo[0], mat.albedo[1], mat.albedo[2], 0.5f));
-        drawTri(v1, v2, v3);
+            vec3 v1 = vertices[faces[i].v1];
+            vec3 v2 = vertices[faces[i].v2];
+            vec3 v3 = vertices[faces[i].v3];
+            setColor(vec4(mat.albedo[0], mat.albedo[1], mat.albedo[2], 0.5f));
+            drawTri(v1, v2, v3);
 
-        glDepthMask(GL_TRUE);
-        glDisable(GL_BLEND);    
+            glDepthMask(GL_TRUE);
+            glDisable(GL_BLEND);    
+        }
     }
 }
 

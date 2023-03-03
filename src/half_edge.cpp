@@ -323,7 +323,7 @@ bool HalfEdge::isInsidePos(Face* face, vec3 point){
     return (abs((A1 + A2 + A3) - A) < MIN_DIFF);
 }
 
-void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal, int splitMode){
+void HalfEdge::reMesh(tuple<vec3, int, int> lastIntPt, tuple<vec3, int, int> intPt, tuple<vec3, int, int> &nextIntPt, Edge* &leftCrossEdge, Edge* &rightCrossEdge, vec3 normal){
     //Auxiliary variables
     int currentType = get<1>(intPt);
     int lastType = get<1>(lastIntPt);

@@ -4,7 +4,6 @@
 DeformableBody::DeformableBody(){                       
     //Using a sample mesh
     upVec = vec3(0,0,1);
-    drawRefMesh = false;
     debug = true;
     debugMode = 1;
     activatePhysics = false;
@@ -193,41 +192,35 @@ void DeformableBody::getIntersectionPts(){
 }
 
 void DeformableBody::processCut(){
-    //Mesh Cutting on predefined path
-    // count = (count + 1) % 2;
-    // if(toCut){
-    //     if(count == 0){
-    //         if(currIntersectIdx < intersectPts.size()){
-    //             if(currIntersectIdx == 0){
-    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-    //                 this->mesh->reMesh(newIntPt, intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-    //             }else if(currIntersectIdx == intersectPts.size()-1){
-    //                 auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], newIntPt, crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-    //             }else{
-    //                 this->mesh->reMesh(intersectPts[currIntersectIdx-1], intersectPts[currIntersectIdx], intersectPts[currIntersectIdx+1], crossEdgeLeft, crossEdgeRight, normals[currIntersectIdx], splitMode);
-    //             }
-    //             checkSanity();
-    //             currIntersectIdx++;
-    //         }else{
-    //             // toCut = false;
-    //         }
-    //     }
-    // }
-
-    //Collision Induced Mesh Cutting
-    mesh->firstVertexIdx = mesh->particle_list.size();
-    for(int i = 0; i < intersectPts.size(); i++){
-        if(i == 0){
-            auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-            this->mesh->reMesh(newIntPt, intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f), splitMode);
-        }else if(i == intersectPts.size()-1){
-            auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
-            this->mesh->reMesh(intersectPts[i-1], intersectPts[i], newIntPt, crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f), splitMode);
-        }else{
-            this->mesh->reMesh(intersectPts[i-1], intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f), splitMode);
+    if(isPlaying){
+        //Mesh Cutting on predefined path
+        for(int i = 0; i < intersectPts.size(); i++){
+            if(i == 0){
+                auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                this->mesh->reMesh(newIntPt, intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, normals[i]);
+            }else if(i == intersectPts.size()-1){
+                auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                this->mesh->reMesh(intersectPts[i-1], intersectPts[i], newIntPt, crossEdgeLeft, crossEdgeRight, normals[i]);
+            }else{
+                this->mesh->reMesh(intersectPts[i-1], intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, normals[i]);
+            }
+            checkSanity();
         }
-        checkSanity();
+    }else{
+        //Collision Induced Mesh Cutting
+        mesh->firstVertexIdx = mesh->particle_list.size();
+        for(int i = 0; i < intersectPts.size(); i++){
+            if(i == 0){
+                auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                this->mesh->reMesh(newIntPt, intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f));
+            }else if(i == intersectPts.size()-1){
+                auto newIntPt = make_tuple(vec3(0.0f, 0.0f, 0.0f), -1, -1);
+                this->mesh->reMesh(intersectPts[i-1], intersectPts[i], newIntPt, crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f));
+            }else{
+                this->mesh->reMesh(intersectPts[i-1], intersectPts[i], intersectPts[i+1], crossEdgeLeft, crossEdgeRight, vec3(0.0f, 0.0f, 0.0f));
+            }
+            checkSanity();
+        }
     }
 
     mesh->updateGhostSprings();
@@ -244,7 +237,13 @@ void DeformableBody::processInput(Window &window){
             debugMode = 2;
         }
     }else{
-        if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
+        if(glfwGetKey(win, GLFW_KEY_M) == GLFW_PRESS){
+            if(!isPlaying){
+                isPlaying = true;
+                setupPath();
+                processCut();
+            }
+        }else if(glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS){
             if(!activatePhysics){
                 activatePhysics = true;
             }
@@ -256,6 +255,11 @@ void DeformableBody::processInput(Window &window){
             if(!toCut){
                 constructCutGraph();
                 getIntersectionPts();
+            }
+        }else if(glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS){
+            if(!startCut){
+                startCut = true;
+                processCut();
             }
         }else if(glfwGetKey(win, GLFW_KEY_U) == GLFW_PRESS){
             if(!startCut){
@@ -354,22 +358,6 @@ void DeformableBody::renderMesh(){
         vec3 v3 = mesh->particle_list[f->indices[2]]->position;
         setColor(f->color);
         drawTri(v1,v2,v3);
-
-        if(drawRefMesh){
-            //Drawing the reference mesh
-            glEnable(GL_BLEND);
-            glDepthMask(GL_FALSE);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-            vec3 iv1 = mesh->particle_list[f->indices[0]]->initPos;
-            vec3 iv2 = mesh->particle_list[f->indices[1]]->initPos;
-            vec3 iv3 = mesh->particle_list[f->indices[2]]->initPos;
-            setColor(vec4(1.0f, 0.0f, 0.0f, 0.5f));
-            drawTri(iv1,iv2,iv3);
-
-            glDepthMask(GL_TRUE);
-            glDisable(GL_BLEND);
-        }
     }
 
     //Drawing Edges
@@ -383,13 +371,6 @@ void DeformableBody::renderMesh(){
             vec3 v1 = e->startParticle->position;
             vec3 v2 = e->twin->startParticle->position;
             drawLine(v1,v2);
-
-            if(drawRefMesh){
-                //Drawing the reference mesh
-                vec3 iv1 = e->startParticle->initPos;
-                vec3 iv2 = e->twin->startParticle->initPos;
-                drawLine(iv1,iv2);
-            }
         }
     }
 }

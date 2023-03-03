@@ -27,6 +27,7 @@ class RigidBody{
 
         //Debugging
         bool debug;
+        bool drawRBD;
         bool checkSanity();
 
     public:
