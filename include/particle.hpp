@@ -25,7 +25,8 @@ struct Edge{
     struct Edge *next;
     struct Edge *prev;
     struct Edge *twin;
-    struct Edge *ghostTwin;
+    struct Edge *ghostTwinCw;
+    struct Edge *ghostTwinAcw;
     struct Face *face;
     struct Spring spring;
     int listIdx;

@@ -72,9 +72,9 @@ void processInput(int argc, char** argv){
 
 int main(int argc, char **argv) {
     //Creating windows
-    window.create("Simulation Window", 1920, 1080);
+    window.create("Simulation Window", 960, 540);
     window.onKeyPress(keyPressed);
-    debugWindow.create("Debug Window", 1920, 1080);
+    debugWindow.create("Debug Window", 960, 540);
     debugWindow.onKeyPress(keyPressed);
     debugWindow.debug = true;
 

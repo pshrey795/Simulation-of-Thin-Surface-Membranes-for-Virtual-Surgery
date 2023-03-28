@@ -181,14 +181,6 @@ void DeformableBody::getIntersectionPts(){
     }while(currIdx != 0);
     //Second point on the centroid of the end cut face
     intersectPts.push_back(make_tuple(startCentroid, 0, mesh->particle_list.size()));
-
-    //Debugging
-    // for(auto pt : intersectPts){
-    //     cout << get<0>(pt) << endl;
-    //     cout << get<1>(pt) << endl;
-    //     cout << get<2>(pt) << endl;
-    //     cout << "\n\n";
-    // }
 }
 
 void DeformableBody::processCut(){
@@ -265,7 +257,7 @@ void DeformableBody::processInput(Window &window){
             if(!startCut){
                 startCut = true;
                 mesh->splitVertex(currIntersectIdx, vec3(0.0f, 1.0f, 0.0f));
-                currIntersectIdx += 13;
+                currIntersectIdx += 15;
                 mesh->redistributeMass();
                 mesh->updateGhostSprings();
                 checkSanity();
@@ -397,7 +389,6 @@ void DeformableBody::renderDebugMesh(){
             vec3 v2 = mesh->edge_list[i]->twin->startParticle->position;
             float factor = stretch[i] / maxStretch;
             vec3 color = vec3(0.0f, 255.0f, 0.0f) * (1.0f - factor) + vec3(255.0f, 0.0f, 0.0f) * factor;
-            debugStream << color << "\n";
             setColor(color);
             drawLine(v1, v2);
         }
@@ -429,7 +420,6 @@ void DeformableBody::renderDebugMesh(){
             vec3 v3 = mesh->face_list[i]->edge->prev->startParticle->position;
             float factor = stretch[i] / maxStretch;
             vec3 color = vec3(0.0f, 255.0f, 0.0f) * (1.0f - factor) + vec3(255.0f, 0.0f, 0.0f) * factor;
-            debugStream << color << "\n";
             setColor(color);
             drawTri(v1,v2,v3);
         }
@@ -453,7 +443,7 @@ void DeformableBody::renderDebugMesh(){
 //Checking sanity of the half-edge data structure after every update
 bool DeformableBody::checkSanity(){
     if(debug){
-        cout << "Checking sanity...\n";
+        debugStream << "Checking sanity...\n";
         auto particles = this->mesh->particle_list;
         auto faces = this->mesh->face_list;
         auto edges = this->mesh->edge_list;
@@ -463,26 +453,29 @@ bool DeformableBody::checkSanity(){
             Edge* edge = edges[i];
             Edge* twinEdge = edge->twin;
             if(twinEdge->twin != edge){
-                cout << "Twin edge not set properly" << endl;
+                debugStream << "Twin edge not set properly" << endl;
+                debugStream << "\n\n\n";
                 return false;
             }
             Edge* nextEdge = edge->next;
             if(nextEdge != NULL){
                 if(nextEdge->prev != edge){
-                    cout << "Next edge not set properly" << endl;
+                    debugStream << "Next edge not set properly" << endl;
+                    debugStream << "\n\n\n";
                     return false;
                 }
             }
             Edge* prevEdge = edge->prev;
             if(prevEdge != NULL){
                 if(prevEdge->next != edge){
-                    cout << "Prev edge not set properly" << endl;
+                    debugStream << "Prev edge not set properly" << endl;
+                    debugStream << "\n\n\n";
                     return false;
                 }
             }
         }
 
-        cout << "Edge-Edge checks passed\n";
+        debugStream << "Edge-Edge checks passed\n";
 
         //Edge-Face checks
         for(int i=0;i<faces.size();i++){
@@ -491,12 +484,13 @@ bool DeformableBody::checkSanity(){
             Edge* nextEdge = edge->next;
             Edge* prevEdge = edge->prev;
             if(nextEdge->face != face || prevEdge->face != face || edge->face != face){
-                cout << "Face edge not set properly" << endl;
+                debugStream << "Face edge not set properly" << endl;
+                debugStream << "\n\n\n";
                 return false;
             }
         }
 
-        cout << "Edge-Face checks passed\n";
+        debugStream << "Edge-Face checks passed\n";
 
         // //Vertex-Edge checks
         // for(int i=0;i<edges.size();i++){
@@ -512,30 +506,31 @@ bool DeformableBody::checkSanity(){
         //         }
         //     }
         //     if(!found){
-        //         cout << "Vertex edge not set properly: " << particle->position[0] << " " << particle->position[1] << endl;
+        //         debugStream << "Vertex edge not set properly: " << particle->position[0] << " " << particle->position[1] << endl;
         //         return false;
         //     }
         // }
 
-        // cout << "Vertex-Edge checks passed\n";
+        // debugStream << "Vertex-Edge checks passed\n";
 
-        //Edge-Vertex checks
+        // Edge-Vertex checks
         for(int i=0;i<particles.size();i++){
             Particle* particle = particles[i];
             if(particle->edge != NULL){
                 auto edgeList = particle->getEdges();
                 for(int j=0;j<edgeList.size();j++){
                     if(edgeList[j]->startParticle != particle){
-                        cout << "Edge Vertex not set properly: " << endl;
-                        cout << particle->position[0] << " " << particle->position[1] << endl;
-                        cout << edgeList[j]->startParticle->position[0] << " " << edgeList[j]->startParticle->position[1] << endl;
+                        debugStream << "Edge Vertex not set properly: " << endl;
+                        debugStream << particle->position[0] << " " << particle->position[1] << endl;
+                        debugStream << edgeList[j]->startParticle->position[0] << " " << edgeList[j]->startParticle->position[1] << endl;
+                        debugStream << "\n\n\n";
                         return false;
                     }
                 }
             }
         }
 
-        cout << "Edge-Vertex checks passed\n";
+        debugStream << "Edge-Vertex checks passed\n";
 
         //Vertex-Face checks
         for(int i=0;i<faces.size();i++){
@@ -544,17 +539,18 @@ bool DeformableBody::checkSanity(){
             Particle* p3 = particles[faces[i]->indices[2]];
             Edge* edge = faces[i]->edge;
             if(edge->startParticle != p1 && edge->next->startParticle != p2 && edge->prev->startParticle != p3){
-                cout << "Face edge not set properly" << endl;
+                debugStream << "Face edge not set properly" << endl;
+                debugStream << "\n\n\n";
                 return false;
             }
 
         }
 
-        cout << "Vertex-Face checks passed\n";
+        debugStream << "Vertex-Face checks passed\n";
 
-        cout << "The mesh is correct!" << endl; 
+        debugStream << "The mesh is correct!" << endl; 
 
-        cout << "\n\n\n";
+        debugStream << "\n\n\n";
     }
     return true;
 }

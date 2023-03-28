@@ -16,6 +16,7 @@
         "ostream": "cpp",
         "ranges": "cpp",
         "tuple": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "complex": "cpp"
     }
 }
