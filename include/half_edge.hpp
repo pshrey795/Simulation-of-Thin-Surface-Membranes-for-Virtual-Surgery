@@ -80,6 +80,9 @@ class HalfEdge {
 
         int firstVertexIdx = -1;
 
+        //Debugging
+        int debugMode;
+
     private:
         //Helper functions for checking intersection
         void ParticleOffsets(Plane plane);

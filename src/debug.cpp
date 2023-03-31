@@ -3,6 +3,8 @@
 //Debug Files
 string debugFile = "Results/debug.txt";
 ofstream debugStream = ofstream(debugFile);
+string debugFile2 = "Results/debug2.txt";
+ofstream debugStream2 = ofstream(debugFile2);
 
 //Overload << operator for vec2, vec3
 std::ostream& operator<<(std::ostream& os, const vec2& v){

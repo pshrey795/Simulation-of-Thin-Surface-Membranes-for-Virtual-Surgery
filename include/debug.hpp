@@ -6,7 +6,9 @@
 
 //Debug Files
 extern string debugFile;
+extern string debugFile2;
 extern ofstream debugStream;
+extern ofstream debugStream2;
 
 //Overload << operator for vec2, vec3
 std::ostream& operator<<(std::ostream& os, const vec2& v);

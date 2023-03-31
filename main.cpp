@@ -14,6 +14,7 @@ RigidBody instrument;
 
 //Rendering Modes
 int mode = 0;
+int debugMode = 0;
 int drawMode = 0;
 
 //Debugging
@@ -67,6 +68,9 @@ void processInput(int argc, char** argv){
         mode = atoi(argv[1]);
         drawMode = atoi(argv[1]);
     }
+    if(argc > 2){
+        debugMode = atoi(argv[2]);
+    }
     membrane.drawMode = drawMode;
 }
 
@@ -84,6 +88,7 @@ int main(int argc, char **argv) {
     lighting.createDefault();
     instrument = RigidBody("objects/sphere.obj");
     processInput(argc, argv);
+    membrane.mesh->debugMode = debugMode;
 
     while(!window.shouldClose() && !debugWindow.shouldClose()){
         //Rendering the main simulation

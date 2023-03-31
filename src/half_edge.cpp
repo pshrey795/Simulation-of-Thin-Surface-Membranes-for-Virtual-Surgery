@@ -2268,23 +2268,139 @@ void HalfEdge::splitVertex(int vertexIdx, vec3 normal){
         ghostTwinEdges[1]->ghostTwinCw = ghostTwinEdges[0];
     }else if(N == 4){
         for(int i = 0; i < N; i++){
-            if(!ghostTwinEdges[i]->ghostTwinCw){
+            if(!ghostTwinEdges[i]->ghostTwinCw || i%2==0){
                 ghostTwinEdges[i]->ghostTwinCw = ghostTwinEdges[(i+N-1)%N];
             }
-            if(!ghostTwinEdges[i]->ghostTwinAcw){
+            if(!ghostTwinEdges[i]->ghostTwinAcw || i%2==1){
                 ghostTwinEdges[i]->ghostTwinAcw = ghostTwinEdges[(i+1)%N]; 
             }
         }
     }
 
     //Handling ghost vertices
-    for(int i = 0; i < ghostVertices.size(); i++){
-        splitGhostVertex(ghostVertices[i]);
+    if(debugMode == 0){
+        for(int i = 0; i < ghostVertices.size(); i++){
+            splitGhostVertex(ghostVertices[i]);
+        }
     }
 }
 
-void HalfEdge::splitGhostVertex(int i){
-    
+void HalfEdge::splitGhostVertex(int vertexIdx){
+    //Step 1: Check if there are two disconnected components of faces around the given vertex
+    Particle* P = particle_list[vertexIdx];
+    Edge* currentEdge = P->edge;
+    //Anticlockwise traversal
+    int flag = 0;
+    while(true){
+        if(currentEdge == P->edge && flag){
+            break;
+        }else{
+            if(currentEdge->face == NULL){
+                if(currentEdge->twin->ghostTwinAcw == NULL){
+                    break;
+                }else if(currentEdge->twin->ghostTwinAcw->startParticle == currentEdge->startParticle){
+                    currentEdge = currentEdge->twin->ghostTwinAcw;
+                }else{
+                    break;
+                }
+            }else{
+                currentEdge = currentEdge->prev->twin;
+            }
+        }
+        flag = 1;
+    }
+    //Clockwise traversal
+    Edge* startEdge = currentEdge;
+    vector<Face*> P_faces;
+    vector<int> label; 
+    flag = 0;
+    int count = 0;
+    while(true){
+        if(currentEdge == startEdge && flag){
+            break;
+        }else{
+            if(currentEdge->face == NULL){
+                currentEdge = currentEdge->twin->next;
+            }else{
+                P_faces.push_back(currentEdge->face);
+                label.push_back(count % 2);
+                if(currentEdge->twin->next == NULL){
+                    count++;
+                    if(currentEdge->ghostTwinCw == NULL){
+                        break;
+                    }else if(currentEdge->ghostTwinCw->twin->startParticle == currentEdge->startParticle){
+                        currentEdge = currentEdge->ghostTwinCw->twin;
+                    }else{
+                        break;
+                    }
+                }else{
+                    currentEdge = currentEdge->twin->next;
+                }
+            }
+        }
+        flag = 1;
+    }
+    if(count < 2){
+        return;
+    }
+
+    //Step 2: Split the two components to different vertices
+    Particle* newParticle = new Particle(P->position, P->initPos, P->velocity);
+    newParticle->listIdx = this->particle_list.size();
+    this->particle_list.push_back(newParticle);
+    int oldIdx = P->listIdx;
+    int newIdx = newParticle->listIdx;
+
+    int lastLabel = -1;
+    vector<Edge*> ghostTwinEdges;
+    if(startEdge->face != NULL || startEdge->twin->ghostTwinAcw != NULL){
+        lastLabel = label[label.size() - 1];
+    }
+    for(int i = 0; i < P_faces.size(); i++){
+        Face* currFace = P_faces[i];
+        currentEdge = currFace->edge;
+        while(currentEdge->startParticle != P && currentEdge->startParticle != newParticle){
+            currentEdge = currentEdge->next;
+        }
+        if(label[i]){
+            //Retains original vertex
+            currentEdge->startParticle = P;
+            currentEdge->prev->twin->startParticle = P;
+            P->edge = currentEdge;
+        }else{
+            //Reassigned to new particle
+            int oldLeftIdx = currentEdge->prev->startParticle->listIdx;
+            int oldRightIdx = currentEdge->next->startParticle->listIdx;
+            currFace->setFace(newIdx, oldRightIdx, oldLeftIdx);
+            currFace->edge = currentEdge;
+            currentEdge->startParticle = newParticle;
+            currentEdge->prev->twin->startParticle = newParticle;
+            newParticle->edge = currentEdge;
+        }
+        if(lastLabel != -1){
+            if(lastLabel != label[i]){
+                ghostTwinEdges.push_back(currentEdge->prev->ghostTwinAcw);
+                ghostTwinEdges.push_back(currentEdge->prev);
+            }
+        }
+        lastLabel = label[i];
+    }
+
+    //Assigning stored ghost twin edges
+    int N = ghostTwinEdges.size();
+    if(N == 2){
+        ghostTwinEdges[0]->ghostTwinAcw = ghostTwinEdges[1];
+        ghostTwinEdges[1]->ghostTwinCw = ghostTwinEdges[0];
+    }else if(N == 4){
+        for(int i = 0; i < N; i++){
+            if(!ghostTwinEdges[i]->ghostTwinCw || i%2==0){
+                ghostTwinEdges[i]->ghostTwinCw = ghostTwinEdges[(i+N-1)%N];
+            }
+            if(!ghostTwinEdges[i]->ghostTwinAcw || i%2==1){
+                ghostTwinEdges[i]->ghostTwinAcw = ghostTwinEdges[(i+1)%N]; 
+            }
+        }
+    }
 }
 
 //Vertex Splitting, adapted from Fast Simulation of Cloth Tearing 
@@ -2593,18 +2709,20 @@ void HalfEdge::reMeshEdge2(int vertexIdx){
         ghostTwinEdges[1]->ghostTwinCw = ghostTwinEdges[0];
     }else if(N == 4){
         for(int i = 0; i < N; i++){
-            if(!ghostTwinEdges[i]->ghostTwinCw){
+            if(!ghostTwinEdges[i]->ghostTwinCw || i%2==0){
                 ghostTwinEdges[i]->ghostTwinCw = ghostTwinEdges[(i+N-1)%N];
             }
-            if(!ghostTwinEdges[i]->ghostTwinAcw){
+            if(!ghostTwinEdges[i]->ghostTwinAcw || i%2==1){
                 ghostTwinEdges[i]->ghostTwinAcw = ghostTwinEdges[(i+1)%N]; 
             }
         }
     }
 
     //Handling ghost vertices
-    for(int i = 0; i < ghostVertices.size(); i++){
-        splitGhostVertex(ghostVertices[i]);
+    if(debugMode == 0){
+        for(int i = 0; i < ghostVertices.size(); i++){
+            splitGhostVertex(ghostVertices[i]);
+        }
     }
 }
 

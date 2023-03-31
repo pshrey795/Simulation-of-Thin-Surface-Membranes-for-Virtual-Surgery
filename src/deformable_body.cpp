@@ -388,7 +388,7 @@ void DeformableBody::renderDebugMesh(){
             vec3 v1 = mesh->edge_list[i]->startParticle->position;
             vec3 v2 = mesh->edge_list[i]->twin->startParticle->position;
             float factor = stretch[i] / maxStretch;
-            vec3 color = vec3(0.0f, 255.0f, 0.0f) * (1.0f - factor) + vec3(255.0f, 0.0f, 0.0f) * factor;
+            vec3 color = vec3(0.0f, 1.0f, 0.0f) * (1.0f - factor) + vec3(1.0f, 0.0f, 0.0f) * factor;
             setColor(color);
             drawLine(v1, v2);
         }
@@ -419,7 +419,7 @@ void DeformableBody::renderDebugMesh(){
             vec3 v2 = mesh->face_list[i]->edge->next->startParticle->position;
             vec3 v3 = mesh->face_list[i]->edge->prev->startParticle->position;
             float factor = stretch[i] / maxStretch;
-            vec3 color = vec3(0.0f, 255.0f, 0.0f) * (1.0f - factor) + vec3(255.0f, 0.0f, 0.0f) * factor;
+            vec3 color = vec3(0.0f, 1.0f, 0.0f) * (1.0f - factor) + vec3(1.0f, 0.0f, 0.0f) * factor;
             setColor(color);
             drawTri(v1,v2,v3);
         }
@@ -559,7 +559,7 @@ void DeformableBody::printMeshInfo(){
     //Track the problematic particle
     if(mesh->particle_list.size() > 400){
         setPointSize(20.0f);
-        setColor(vec3(255.0f, 255.0f, 0.0f));
+        setColor(vec3(1.0f, 1.0f, 0.0f));
         drawPoint(mesh->particle_list[400]->position);
         drawPoint(mesh->particle_list[401]->position);
         drawPoint(mesh->particle_list[402]->position);
