@@ -2404,7 +2404,7 @@ void HalfEdge::splitGhostVertex(int vertexIdx){
 }
 
 //Vertex Splitting, adapted from Fast Simulation of Cloth Tearing 
-void HalfEdge::reMeshEdge2(int vertexIdx){
+void HalfEdge::reMeshEdge2(int vertexIdx, unordered_set<int>& crackTip){
     Edge* cutEdge = this->edge_list[vertexIdx];
 
     //Vertex Splitting Algorithm
@@ -2573,6 +2573,8 @@ void HalfEdge::reMeshEdge2(int vertexIdx){
     this->particle_list.push_back(newParticle);
     int oldIdx = P->listIdx;
     int newIdx = newParticle->listIdx;
+    // crackTip.insert(oldIdx);
+    // crackTip.insert(newIdx);
     
     //Step 3: Split the faces and edges between the old and the new vertex (i.e. remesh)
     //Step 4: Assign ghost twins to newly created edges
@@ -2681,6 +2683,7 @@ void HalfEdge::reMeshEdge2(int vertexIdx){
                 }else{
                     //Joined by normal twin edges
                     Particle* rightParticle = currentEdge->prev->startParticle;
+                    crackTip.insert(rightParticle->listIdx);
                     ghostVertices.push_back(rightParticle->listIdx);
                     Edge* upperEdge = new Edge();
                     Edge* lowerEdge = new Edge();

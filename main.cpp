@@ -7,6 +7,7 @@ Window debugWindow;
 Camera camera;
 Camera debugCamera;
 Lighting lighting;
+Collider collider;
 
 //Scene Objects
 DeformableBody membrane; 
@@ -40,6 +41,12 @@ void drawDebug(){
     clear(vec3(0.5,0.7,0.9));
     setColor(vec3(0.7,0.7,0.7));
     membrane.renderDebugMesh();
+    setColor(vec3(0.0,0.0,0.9));
+    setPointSize(10.0f);
+    for(auto vertexId : intersectingEdges){
+        vec3 pos = membrane.mesh->particle_list[vertexId]->position;
+        drawPoint(pos);
+    }
     setColor(vec3(0,0,0));
 }
 
@@ -115,9 +122,9 @@ int main(int argc, char **argv) {
         update(dt);
         membrane.update(dt);
         instrument.update(dt);
-        detectCollision(membrane, instrument);
+        collider.detectCollision(membrane, instrument);
         if(mode){
-            updateMesh(membrane, intersectingEdges);
+            collider.updateMesh(membrane, intersectingEdges);
         }
     }
     window.terminate();

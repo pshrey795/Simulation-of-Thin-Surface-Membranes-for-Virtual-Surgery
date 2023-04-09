@@ -96,7 +96,12 @@ void extrapolateTri(Particle* x, Particle* y, Particle* z, vec3 p, vec3 val, int
     }
 }
 
-void detectCollision(DeformableBody& membrane, RigidBody& instrument){
+Collider::Collider(){
+    normalThreshold = 1.5f;
+    crackTipThreshold = 0.5f;
+}
+
+void Collider::detectCollision(DeformableBody& membrane, RigidBody& instrument){
     //Reset all constraints on the membrane
     for(int i = 0; i < membrane.mesh->particle_list.size(); i++){
         membrane.mesh->particle_list[i]->externalForce = vec3(0.0f, 0.0f, 0.0f); 
@@ -244,19 +249,42 @@ void detectCollision(DeformableBody& membrane, RigidBody& instrument){
     }
 }
 
-void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges){
-    intersectingEdges.clear();
+void Collider::updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges){
+    int edgeIdx = -1;
+    float phi = 0.0f;
     for(int i = 0; i < membrane.mesh->edge_list.size(); i++){
         Particle* p1 = membrane.mesh->edge_list[i]->startParticle;
         Particle* p2 = membrane.mesh->edge_list[i]->twin->startParticle;
         float length = (p1->position - p2->position).norm();
         float initLength = (p1->initPos - p2->initPos).norm();
         float factor = (length - initLength) / initLength;
-        if(factor > 1.5f){
-            membrane.mesh->reMeshEdge2(i);
-            membrane.mesh->redistributeMass();
-            membrane.mesh->updateGhostSprings();
-            membrane.checkSanity();
+        float threshold;
+        if(crackTip.find(p1->listIdx) != crackTip.end() || crackTip.find(p2->listIdx) != crackTip.end()){
+            threshold = crackTipThreshold;
+        }else{
+            threshold = normalThreshold;
+        }
+        float newPhi = factor / threshold;
+        if(newPhi > phi){
+            phi = newPhi;
+            edgeIdx = i;
         }
     }
-}   
+    if(edgeIdx != -1){
+        if(phi >= 1.0f){
+            membrane.mesh->reMeshEdge2(edgeIdx, crackTip);
+        }
+        membrane.mesh->redistributeMass();
+        membrane.mesh->updateGhostSprings();
+        membrane.checkSanity();
+    }
+    //Debugging 
+    intersectingEdges.clear();
+    for(auto vertexId : crackTip){
+        intersectingEdges.push_back(vertexId);
+    }
+}
+
+void Collider::resetCollider(){
+    crackTip.clear();
+}
