@@ -101,6 +101,9 @@ class Particle {
         //Constraint status
         Constraint constraint;
 
+        //Fracture related parameters
+        bool crackTip;
+
 };
 
 //Helper functions 

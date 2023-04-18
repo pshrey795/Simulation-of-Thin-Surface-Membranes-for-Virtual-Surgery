@@ -1,6 +1,7 @@
 #include "../include/particle.hpp"
 //Particle Class implementations 
 Particle::Particle(vec3 pos, double mass){
+    this->crackTip = false;
     this->position = pos;
     this->initPos = pos; 
     this->m = mass;
@@ -12,6 +13,7 @@ Particle::Particle(vec3 pos, double mass){
 }
 
 Particle::Particle(vec3 pos, vec3 initPos, double mass){
+    this->crackTip = false;
     this->position = pos;
     this->initPos = initPos; 
     this->m = mass;
@@ -23,6 +25,7 @@ Particle::Particle(vec3 pos, vec3 initPos, double mass){
 }
 
 Particle::Particle(vec3 pos, vec3 initPos, vec3 initVel, double mass){
+    this->crackTip = false;
     this->position = pos;
     this->initPos = initPos; 
     this->m = mass;
@@ -34,6 +37,7 @@ Particle::Particle(vec3 pos, vec3 initPos, vec3 initVel, double mass){
 }
 
 Particle::Particle(vec3 pos, Edge* e, double mass){
+    this->crackTip = false;
     this->position = pos;
     this->initPos = pos;
     this->m = mass;
@@ -59,6 +63,7 @@ void Particle::updateInvM(){
     this->invM = 1 / this->m;
 }
 
+//Obsolete: Need to add traversal across ghost edges
 vector<Edge*> Particle::getEdges(){
     vector<Edge*> res;
     Edge* currentEdge = this->edge;
@@ -131,7 +136,7 @@ vec3 Spring::addForce(){
     double length = diff.norm();
 
     //Spring force
-    double restLength = (p1->initPos - p2->initPos).norm();
+    double restLength = (p1->initPos - p2->initPos).norm() * 0.75f;
     double springForce = ks * (length - restLength);
 
     //Damping force
@@ -227,7 +232,7 @@ void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
 
     //Force calculation
     //Spring Force
-    double restLength = (s.p1->initPos - s.p2->initPos).norm();
+    double restLength = (s.p1->initPos - s.p2->initPos).norm() * 0.75f;
     double springForce = (-1) * s.ks * (length - restLength);
     //Damping Force 
     double dampForce = (-1) * s.kd * ((vij.dot(xij) + DELTA) / (length + DELTA));

@@ -43,9 +43,11 @@ void drawDebug(){
     membrane.renderDebugMesh();
     setColor(vec3(0.0,0.0,0.9));
     setPointSize(10.0f);
-    for(auto vertexId : intersectingEdges){
-        vec3 pos = membrane.mesh->particle_list[vertexId]->position;
-        drawPoint(pos);
+    for(auto vertex : membrane.mesh->particle_list){
+        if(vertex->crackTip){
+            vec3 pos = vertex->position;
+            drawPoint(pos);
+        }
     }
     setColor(vec3(0,0,0));
 }

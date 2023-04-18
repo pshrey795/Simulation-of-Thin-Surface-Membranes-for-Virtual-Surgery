@@ -2132,6 +2132,7 @@ void HalfEdge::splitVertex(int vertexIdx, vec3 normal){
     this->particle_list.push_back(newParticle);
     int oldIdx = P->listIdx;
     int newIdx = newParticle->listIdx;
+    P->crackTip = false;
     
     //Step 3: Split the faces and edges between the old and the new vertex (i.e. remesh)
     //Step 4: Assign ghost twins to newly created edges
@@ -2206,6 +2207,7 @@ void HalfEdge::splitVertex(int vertexIdx, vec3 normal){
                 }else{
                     //Joined by normal twin edge
                     Particle* rightParticle = currentEdge->prev->startParticle;
+                    rightParticle->crackTip = true;
                     ghostVertices.push_back(rightParticle->listIdx);
                     Edge* upperEdge = new Edge();
                     Edge* lowerEdge = new Edge();
@@ -2240,6 +2242,7 @@ void HalfEdge::splitVertex(int vertexIdx, vec3 normal){
                 }else{
                     //Joined by normal twin edges
                     Particle* rightParticle = currentEdge->prev->startParticle;
+                    rightParticle->crackTip = true;
                     ghostVertices.push_back(rightParticle->listIdx);
                     Edge* upperEdge = new Edge();
                     Edge* lowerEdge = new Edge();
@@ -2350,6 +2353,7 @@ void HalfEdge::splitGhostVertex(int vertexIdx){
     this->particle_list.push_back(newParticle);
     int oldIdx = P->listIdx;
     int newIdx = newParticle->listIdx;
+    P->crackTip = false;
 
     int lastLabel = -1;
     vector<Edge*> ghostTwinEdges;
@@ -2404,7 +2408,7 @@ void HalfEdge::splitGhostVertex(int vertexIdx){
 }
 
 //Vertex Splitting, adapted from Fast Simulation of Cloth Tearing 
-void HalfEdge::reMeshEdge2(int vertexIdx, unordered_set<int>& crackTip){
+void HalfEdge::reMeshEdge2(int vertexIdx){
     Edge* cutEdge = this->edge_list[vertexIdx];
 
     //Vertex Splitting Algorithm
@@ -2545,14 +2549,24 @@ void HalfEdge::reMeshEdge2(int vertexIdx, unordered_set<int>& crackTip){
     Edge* startEdge;
     if(validA || validB){
         if(validA && validB){
-            if(A->m >= B->m){
+            if(A->crackTip){
                 P = A;
                 P_faces = A_faces;
                 startEdge = startEdgeA;
-            }else{
+            }else if(B->crackTip){
                 P = B;
                 P_faces = B_faces;
                 startEdge = startEdgeB;
+            }else{
+                if(A->m >= B->m){
+                    P = A;
+                    P_faces = A_faces;
+                    startEdge = startEdgeA;
+                }else{
+                    P = B;
+                    P_faces = B_faces;
+                    startEdge = startEdgeB;
+                }
             }
         }else if(validA){
             P = A;
@@ -2573,8 +2587,7 @@ void HalfEdge::reMeshEdge2(int vertexIdx, unordered_set<int>& crackTip){
     this->particle_list.push_back(newParticle);
     int oldIdx = P->listIdx;
     int newIdx = newParticle->listIdx;
-    // crackTip.insert(oldIdx);
-    // crackTip.insert(newIdx);
+    P->crackTip = false;
     
     //Step 3: Split the faces and edges between the old and the new vertex (i.e. remesh)
     //Step 4: Assign ghost twins to newly created edges
@@ -2649,6 +2662,7 @@ void HalfEdge::reMeshEdge2(int vertexIdx, unordered_set<int>& crackTip){
                 }else{
                     //Joined by normal twin edge
                     Particle* rightParticle = currentEdge->prev->startParticle;
+                    rightParticle->crackTip = true;
                     ghostVertices.push_back(rightParticle->listIdx);
                     Edge* upperEdge = new Edge();
                     Edge* lowerEdge = new Edge();
@@ -2683,7 +2697,7 @@ void HalfEdge::reMeshEdge2(int vertexIdx, unordered_set<int>& crackTip){
                 }else{
                     //Joined by normal twin edges
                     Particle* rightParticle = currentEdge->prev->startParticle;
-                    crackTip.insert(rightParticle->listIdx);
+                    rightParticle->crackTip = true;
                     ghostVertices.push_back(rightParticle->listIdx);
                     Edge* upperEdge = new Edge();
                     Edge* lowerEdge = new Edge();
@@ -2828,16 +2842,16 @@ void HalfEdge::solveBwdEuler(float dt){
     //RHS of the equation
     vecX b = scalarMult(f_n + scalarMult(matVecMult(Jx, v_n),dt),dt);
 
-    //Check symmetry of A
-    for(int i = 0; i < systemSize; i++){
-        for(int j = 0; j < systemSize; j++){
-            if(A(i,j) != A(j,i).transpose()){
-                debugStream << "A is not symmetric!" << endl;
-                debugStream << firstVertexIdx << " " << i << " " << j << endl;
-                debugStream << "\n\n\n";
-            }
-        }
-    }
+    // //Check symmetry of A
+    // for(int i = 0; i < systemSize; i++){
+    //     for(int j = 0; j < systemSize; j++){
+    //         if(A(i,j) != A(j,i).transpose()){
+    //             debugStream << "A is not symmetric!" << endl;
+    //             debugStream << firstVertexIdx << " " << i << " " << j << endl;
+    //             debugStream << "\n\n\n";
+    //         }
+    //     }
+    // }
 
     //Handling constraints
     int numConstraints = 0;

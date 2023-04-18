@@ -51,8 +51,8 @@ RigidBody::RigidBody(string filePath){
     velocity = vec3(0,0,0);
     if(collisionMode){
         //Approximating sphere
-        vec3 centre = vec3(0,0,6.0f);
-        double radius = 2.0f;
+        vec3 centre = vec3(0,0,4.0f);
+        double radius = 1.5f;
         sphere = Sphere(centre, radius);
     }else{
         //Bounding Volume Hierarchy

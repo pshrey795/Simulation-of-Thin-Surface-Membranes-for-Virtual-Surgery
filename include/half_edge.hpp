@@ -56,7 +56,7 @@ class HalfEdge {
         void reMeshEdge(int i);
         void splitVertex(int i, vec3 normal);
         void splitGhostVertex(int i);
-        void reMeshEdge2(int i, unordered_set<int>& crackTip);
+        void reMeshEdge2(int i);
         void updateGhostSprings();
         void redistributeMass(); 
 
