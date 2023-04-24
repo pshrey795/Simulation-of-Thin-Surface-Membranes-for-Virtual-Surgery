@@ -88,17 +88,17 @@ void RigidBody::processInput(Window &window){
         }else if(glfwGetKey(win, GLFW_KEY_1) == GLFW_PRESS){
             drawRBD = true;
         }else if(glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS){
-            velocity = vec3(0.0f, 2.0f, 0.0f);
+            velocity = vec3(0.0f, 3.0f, 0.0f);
         }else if(glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS){
-            velocity = vec3(0.0f, -2.0f, 0.0f);
+            velocity = vec3(0.0f, -3.0f, 0.0f);
         }else if(glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS){
-            velocity = vec3(-2.0f, 0.0f, 0.0f);
+            velocity = vec3(-3.0f, 0.0f, 0.0f);
         }else if(glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS){
-            velocity = vec3(2.0f, 0.0f, 0.0f);
+            velocity = vec3(3.0f, 0.0f, 0.0f);
         }else if(glfwGetKey(win, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS){
-            velocity = vec3(0.0f, 0.0f, 2.0f);
+            velocity = vec3(0.0f, 0.0f, 3.0f);
         }else if(glfwGetKey(win, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS){
-            velocity = vec3(0.0f, 0.0f, -2.0f);
+            velocity = vec3(0.0f, 0.0f, -3.0f);
         }
     }
 }

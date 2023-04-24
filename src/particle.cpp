@@ -136,7 +136,7 @@ vec3 Spring::addForce(){
     double length = diff.norm();
 
     //Spring force
-    double restLength = (p1->initPos - p2->initPos).norm() * 0.75f;
+    double restLength = (p1->initPos - p2->initPos).norm();
     double springForce = ks * (length - restLength);
 
     //Damping force
@@ -232,7 +232,7 @@ void calculateForce(Spring& s, vecX& f, matX& Jx, matX& Jv){
 
     //Force calculation
     //Spring Force
-    double restLength = (s.p1->initPos - s.p2->initPos).norm() * 0.75f;
+    double restLength = (s.p1->initPos - s.p2->initPos).norm();
     double springForce = (-1) * s.ks * (length - restLength);
     //Damping Force 
     double dampForce = (-1) * s.kd * ((vij.dot(xij) + DELTA) / (length + DELTA));

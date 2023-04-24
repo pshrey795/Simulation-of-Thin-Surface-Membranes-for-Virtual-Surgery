@@ -379,7 +379,7 @@ void DeformableBody::renderDebugMesh(){
             Particle* p1 = mesh->edge_list[i]->startParticle;
             Particle* p2 = mesh->edge_list[i]->twin->startParticle;
             float length = (p1->position - p2->position).norm();
-            float initLength = (p1->initPos - p2->initPos).norm() * 0.75f;
+            float initLength = (p1->initPos - p2->initPos).norm();
             float currStretch = (length - initLength) / initLength; 
             stretch.push_back(currStretch);
         }
@@ -405,9 +405,9 @@ void DeformableBody::renderDebugMesh(){
             vec3 iv2 = mesh->face_list[i]->edge->next->startParticle->initPos;
             vec3 iv3 = mesh->face_list[i]->edge->prev->startParticle->initPos;
             vec3 initMedian = (iv1 + iv2 + iv3) / 3.0f;
-            float vm1 = (v1 - median).norm(); float ivm1 = (iv1 - initMedian).norm() * 0.75f;
-            float vm2 = (v2 - median).norm(); float ivm2 = (iv2 - initMedian).norm() * 0.75f;
-            float vm3 = (v3 - median).norm(); float ivm3 = (iv3 - initMedian).norm() * 0.75f;
+            float vm1 = (v1 - median).norm(); float ivm1 = (iv1 - initMedian).norm();
+            float vm2 = (v2 - median).norm(); float ivm2 = (iv2 - initMedian).norm();
+            float vm3 = (v3 - median).norm(); float ivm3 = (iv3 - initMedian).norm();
             float stretch1 = abs(vm1 - ivm1) / ivm1;
             float stretch2 = abs(vm2 - ivm2) / ivm2;
             float stretch3 = abs(vm3 - ivm3) / ivm3;
