@@ -2281,7 +2281,7 @@ void HalfEdge::splitVertex(int vertexIdx, vec3 normal){
     }
 
     //Handling ghost vertices
-    if(debugMode == 0){
+    if(debugMode){
         for(int i = 0; i < ghostVertices.size(); i++){
             splitGhostVertex(ghostVertices[i]);
         }
@@ -2736,7 +2736,7 @@ void HalfEdge::reMeshEdge2(int vertexIdx){
     }
 
     //Handling ghost vertices
-    if(debugMode == 0){
+    if(debugMode){
         for(int i = 0; i < ghostVertices.size(); i++){
             splitGhostVertex(ghostVertices[i]);
         }

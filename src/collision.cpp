@@ -245,21 +245,21 @@ void Collider::detectCollision(DeformableBody& membrane, RigidBody& instrument){
 }
 
 Collider::Collider(){
-    normalThreshold = 1.2f;
-    crackTipThreshold = 0.7f;
+    normalThreshold = 1.5f;
+    crackTipThreshold = 1.0f;
 }
 
-void Collider::updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges){
+void Collider::updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges, int crackMode){
     int edgeIdx = -1;
     float phi = 0.0f;
     for(int i = 0; i < membrane.mesh->edge_list.size(); i++){
         Particle* p1 = membrane.mesh->edge_list[i]->startParticle;
         Particle* p2 = membrane.mesh->edge_list[i]->twin->startParticle;
         float length = (p1->position - p2->position).norm();
-        float initLength = (p1->initPos - p2->initPos).norm();
+        float initLength = (p1->initPos - p2->initPos).norm() * 0.75f;
         float factor = (length - initLength) / initLength;
         float threshold;
-        if(p1->crackTip || p2->crackTip){
+        if((p1->crackTip || p2->crackTip) && crackMode){
             threshold = crackTipThreshold;
         }else{
             threshold = normalThreshold;
@@ -273,10 +273,10 @@ void Collider::updateMesh(DeformableBody& membrane, vector<int>& intersectingEdg
     if(edgeIdx != -1){
         if(phi >= 1.0f){
             membrane.mesh->reMeshEdge2(edgeIdx);
-            // membrane.mesh->reMeshEdge(edgeIdx);
         }
         membrane.mesh->redistributeMass();
         membrane.mesh->updateGhostSprings();
         membrane.checkSanity();
     }
+    
 }

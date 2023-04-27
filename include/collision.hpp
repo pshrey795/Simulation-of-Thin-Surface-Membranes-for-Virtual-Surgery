@@ -9,7 +9,7 @@ class Collider {
     public:
         Collider();
         void detectCollision(DeformableBody& membrane, RigidBody& instrument);
-        void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges);
+        void updateMesh(DeformableBody& membrane, vector<int>& intersectingEdges, int crackMode = 0);
 
     private:
         float normalThreshold;

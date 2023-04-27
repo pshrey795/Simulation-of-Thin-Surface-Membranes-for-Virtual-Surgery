@@ -383,7 +383,7 @@ void DeformableBody::renderDebugMesh(){
             float currStretch = (length - initLength) / initLength; 
             stretch.push_back(currStretch);
         }
-        setLineWidth(2.0f);
+        setLineWidth(5.0f);
         for(int i = 0; i < m; i++){
             vec3 v1 = mesh->edge_list[i]->startParticle->position;
             vec3 v2 = mesh->edge_list[i]->twin->startParticle->position;

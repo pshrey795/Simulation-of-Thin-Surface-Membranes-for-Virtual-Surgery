@@ -17,6 +17,7 @@ RigidBody instrument;
 int mode = 0;
 int debugMode = 0;
 int drawMode = 0;
+int crackMode = 0;
 
 //Debugging
 vector<int> intersectingEdges;
@@ -42,7 +43,7 @@ void drawDebug(){
     setColor(vec3(0.7,0.7,0.7));
     membrane.renderDebugMesh();
     setColor(vec3(0.0,0.0,0.9));
-    setPointSize(10.0f);
+    setPointSize(20.0f);
     for(auto vertex : membrane.mesh->particle_list){
         if(vertex->crackTip){
             vec3 pos = vertex->position;
@@ -80,14 +81,17 @@ void processInput(int argc, char** argv){
     if(argc > 2){
         debugMode = atoi(argv[2]);
     }
+    if(argc > 3){
+        crackMode = atoi(argv[3]);
+    }
     membrane.drawMode = drawMode;
 }
 
 int main(int argc, char **argv) {
     //Creating windows
-    window.create("Simulation Window", 960, 540);
+    window.create("Simulation Window", 1920, 1080);
     window.onKeyPress(keyPressed);
-    debugWindow.create("Debug Window", 960, 540);
+    debugWindow.create("Debug Window", 1920, 1080);
     debugWindow.onKeyPress(keyPressed);
     debugWindow.debug = true;
 
@@ -126,7 +130,7 @@ int main(int argc, char **argv) {
         instrument.update(dt);
         collider.detectCollision(membrane, instrument);
         if(mode){
-            collider.updateMesh(membrane, intersectingEdges);
+            collider.updateMesh(membrane, intersectingEdges, crackMode);
         }
     }
     window.terminate();
