@@ -1,7 +1,7 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include<bits/stdc++.h>
+#include"../stdc++.h"
 #include "draw.hpp"
 #include "camera.hpp"
 #include "path.hpp"

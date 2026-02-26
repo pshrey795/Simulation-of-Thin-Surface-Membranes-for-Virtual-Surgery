@@ -3,7 +3,8 @@
 
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Sparse>
-#include <bits/stdc++.h>
+#include "../stdc++.h"
+#include "GLFW/glfw3.h"
 
 #if __APPLE__
 #include <OpenGL/gl.h>

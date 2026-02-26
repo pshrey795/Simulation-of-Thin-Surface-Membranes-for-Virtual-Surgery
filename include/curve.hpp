@@ -1,5 +1,5 @@
 #ifndef CURVE_HPP
-#define CURVE_CPP
+#define CURVE_HPP
 
 #include "common.hpp"
 
